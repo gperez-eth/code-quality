@@ -1,0 +1,29 @@
+{
+  "name": "@code-quality/analyzer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "code-quality-scan": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "scan": "tsc --build && node dist/cli.js",
+    "test": "tsc --build && node --test dist/*.test.js"
+  },
+  "dependencies": {
+    "@code-quality/core": "*",
+    "tree-sitter": "^0.21.1",
+    "tree-sitter-javascript": "^0.21.4",
+    "tree-sitter-typescript": "^0.21.2"
+  }
+}
