@@ -196,6 +196,14 @@ const emptyFunctionBody: Rule = {
       if (body?.type !== 'statement_block' || body.namedChildren.length > 0) return;
       if (node.childForFieldName('name')?.text === 'constructor') return;
 
+      // An empty ARROW is a placeholder or a deliberate no-op, not an
+      // unimplemented stub: `let signal = () => {}` has its real body
+      // assigned two lines later, and `const noop = () => {}` means it.
+      // functionName resolves both to the variable they are assigned to, so
+      // the anonymity check below never caught them. A named function or a
+      // method with an empty body is the shape this rule is for.
+      if (node.type === 'arrow_function') return;
+
       const name = functionName(node);
       if (name === '<anonymous>') return;
 
@@ -207,7 +215,14 @@ const emptyFunctionBody: Rule = {
 const swallowedCatch: Rule = {
   key: 'ts:no-swallowed-catch',
   name: 'Caught exceptions should not be swallowed',
-  type: 'BUG',
+  // CODE_SMELL, not BUG, and the demotion has a reason. The rule reads
+  // intent — "this catch tells the caller it succeeded" — and in a
+  // top-level poll loop there is no caller left to mislead, where logging
+  // and carrying on is the correct behaviour. A heuristic about intent
+  // should not drive the reliability rating or fail a build. It was also
+  // harsher than `ts:no-ignored-exception`, which is CODE_SMELL for the
+  // strictly worse case of a catch that does nothing at all.
+  type: 'CODE_SMELL',
   severity: 'CRITICAL',
   effortMinutes: 15,
   tags: ['error-handling'],

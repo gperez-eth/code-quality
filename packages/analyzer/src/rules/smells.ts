@@ -100,6 +100,11 @@ const noConsole: Rule = {
   description: 'console output bypasses whatever logging the application actually ships with.',
   languages: ALL_LANGUAGES,
   check({ file, report }) {
+    // A file with a shebang is a program, and its console output is its
+    // interface — `npm run worker` exists to be read. Eleven findings on the
+    // worker's own logging said more about this rule than about the code.
+    if (file.lines[0]?.startsWith('#!')) return;
+
     visitNodes(file.tree.rootNode, (node) => {
       const callee = calleeText(node);
       if (!callee?.startsWith('console.')) return;
