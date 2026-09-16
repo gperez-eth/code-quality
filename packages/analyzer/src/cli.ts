@@ -21,6 +21,7 @@ Usage
 
 Options
   --json <file>     Write the full result as JSON
+  --coverage <file> Attribute coverage from an lcov.info file
   --top <n>         How many issues to list (default 15)
   --rules           List the built-in rules and exit
   --no-fail         Exit 0 even when the quality gate fails
@@ -31,6 +32,7 @@ Options
 interface CliOptions {
   root: string;
   json?: string;
+  coverage?: string;
   top: number;
   fail: boolean;
   color: boolean;
@@ -74,6 +76,9 @@ function parseArgs(argv: string[]): CliOptions {
         break;
       case '--json':
         options.json = valueFor('--json', argv[++i]);
+        break;
+      case '--coverage':
+        options.coverage = valueFor('--coverage', argv[++i]);
         break;
       case '--top': {
         const top = Number(valueFor('--top', argv[++i]));
@@ -158,6 +163,13 @@ function printScorecards(result: AnalysisResult, palette: Palette): void {
   const debt = valueOf(result, 'sqale_index');
   const duplication = valueOf(result, 'duplicated_lines_density');
 
+  // Coverage is the one scorecard that can be legitimately blank: it stays
+  // that way until a `--coverage` report has been ingested, rather than
+  // showing a 0% that would be indistinguishable from an untested codebase.
+  const coverageDetail = result.measures.coverage
+    ? `${valueOf(result, 'coverage').toFixed(1)}%, ${count(valueOf(result, 'uncovered_lines'), 'uncovered line')}`
+    : palette.dim('no test report ingested yet');
+
   const rows: Array<[string, string, string]> = [
     ['Reliability', ratingOf(result, 'reliability_rating'), count(valueOf(result, 'bugs'), 'bug')],
     [
@@ -171,7 +183,7 @@ function printScorecards(result: AnalysisResult, palette: Palette): void {
       `${count(valueOf(result, 'code_smells'), 'code smell')}, ${formatEffort(debt)} of debt`,
     ],
     ['Duplication', '', `${duplication.toFixed(1)}%, ${count(valueOf(result, 'duplicated_blocks'), 'block')}`],
-    ['Coverage', '', palette.dim('no test report ingested yet')],
+    ['Coverage', '', coverageDetail],
   ];
 
   console.log();
@@ -251,7 +263,7 @@ async function main(): Promise<number> {
   console.log();
   console.log(`  ${palette.bold('Code Quality')} ${palette.dim(`scanning ${options.root}`)}`);
 
-  const result = await analyze(options.root);
+  const result = await analyze(options.root, options.coverage ? { coverage: resolve(options.coverage) } : {});
 
   const summary = [
     count(valueOf(result, 'files'), 'file'),

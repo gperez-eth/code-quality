@@ -328,6 +328,88 @@ describe('analyze', () => {
     // dimension has to be the one dragging the score down.
     assert.ok(result.measures.slop_findings!.value < 100, 'the slop fixture should cost findings points');
   });
+
+  it('reports no coverage measures when none was supplied, which must stay different from zero', () => {
+    assert.equal(result.measures.coverage, undefined);
+    assert.equal(result.measures.line_coverage, undefined);
+    assert.equal(result.measures.uncovered_lines, undefined);
+    assert.equal(result.coverage, undefined);
+  });
+});
+
+describe('coverage', () => {
+  /** A file whose line count is beside the point: the DA records below drive coverage, not this source. */
+  const source = `export function add(a: number, b: number): number {
+  return a + b;
+}
+`;
+
+  it('reports project coverage measures when an lcov report is supplied', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'code-quality-'));
+    try {
+      await writeFile(join(root, 'math.ts'), source, 'utf8');
+
+      // Four found, three hit: 75% coverage, one uncovered line.
+      const lcov = `SF:${join(root, 'math.ts')}
+DA:1,3
+DA:2,3
+DA:3,0
+DA:4,3
+LF:4
+LH:3
+end_of_record
+`;
+      const coveragePath = join(root, 'lcov.info');
+      await writeFile(coveragePath, lcov, 'utf8');
+
+      const result = await analyze(root, { coverage: coveragePath });
+
+      assert.equal(result.measures.coverage?.value, 75);
+      assert.equal(result.measures.line_coverage?.value, 75);
+      assert.equal(result.measures.uncovered_lines?.value, 1);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it('drops coverage for a file the report names but the scan never analysed', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'code-quality-'));
+    try {
+      await writeFile(join(root, 'math.ts'), source, 'utf8');
+
+      const lcov = `SF:${join(root, 'unrelated.ts')}
+DA:1,5
+LF:1
+LH:1
+end_of_record
+`;
+      const coveragePath = join(root, 'lcov.info');
+      await writeFile(coveragePath, lcov, 'utf8');
+
+      const result = await analyze(root, { coverage: coveragePath });
+
+      // A report was supplied, so the measures still exist -- just at zero,
+      // since nothing in it landed on a file this scan actually analysed.
+      assert.equal(result.measures.coverage?.value, 0);
+      assert.equal(result.coverage?.byFile.size, 0);
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
+
+  it('fails clearly rather than silently reporting no coverage when the report is missing', async () => {
+    const root = await mkdtemp(join(tmpdir(), 'code-quality-'));
+    try {
+      await writeFile(join(root, 'math.ts'), source, 'utf8');
+
+      await assert.rejects(
+        () => analyze(root, { coverage: join(root, 'does-not-exist.info') }),
+        /Could not read coverage report/,
+      );
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
 });
 
 describe('computeSlopScore', () => {

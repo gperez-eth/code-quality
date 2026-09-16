@@ -8,6 +8,7 @@ import {
   ratingFromWorstSeverity,
   ratingValue,
 } from '@code-quality/core';
+import { coveragePercent, type CoverageReport } from './coverage.js';
 import { commentDensity } from './metrics.js';
 import { computeSlopScore } from './slop.js';
 import { duplicationDensity, type DuplicationReport } from './duplication.js';
@@ -37,10 +38,17 @@ export interface MeasureInput {
   files: FileReport[];
   issues: Issue[];
   duplication: DuplicationReport;
+  /**
+   * Absent whenever `--coverage` was not given. The analyzer never runs a
+   * test suite itself — see ADR-0005 — so there is no such thing as a
+   * default of zero here: no report supplied means no coverage measures at
+   * all, not a coverage of zero.
+   */
+  coverage?: CoverageReport;
 }
 
 /** Everything the scorecards on the Project Overview screen read from. */
-export function computeMeasures({ files, issues, duplication }: MeasureInput): MeasureSet {
+export function computeMeasures({ files, issues, duplication, coverage }: MeasureInput): MeasureSet {
   const bugs = issues.filter((issue) => issue.type === 'BUG');
   const vulnerabilities = issues.filter((issue) => issue.type === 'VULNERABILITY');
   const smells = issues.filter((issue) => issue.type === 'CODE_SMELL');
@@ -77,6 +85,18 @@ export function computeMeasures({ files, issues, duplication }: MeasureInput): M
     ['cognitive_complexity', cognitive],
     ['comment_lines_density', commentDensity(commentLines, ncloc)],
   ];
+
+  // Only present when a report was supplied on disk. No BRDA records are
+  // parsed, so there is no branch data to blend into `coverage` the way
+  // SonarQube does — it and `line_coverage` are the same number here.
+  if (coverage) {
+    const percent = coveragePercent(coverage.linesHit, coverage.linesFound);
+    values.push(
+      ['coverage', percent],
+      ['line_coverage', percent],
+      ['uncovered_lines', coverage.linesFound - coverage.linesHit],
+    );
+  }
 
   // Null over an empty analysis: a perfect grade across zero lines is the same
   // false all-clear the gate used to give, wearing a different hat.
