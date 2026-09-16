@@ -13,6 +13,7 @@
     "@code-quality/analyzer": "*",
     "@code-quality/core": "*",
     "@code-quality/git": "*",
+    "@code-quality/github": "*",
     "@supabase/supabase-js": "^2.116.0"
   },
   "bin": {
