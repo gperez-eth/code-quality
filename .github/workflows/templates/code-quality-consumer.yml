@@ -1,0 +1,103 @@
+# Copy-paste starting point for running Code Quality from YOUR repository's
+# CI. This is lane 1 of the product (ADR-0005, "Analysis is CI-first, hosted
+# scanning is a convenience") — see docs/ci.md in the code-quality repo for
+# what that means and why it's the lane that matters.
+#
+# This file lives under .github/workflows/templates/ so GitHub does not run
+# it as-is (Actions only picks up workflows directly under
+# .github/workflows/). Copy it into your own repository at
+# .github/workflows/code-quality.yml and change every value marked CHANGE ME.
+#
+# --- Why this checks out a second repository ---
+# code-quality-scan and code-quality-import are not on npm: `@code-quality/analyzer`
+# and `@code-quality/publish` are both still `"private": true` in this repo's
+# package.json, and neither `@code-quality/analyzer`, `code-quality-scan` nor
+# `code-quality-import` resolves on the npm registry (checked: all 404).
+# Until one of these ships as a real package, running the CLIs means building
+# them from a checkout, the same way the code-quality repo's own workflow
+# does. When that changes, replace the "Check out the scanner" and "Build the
+# scanner" steps below with `npm install -g code-quality-scan code-quality-import`
+# (or whatever the published package turns out to be called) and drop the
+# `scanner/` path prefix from the two CLI invocations.
+#
+# The two checkouts below use separate `path:` values on purpose, so the
+# scanner's own source tree never ends up inside the folder being scanned —
+# code-quality-scan has no `--ignore` flag, and only exact directory names
+# (node_modules, dist, .git, …) are skipped by default, not arbitrary
+# subfolders. If the scanner's repo lived inside the checkout being analysed,
+# its own source would show up as findings in your report.
+
+name: Code Quality
+
+on:
+  push:
+    branches: [main] # CHANGE ME: your default branch, if it isn't "main"
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out your repository
+        uses: actions/checkout@v4
+        with:
+          path: repo
+
+      - name: Check out the scanner
+        uses: actions/checkout@v4
+        with:
+          repository: gperez-eth/code-quality # CHANGE ME if this repo moves
+          ref: master
+          path: scanner
+
+      # The parser packages/analyzer ships is a native module built during
+      # install, so the same npm-cache reasoning applies here as in
+      # code-quality's own workflow.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20' # code-quality needs Node 20.9+; see its package.json "engines"
+          cache: npm
+          cache-dependency-path: scanner/package-lock.json
+
+      # `npm ci` alone doesn't compile anything; code-quality's own `scan` and
+      # `publish` scripts build on demand (see its package.json), which only
+      # helps because that repo runs them on itself. Here we build both CLIs
+      # explicitly, the same two commands those scripts run under the hood.
+      - name: Build the scanner
+        working-directory: scanner
+        run: |
+          npm ci
+          npm run build --workspace @code-quality/analyzer
+          npm run build --workspace @code-quality/publish
+
+      # code-quality-scan exits 1 when the quality gate fails. That failure
+      # is this step's failure, and with it this job's — nothing else here
+      # needs to re-check the gate.
+      - name: Scan
+        run: node scanner/packages/analyzer/dist/cli.js repo --json report.json
+
+      # Only runs when the secret below is set, so a repository that hasn't
+      # configured publishing yet still gets gate enforcement from the step
+      # above instead of a red build about a missing credential. `!cancelled()`
+      # keeps it running even when the scan step failed the gate — a failed
+      # analysis is still worth recording.
+      #
+      # CHANGE ME: --org YOUR_ORG_SLUG below — your organisation's slug, from
+      # its dashboard URL.
+      - name: Publish report
+        if: ${{ !cancelled() && secrets.SUPABASE_SERVICE_ROLE_KEY != '' }}
+        run: >
+          node scanner/packages/publish/dist/cli.js report.json
+          --org YOUR_ORG_SLUG
+          --repo "${{ github.server_url }}/${{ github.repository }}"
+          --branch "${{ github.head_ref || github.ref_name }}"
+          --commit "${{ github.sha }}"
+        env:
+          # Settings -> Secrets and variables -> Actions, in your repository.
+          # Values come from your Code Quality organisation's Supabase
+          # project, under Settings -> API.
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }} # CHANGE ME: add this secret
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} # CHANGE ME: add this secret
