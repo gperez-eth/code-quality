@@ -1,0 +1,21 @@
+{
+  "name": "@code-quality/worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@code-quality/analyzer": "*",
+    "@code-quality/core": "*",
+    "@code-quality/git": "*",
+    "@supabase/supabase-js": "^2.116.0"
+  },
+  "bin": {
+    "code-quality-worker": "./dist/index.js"
+  }
+}
