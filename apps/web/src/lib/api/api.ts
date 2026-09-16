@@ -106,7 +106,6 @@ export const api = createApi({
             name: project.name,
             provider: project.provider,
             repositoryUrl: project.repositoryUrl,
-            localPath: project.localPath,
             // The branch the analysis ran on, or the one the project tracks.
             branch: analysis?.branch ?? project.mainBranch,
             gateStatus: analysis?.gate_status ?? null,
@@ -338,7 +337,6 @@ export const api = createApi({
           p_organization_id: input.organizationId,
           p_provider: input.provider,
           ...(input.repositoryUrl ? { p_repository_url: input.repositoryUrl } : {}),
-          ...(input.localPath ? { p_local_path: input.localPath } : {}),
           ...(input.projectKey ? { p_project_key: input.projectKey } : {}),
           ...(input.projectName ? { p_project_name: input.projectName } : {}),
           ...(input.branch ? { p_branch: input.branch } : {}),

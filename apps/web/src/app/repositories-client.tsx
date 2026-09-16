@@ -60,14 +60,9 @@ function RepositoryTable({ repositories }: { repositories: RepositoryRow[] }) {
                   <Link className="flex items-center gap-1.5" href={`/projects/${encodeURIComponent(repository.key)}`}>
                     <ProviderIcon className="text-[16px] text-secondary" provider={repository.provider} />
                     <span className="font-medium text-primary">{repository.name}</span>
-                    {repository.provider === 'LOCAL' ? (
-                      <span className="rounded-sm border border-outline-variant bg-surface-container px-1 py-px text-label-sm text-on-surface-variant">
-                        Local
-                      </span>
-                    ) : null}
                   </Link>
                   <span className="block truncate font-mono text-code-body text-on-surface-variant">
-                    {repository.repositoryUrl ?? repository.localPath}
+                    {repository.repositoryUrl}
                   </span>
                 </td>
                 <td className="px-3 py-2">

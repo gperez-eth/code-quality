@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { readdir, stat } from 'node:fs/promises';
 import { hostname } from 'node:os';
-import { basename, join } from 'node:path';
+import { join } from 'node:path';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { analyze, toReport } from '@code-quality/analyzer';
 import { ratingValue, type ScanReport, SONAR_WAY_GATE } from '@code-quality/core';
@@ -48,9 +48,8 @@ interface Job {
   organizationId: string;
   projectKey: string | null;
   projectName: string | null;
-  provider: 'GITHUB' | 'GITLAB' | 'LOCAL' | 'OTHER';
+  provider: 'GITHUB' | 'GITLAB' | 'OTHER';
   repositoryUrl: string | null;
-  localPath: string | null;
   branch: string | null;
   trigger: 'MANUAL' | 'PUSH' | 'SCHEDULE' | 'CLI';
   attempts: number;
@@ -81,13 +80,8 @@ function defaultGatePayload() {
 }
 
 function sourceFor(job: Job): RepositorySource {
-  if (job.provider === 'LOCAL') {
-    if (!job.localPath) throw new Error('A local job needs a path');
-    return { kind: 'local', path: job.localPath };
-  }
-
-  if (!job.repositoryUrl) throw new Error('A remote job needs a repository URL');
-  return { kind: 'remote', url: job.repositoryUrl, ...(job.accessToken ? { token: job.accessToken } : {}) };
+  if (!job.repositoryUrl) throw new Error('A job needs a repository URL');
+  return { url: job.repositoryUrl, ...(job.accessToken ? { token: job.accessToken } : {}) };
 }
 
 /**
@@ -133,9 +127,7 @@ async function runJob(supabase: SupabaseClient, job: Job): Promise<string> {
     throw new Error(`Repository checkout is ${repoMb.toFixed(1)}MB, over the ${MAX_REPO_MB}MB cap (CODE_QUALITY_MAX_REPO_MB)`);
   }
 
-  const fallbackKey =
-    source.kind === 'local' ? normalizeKey(basename(checkout.path)) : keyFromRemote(parseRemote(source.url));
-  const projectKey = normalizeKey(job.projectKey || fallbackKey);
+  const projectKey = normalizeKey(job.projectKey || keyFromRemote(parseRemote(source.url)));
   if (!projectKey) throw new Error('Could not work out a project key for this repository');
 
   const report: ScanReport = toReport(await analyze(checkout.path));
@@ -149,7 +141,7 @@ async function runJob(supabase: SupabaseClient, job: Job): Promise<string> {
     p_provider: job.provider,
     p_branch: checkout.branch,
     p_trigger: job.trigger,
-    ...(source.kind === 'local' ? { p_local_path: checkout.path } : { p_repository_url: parseRemote(source.url).cleanUrl }),
+    p_repository_url: parseRemote(source.url).cleanUrl,
     // The vault id, never the token: the project keeps a reference, and only
     // this worker ever sees the plaintext.
     ...(job.accessTokenId ? { p_access_token_id: job.accessTokenId } : {}),

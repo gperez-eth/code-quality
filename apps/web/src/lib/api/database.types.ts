@@ -620,7 +620,7 @@ export type Database = {
       issue_status: 'OPEN' | 'CONFIRMED' | 'REOPENED' | 'RESOLVED' | 'CLOSED';
       issue_type: 'BUG' | 'VULNERABILITY' | 'CODE_SMELL' | 'SECURITY_HOTSPOT';
       org_role: 'OWNER' | 'ADMIN' | 'MEMBER';
-      repository_provider: 'GITHUB' | 'GITLAB' | 'LOCAL' | 'OTHER';
+      repository_provider: 'GITHUB' | 'GITLAB' | 'OTHER';
       resolution: 'FIXED' | 'FALSE_POSITIVE' | 'WONT_FIX' | 'REMOVED';
       severity: 'BLOCKER' | 'CRITICAL' | 'MAJOR' | 'MINOR' | 'INFO';
     };
@@ -658,7 +658,7 @@ export const Constants = {
       issue_status: ['OPEN', 'CONFIRMED', 'REOPENED', 'RESOLVED', 'CLOSED'],
       issue_type: ['BUG', 'VULNERABILITY', 'CODE_SMELL', 'SECURITY_HOTSPOT'],
       org_role: ['OWNER', 'ADMIN', 'MEMBER'],
-      repository_provider: ['GITHUB', 'GITLAB', 'LOCAL', 'OTHER'],
+      repository_provider: ['GITHUB', 'GITLAB', 'OTHER'],
       resolution: ['FIXED', 'FALSE_POSITIVE', 'WONT_FIX', 'REMOVED'],
       severity: ['BLOCKER', 'CRITICAL', 'MAJOR', 'MINOR', 'INFO'],
     },
