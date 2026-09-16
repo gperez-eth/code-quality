@@ -5,6 +5,8 @@ import { join } from 'node:path';
 import { after, before, describe, it } from 'node:test';
 import { analyze, type AnalysisResult } from './analyze.js';
 import { ALL_RULES } from './rules/index.js';
+import { computeSlopScore } from './slop.js';
+import type { FileReport } from './types.js';
 
 /** One file per rule family, so a failure names the rule that regressed. */
 const SMELLY = `import { exec } from 'node:child_process';
@@ -119,6 +121,14 @@ async function loadUser(id: string) {
     console.error(err);
   }
 }
+
+function isPayload(value: unknown): value is Payload {
+  return typeof value === 'object' && value !== null;
+}
+
+const onRejected = (error: unknown) => {
+  throw error;
+};
 
 // implement this once the API is ready
 function fetchUser(id: string): Promise<unknown> {
@@ -243,18 +253,34 @@ describe('analyze', () => {
     assert.match(issue.message, /widened to "unknown"/);
   });
 
-  it('flags filter().map() chained on the same array', () => {
-    const issue = result.issues.find((issue) => issue.ruleKey === 'ts:no-filter-then-map');
+  it('leaves the unknown parameter of a type guard alone', () => {
+    const flagged = result.issues.filter((issue) => issue.ruleKey === 'ts:no-unknown-parameters');
 
-    assert.ok(issue, 'expected the filter().map() chain to be found');
-    assert.equal(issue.range.startLine, 34);
+    // `isPayload(value: unknown): value is Payload` is the correct way to
+    // validate at a boundary. Flagging it punishes the discipline the pack
+    // exists to encourage — it fired on this repository before being fixed.
+    assert.deepEqual(
+      flagged.filter((issue) => issue.message.includes('"value"')).map((issue) => issue.range.startLine),
+      [],
+      'a type predicate parameter must not be reported',
+    );
+  });
+
+  it('leaves an error parameter typed unknown alone', () => {
+    const flagged = result.issues.filter((issue) => issue.ruleKey === 'ts:no-unknown-parameters');
+
+    assert.deepEqual(
+      flagged.filter((issue) => issue.message.includes('"error"')).map((issue) => issue.range.startLine),
+      [],
+      'unknown is the correct annotation for a caught or rejected error',
+    );
   });
 
   it('flags a reduce that spreads its accumulator into a fresh object every call', () => {
     const issue = result.issues.find((issue) => issue.ruleKey === 'ts:no-reduce-accumulator-copy');
 
     assert.ok(issue, 'expected the accumulator-copying reduce to be found');
-    assert.equal(issue.range.startLine, 38);
+    assert.equal(issue.range.startLine, 46);
     assert.match(issue.message, /copying everything seen so far/);
   });
 
@@ -262,7 +288,7 @@ describe('analyze', () => {
     const issue = result.issues.find((issue) => issue.ruleKey === 'ts:no-redundant-comment');
 
     assert.ok(issue, 'expected the "// return userName" comment to be found');
-    assert.equal(issue.range.startLine, 42);
+    assert.equal(issue.range.startLine, 50);
   });
 
   it('keeps fingerprints stable when unrelated lines move', async () => {
@@ -282,5 +308,58 @@ describe('analyze', () => {
     } finally {
       await rm(moved, { recursive: true, force: true });
     }
+  });
+
+  it('scores the slop fixture below a clean bill of health', () => {
+    const score = result.measures.slop_score;
+    assert.ok(score, "expected a slop score");
+    assert.ok(score.value > 0 && score.value < 100, `expected 0 < score < 100, got ${score.value}`);
+
+    for (const metric of [
+      'slop_logic_density',
+      'slop_comment_integrity',
+      'slop_reuse',
+      'slop_findings',
+    ] as const) {
+      assert.ok(result.measures[metric], `expected the ${metric} dimension to be reported`);
+    }
+
+    // The fixture is deliberately full of slop-rule findings, so that
+    // dimension has to be the one dragging the score down.
+    assert.ok(result.measures.slop_findings!.value < 100, 'the slop fixture should cost findings points');
+  });
+});
+
+describe('computeSlopScore', () => {
+  const file = (over: Partial<FileReport> = {}): FileReport => ({
+    path: 'a.ts',
+    language: 'typescript',
+    issues: [],
+    ncloc: 100,
+    lines: 120,
+    commentLines: 10,
+    complexity: 15,
+    cognitiveComplexity: 15,
+    ...over,
+  });
+
+  it('declines to grade an empty analysis', () => {
+    assert.equal(computeSlopScore({ files: [], issues: [], duplicatedLinesDensity: 0 }), null);
+    assert.equal(computeSlopScore({ files: [file({ ncloc: 0 })], issues: [], duplicatedLinesDensity: 0 }), null);
+  });
+
+  it('lets one rotten dimension sink the score, which is the point of a geometric mean', () => {
+    const healthy = computeSlopScore({ files: [file()], issues: [], duplicatedLinesDensity: 0 });
+    const duplicated = computeSlopScore({ files: [file()], issues: [], duplicatedLinesDensity: 98 });
+
+    assert.ok(healthy && duplicated);
+    assert.ok(healthy.score > 95, `a clean file should score high, got ${healthy.score}`);
+
+    // Three dimensions are untouched and still at 100. An arithmetic mean
+    // would return ~75 and call that acceptable; the geometric mean must not.
+    assert.ok(
+      duplicated.score < 60,
+      `98% duplication must sink the score however good the rest is, got ${duplicated.score}`,
+    );
   });
 });

@@ -38,6 +38,9 @@ export async function* walkSourceFiles(root: string, options: WalkOptions = {}):
     try {
       entries = await readdir(dir, { withFileTypes: true });
     } catch {
+      // A directory we cannot read is a directory with nothing to analyse:
+      // permissions, a broken symlink, a race with something deleting it. The
+      // generator yields nothing for it and the walk carries on.
       return;
     }
 

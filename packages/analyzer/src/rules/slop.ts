@@ -47,6 +47,32 @@ const chainedTypeAssertions: Rule = {
 
 const PARAMETER_NODES = new Set(['required_parameter', 'optional_parameter']);
 
+
+/**
+ * A type guard's parameter *must* be `unknown` — validating at the boundary is
+ * the discipline this pack exists to encourage, so flagging it punishes the
+ * right answer. Found by running the pack over this repository, where it
+ * flagged `isScanReport(value: unknown): value is ScanReport`.
+ */
+function declaresTypePredicate(parameter: SyntaxNode): boolean {
+  let current: SyntaxNode | null = parameter;
+  while (current && !isFunctionNode(current)) current = current.parent;
+
+  const returnType = current?.childForFieldName('return_type');
+  if (!returnType) return false;
+  return (
+    returnType.type === 'type_predicate' ||
+    returnType.namedChildren.some((child) => child.type === 'type_predicate')
+  );
+}
+
+/**
+ * Where `unknown` is the correct annotation rather than a missing one: a
+ * caught or rejected error. TypeScript's own `useUnknownInCatchVariables`
+ * makes it the default, so asking for a real type here is asking for a lie.
+ */
+const ERROR_PARAMETER_NAMES = new Set(['error', 'err', 'e', 'reason', 'cause']);
+
 const unknownParameter: Rule = {
   key: 'ts:no-unknown-parameters',
   name: 'Function parameters should not be typed "unknown"',
@@ -65,6 +91,9 @@ const unknownParameter: Rule = {
       if (!valueType || !isPredefinedType(valueType, ['unknown'])) return;
 
       const name = node.childForFieldName('pattern')?.text ?? 'this parameter';
+      if (ERROR_PARAMETER_NAMES.has(name)) return;
+      if (declaresTypePredicate(node)) return;
+
       report({ node, message: `Give "${name}" a real type instead of "unknown".` });
     });
   },
@@ -195,6 +224,10 @@ const swallowedCatch: Rule = {
       // An *empty* catch belongs to `ts:no-ignored-exception`, which also knows
       // that a comment counts as a named child and so leaves a documented catch
       // alone. This rule is about the harder case: a catch that looks handled.
+      // A comment counts as a named child, so `catch { /* why */ return; }`
+      // falls out of the length check below and is left alone — the same
+      // escape hatch `ts:no-ignored-exception` gives. Narrow that check and
+      // the exemption disappears silently.
       const statements = body.namedChildren;
       if (statements.length !== 1) return;
 
@@ -282,38 +315,6 @@ const redundantComment: Rule = {
       report({
         node,
         message: 'This comment restates the line below it in different words. Delete it, or explain why the code does this rather than what it does.',
-      });
-    });
-  },
-};
-
-const filterThenMap: Rule = {
-  key: 'ts:no-filter-then-map',
-  name: 'filter().map() should be a single pass',
-  type: 'CODE_SMELL',
-  severity: 'MINOR',
-  effortMinutes: 10,
-  tags: ['performance'],
-  description:
-    'filter().map() walks the array twice and allocates an intermediate array it only ever uses as input to the next call. A single reduce or for-of loop does the same work in one pass.',
-  languages: ALL_LANGUAGES,
-  check({ file, report }) {
-    visitNodes(file.tree.rootNode, (node) => {
-      if (node.type !== 'call_expression') return;
-
-      const outerCallee = node.childForFieldName('function');
-      if (outerCallee?.type !== 'member_expression' || propertyName(outerCallee) !== 'map') return;
-
-      const receiver = outerCallee.childForFieldName('object');
-      const inner = receiver ? unwrap(receiver) : undefined;
-      if (inner?.type !== 'call_expression') return;
-
-      const innerCallee = inner.childForFieldName('function');
-      if (innerCallee?.type !== 'member_expression' || propertyName(innerCallee) !== 'filter') return;
-
-      report({
-        node,
-        message: 'Combine this filter().map() into a single pass — a reduce or a for-of loop does the same work without the intermediate array.',
       });
     });
   },
@@ -473,7 +474,6 @@ export const SLOP_RULES: Rule[] = [
   emptyFunctionBody,
   swallowedCatch,
   redundantComment,
-  filterThenMap,
   reduceAccumulatorCopy,
   widenThenAssert,
 ];

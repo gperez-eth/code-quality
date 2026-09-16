@@ -9,6 +9,7 @@ import {
   ratingValue,
 } from '@code-quality/core';
 import { commentDensity } from './metrics.js';
+import { computeSlopScore } from './slop.js';
 import { duplicationDensity, type DuplicationReport } from './duplication.js';
 import type { FileReport } from './types.js';
 
@@ -56,6 +57,8 @@ export function computeMeasures({ files, issues, duplication }: MeasureInput): M
   const debt = smells.reduce((total, issue) => total + issue.effortMinutes, 0);
   const debtRatio = ncloc === 0 ? 0 : debt / (ncloc * DEV_COST_MINUTES_PER_LINE);
 
+  const duplicatedLinesDensity = duplicationDensity(duplication.duplicatedLines, lines);
+
   const values: Array<[MetricKey, number]> = [
     ['bugs', bugs.length],
     ['reliability_rating', ratingValue(ratingFromWorstSeverity(severityCounts(bugs)))],
@@ -65,7 +68,7 @@ export function computeMeasures({ files, issues, duplication }: MeasureInput): M
     ['code_smells', smells.length],
     ['sqale_index', debt],
     ['sqale_rating', ratingValue(ratingFromDebtRatio(debtRatio))],
-    ['duplicated_lines_density', duplicationDensity(duplication.duplicatedLines, lines)],
+    ['duplicated_lines_density', duplicatedLinesDensity],
     ['duplicated_blocks', duplication.duplicatedBlocks],
     ['ncloc', ncloc],
     ['lines', lines],
@@ -74,6 +77,19 @@ export function computeMeasures({ files, issues, duplication }: MeasureInput): M
     ['cognitive_complexity', cognitive],
     ['comment_lines_density', commentDensity(commentLines, ncloc)],
   ];
+
+  // Null over an empty analysis: a perfect grade across zero lines is the same
+  // false all-clear the gate used to give, wearing a different hat.
+  const slop = computeSlopScore({ files, issues, duplicatedLinesDensity });
+  if (slop) {
+    values.push(
+      ['slop_score', slop.score],
+      ['slop_logic_density', Math.round(slop.logicDensity)],
+      ['slop_comment_integrity', Math.round(slop.commentIntegrity)],
+      ['slop_reuse', Math.round(slop.reuse)],
+      ['slop_findings', Math.round(slop.findings)],
+    );
+  }
 
   const measures: MeasureSet = {};
   for (const [metric, value] of values) {
