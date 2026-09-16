@@ -28,6 +28,15 @@ export const METRICS = {
   code_smells: { key: 'code_smells', name: 'Code Smells', domain: 'MAINTAINABILITY', valueType: 'INT', direction: 'LOWER_IS_BETTER' },
   sqale_index: { key: 'sqale_index', name: 'Technical Debt', domain: 'MAINTAINABILITY', valueType: 'MINUTES', direction: 'LOWER_IS_BETTER' },
   sqale_rating: { key: 'sqale_rating', name: 'Maintainability Rating', domain: 'MAINTAINABILITY', valueType: 'RATING', direction: 'LOWER_IS_BETTER' },
+  // The slop score and the four dimensions it is the geometric mean of. Graded
+  // out of 100 where **higher is better** — unusual in this catalogue, and the
+  // reason the direction is spelled out on every one of them. `slop_score`
+  // reads like a test score, not like a quantity of slop.
+  slop_score: { key: 'slop_score', name: 'Slop Score', domain: 'MAINTAINABILITY', valueType: 'INT', direction: 'HIGHER_IS_BETTER' },
+  slop_logic_density: { key: 'slop_logic_density', name: 'Logic Density', domain: 'MAINTAINABILITY', valueType: 'INT', direction: 'HIGHER_IS_BETTER' },
+  slop_comment_integrity: { key: 'slop_comment_integrity', name: 'Comment Integrity', domain: 'MAINTAINABILITY', valueType: 'INT', direction: 'HIGHER_IS_BETTER' },
+  slop_reuse: { key: 'slop_reuse', name: 'Reuse', domain: 'MAINTAINABILITY', valueType: 'INT', direction: 'HIGHER_IS_BETTER' },
+  slop_findings: { key: 'slop_findings', name: 'Slop Findings', domain: 'MAINTAINABILITY', valueType: 'INT', direction: 'HIGHER_IS_BETTER' },
   coverage: { key: 'coverage', name: 'Coverage', domain: 'COVERAGE', valueType: 'PERCENT', direction: 'HIGHER_IS_BETTER' },
   line_coverage: { key: 'line_coverage', name: 'Line Coverage', domain: 'COVERAGE', valueType: 'PERCENT', direction: 'HIGHER_IS_BETTER' },
   uncovered_lines: { key: 'uncovered_lines', name: 'Uncovered Lines', domain: 'COVERAGE', valueType: 'INT', direction: 'LOWER_IS_BETTER' },
