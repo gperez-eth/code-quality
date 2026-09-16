@@ -1,4 +1,5 @@
 import { createSign } from 'node:crypto';
+import { githubRequest } from './http.js';
 
 /**
  * Authenticating as a GitHub App.
@@ -16,8 +17,6 @@ import { createSign } from 'node:crypto';
  * token: the customer can see exactly what it reaches, revoke it in one click,
  * and nothing long-lived of theirs is ever stored here.
  */
-
-const API = 'https://api.github.com';
 
 /** GitHub allows ten minutes; nine leaves room for a slow clock. */
 const JWT_TTL_SECONDS = 9 * 60;
@@ -88,30 +87,6 @@ export function appJwt(credentials: AppCredentials, now: Date = new Date()): str
   return `${header}.${payload}.${signature}`;
 }
 
-async function callApi(path: string, jwt: string, method: 'GET' | 'POST'): Promise<unknown> {
-  const response = await fetch(`${API}${path}`, {
-    method,
-    headers: {
-      Accept: 'application/vnd.github+json',
-      Authorization: `Bearer ${jwt}`,
-      'X-GitHub-Api-Version': '2022-11-28',
-      'User-Agent': 'code-quality',
-    },
-  });
-
-  const text = await response.text();
-
-  if (!response.ok) {
-    // The body carries GitHub's own explanation — "Integration not found",
-    // "A JSON web token could not be decoded" — which is far more useful than
-    // the status alone when an app is misconfigured. It never contains a token:
-    // this request only ever sent the JWT, and the response failed.
-    throw new Error(`GitHub ${method} ${path} failed: ${response.status} ${text.slice(0, 300)}`);
-  }
-
-  return text === '' ? null : JSON.parse(text);
-}
-
 /**
  * Trades the app JWT for a token that can actually clone. Scoped to the
  * installation, and to whatever the customer granted it.
@@ -120,11 +95,10 @@ export async function mintInstallationToken(
   credentials: AppCredentials,
   installationId: number,
 ): Promise<InstallationToken> {
-  const body = (await callApi(
-    `/app/installations/${installationId}/access_tokens`,
-    appJwt(credentials),
-    'POST',
-  )) as { token?: string; expires_at?: string } | null;
+  const body = (await githubRequest(`/app/installations/${installationId}/access_tokens`, {
+    method: 'POST',
+    token: appJwt(credentials),
+  })) as { token?: string; expires_at?: string } | null;
 
   if (!body?.token) throw new Error(`GitHub returned no token for installation ${installationId}`);
 
@@ -139,7 +113,9 @@ export async function fetchInstallation(
   credentials: AppCredentials,
   installationId: number,
 ): Promise<InstallationAccount> {
-  const body = (await callApi(`/app/installations/${installationId}`, appJwt(credentials), 'GET')) as {
+  const body = (await githubRequest(`/app/installations/${installationId}`, {
+    token: appJwt(credentials),
+  })) as {
     id?: number;
     account?: { login?: string; type?: string };
     suspended_at?: string | null;

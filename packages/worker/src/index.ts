@@ -5,8 +5,19 @@ import { join } from 'node:path';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { analyze, toReport } from '@code-quality/analyzer';
 import { ratingValue, type ScanReport, SONAR_WAY_GATE } from '@code-quality/core';
-import { keyFromRemote, parseRemote, prepareCheckout, type RepositorySource } from '@code-quality/git';
-import { credentialsFromEnv, InstallationTokens } from '@code-quality/github';
+import {
+  keyFromRemote,
+  parseRemote,
+  prepareCheckout,
+  type RemoteInfo,
+  type RepositorySource,
+} from '@code-quality/git';
+import {
+  credentialsFromEnv,
+  InstallationTokens,
+  publishQualityGateCheck,
+  type GateStatus,
+} from '@code-quality/github';
 
 /**
  * The analysis worker.
@@ -51,6 +62,11 @@ const WORKER_ID = `${hostname()}:${process.pid}`;
 // separates them from the repository tokens in Supabase Vault.
 const GITHUB_APP = credentialsFromEnv();
 const INSTALLATION_TOKENS = GITHUB_APP ? new InstallationTokens(GITHUB_APP) : null;
+
+// Where the "Details" link on a check run points. Unset just omits the link:
+// the worker has no way to know the dashboard's public URL, and guessing would
+// send people somewhere that does not exist.
+const DASHBOARD_URL = process.env['CODE_QUALITY_DASHBOARD_URL']?.replace(/\/+$/, '');
 
 interface Job {
   id: string;
@@ -123,16 +139,22 @@ async function installationFor(supabase: SupabaseClient, organizationId: string)
  * Never logged, never returned to the caller, never written to a row: it goes
  * straight into the URL git dials, and `redact` scrubs anything printed.
  */
-async function cloneToken(supabase: SupabaseClient, job: Job, remoteIsGitHub: boolean): Promise<string | null> {
-  if (!INSTALLATION_TOKENS || !remoteIsGitHub) return job.accessToken;
+interface Credential {
+  token: string | null;
+  /** Set only when the token came from an installation, which is what may write a check run. */
+  installationId: number | null;
+}
+
+async function cloneToken(supabase: SupabaseClient, job: Job, remoteIsGitHub: boolean): Promise<Credential> {
+  if (!INSTALLATION_TOKENS || !remoteIsGitHub) return { token: job.accessToken, installationId: null };
 
   const installationId = await installationFor(supabase, job.organizationId);
-  if (installationId === null) return job.accessToken;
+  if (installationId === null) return { token: job.accessToken, installationId: null };
 
   try {
     const token = await INSTALLATION_TOKENS.get(installationId);
     console.log(`  authenticating as installation ${installationId}`);
-    return token;
+    return { token, installationId };
   } catch (error) {
     // A misconfigured app should not strand a project that already had a
     // working token, so this degrades rather than fails — but it says so,
@@ -141,13 +163,64 @@ async function cloneToken(supabase: SupabaseClient, job: Job, remoteIsGitHub: bo
     const reason = error instanceof Error ? error.message : String(error);
     if (!job.accessToken) throw new Error(`Could not mint an installation token: ${reason}`);
     console.warn(`  installation ${installationId} token failed, falling back to the stored token: ${reason}`);
-    return job.accessToken;
+    return { token: job.accessToken, installationId: null };
   }
 }
 
-function sourceFor(job: Job, token: string | null): RepositorySource {
+/**
+ * Says what the gate decided, on the commit that was analysed.
+ *
+ * Best-effort on purpose: the analysis is already stored and the dashboard
+ * already shows it, so a check run that fails to publish is a missing
+ * decoration, not a failed job. Throwing here would mark a perfectly good
+ * analysis FAILED and queue a retry that re-clones and re-parses everything to
+ * fix a comment on a pull request.
+ *
+ * Needs `Checks: Read & Write`, which an older installation will not have
+ * granted — GitHub answers 403 until the customer accepts the new permissions,
+ * and that is a normal state rather than an error to chase.
+ */
+async function decorateCommit(
+  supabase: SupabaseClient,
+  credential: Credential,
+  remote: RemoteInfo,
+  headSha: string,
+  analysisId: string,
+  projectKey: string,
+  counters: Record<string, unknown>,
+): Promise<void> {
+  if (!credential.installationId || !credential.token || headSha === '' || analysisId === '') return;
+
+  try {
+    const { data } = await supabase.from('analyses').select('gate_status').eq('id', analysisId).maybeSingle();
+    const gate = (data as { gate_status: GateStatus } | null)?.gate_status ?? null;
+
+    await publishQualityGateCheck(
+      credential.token,
+      {
+        owner: remote.owner,
+        repo: remote.name,
+        headSha,
+        ...(DASHBOARD_URL ? { detailsUrl: `${DASHBOARD_URL}/projects/${encodeURIComponent(projectKey)}` } : {}),
+      },
+      {
+        gate,
+        newIssues: Number(counters['newIssues'] ?? 0),
+        reopenedIssues: Number(counters['reopenedIssues'] ?? 0),
+        closedIssues: Number(counters['closedIssues'] ?? 0),
+        unchangedIssues: Number(counters['unchangedIssues'] ?? 0),
+      },
+    );
+
+    console.log(`  published a check run on ${remote.path}@${headSha.slice(0, 7)}`);
+  } catch (error) {
+    console.warn(`  could not publish the check run: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+
+function sourceFor(job: Job, credential: Credential): RepositorySource {
   if (!job.repositoryUrl) throw new Error('A job needs a repository URL');
-  return { url: job.repositoryUrl, ...(token ? { token } : {}) };
+  return { url: job.repositoryUrl, ...(credential.token ? { token: credential.token } : {}) };
 }
 
 /**
@@ -184,7 +257,8 @@ async function runJob(supabase: SupabaseClient, job: Job): Promise<string> {
   if (!job.repositoryUrl) throw new Error('A job needs a repository URL');
 
   const remote = parseRemote(job.repositoryUrl);
-  const source = sourceFor(job, await cloneToken(supabase, job, remote.provider === 'github'));
+  const credential = await cloneToken(supabase, job, remote.provider === 'github');
+  const source = sourceFor(job, credential);
   const checkout = await prepareCheckout(source, job.branch ? { branch: job.branch } : {});
 
   // The per-file cap already exists — walk.ts skips anything over 1MB — but
@@ -224,6 +298,9 @@ async function runJob(supabase: SupabaseClient, job: Job): Promise<string> {
 
   const result = (data ?? {}) as Record<string, unknown>;
   const analysisId = typeof result['analysisId'] === 'string' ? result['analysisId'] : '';
+
+  await decorateCommit(supabase, credential, remote, checkout.commit.sha, analysisId, projectKey, result);
+
   console.log(
     `  ${projectKey}: ${String(result['newIssues'])} new, ${String(result['reopenedIssues'])} reopened, ` +
       `${String(result['closedIssues'])} closed, ${String(result['unchangedIssues'])} unchanged`,
