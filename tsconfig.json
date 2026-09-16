@@ -8,6 +8,9 @@
       "path": "packages/git"
     },
     {
+      "path": "packages/github"
+    },
+    {
       "path": "packages/analyzer"
     },
     {

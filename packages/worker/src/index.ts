@@ -6,6 +6,7 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { analyze, toReport } from '@code-quality/analyzer';
 import { ratingValue, type ScanReport, SONAR_WAY_GATE } from '@code-quality/core';
 import { keyFromRemote, parseRemote, prepareCheckout, type RepositorySource } from '@code-quality/git';
+import { credentialsFromEnv, InstallationTokens } from '@code-quality/github';
 
 /**
  * The analysis worker.
@@ -43,6 +44,14 @@ const MAX_REPO_MB = Number(process.env['CODE_QUALITY_MAX_REPO_MB'] ?? 500);
 // pid is enough for someone reading the dashboard to tell two workers apart.
 const WORKER_ID = `${hostname()}:${process.pid}`;
 
+// The GitHub App, if one is configured. Null is a supported state: an instance
+// that only ever analyses public repositories needs no app, and one that still
+// uses pasted tokens keeps working. The app's credentials belong here beside
+// SUPABASE_SERVICE_ROLE_KEY — they are ours, not a customer's, which is what
+// separates them from the repository tokens in Supabase Vault.
+const GITHUB_APP = credentialsFromEnv();
+const INSTALLATION_TOKENS = GITHUB_APP ? new InstallationTokens(GITHUB_APP) : null;
+
 interface Job {
   id: string;
   organizationId: string;
@@ -79,9 +88,66 @@ function defaultGatePayload() {
   };
 }
 
-function sourceFor(job: Job): RepositorySource {
+/**
+ * The installation this organisation's repositories are reachable through, or
+ * null if they never installed the app.
+ *
+ * A suspended installation is excluded rather than reported: GitHub keeps the
+ * row when a customer suspends, and minting against it fails. Falling back to a
+ * stored token is the right behaviour, not an error.
+ */
+async function installationFor(supabase: SupabaseClient, organizationId: string): Promise<number | null> {
+  const { data, error } = await supabase
+    .from('github_installations')
+    .select('id')
+    .eq('organization_id', organizationId)
+    .is('suspended_at', null)
+    .order('installed_at', { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw new Error(`Could not look up the GitHub installation: ${error.message}`);
+  return (data as { id: number } | null)?.id ?? null;
+}
+
+/**
+ * Works out what to clone with.
+ *
+ * An installation token wins over a stored one wherever both exist: it is
+ * scoped to what the customer granted, it expires in an hour, and it is the
+ * whole point of the app. The pasted personal access token stays as the
+ * fallback for GitLab, for a repository the app is not installed on, and for
+ * anyone who has not installed it — removing that path would break every
+ * project connected before the app existed.
+ *
+ * Never logged, never returned to the caller, never written to a row: it goes
+ * straight into the URL git dials, and `redact` scrubs anything printed.
+ */
+async function cloneToken(supabase: SupabaseClient, job: Job, remoteIsGitHub: boolean): Promise<string | null> {
+  if (!INSTALLATION_TOKENS || !remoteIsGitHub) return job.accessToken;
+
+  const installationId = await installationFor(supabase, job.organizationId);
+  if (installationId === null) return job.accessToken;
+
+  try {
+    const token = await INSTALLATION_TOKENS.get(installationId);
+    console.log(`  authenticating as installation ${installationId}`);
+    return token;
+  } catch (error) {
+    // A misconfigured app should not strand a project that already had a
+    // working token, so this degrades rather than fails — but it says so,
+    // because silently using the weaker credential is how "the app does
+    // nothing" goes unnoticed for a week.
+    const reason = error instanceof Error ? error.message : String(error);
+    if (!job.accessToken) throw new Error(`Could not mint an installation token: ${reason}`);
+    console.warn(`  installation ${installationId} token failed, falling back to the stored token: ${reason}`);
+    return job.accessToken;
+  }
+}
+
+function sourceFor(job: Job, token: string | null): RepositorySource {
   if (!job.repositoryUrl) throw new Error('A job needs a repository URL');
-  return { url: job.repositoryUrl, ...(job.accessToken ? { token: job.accessToken } : {}) };
+  return { url: job.repositoryUrl, ...(token ? { token } : {}) };
 }
 
 /**
@@ -115,7 +181,10 @@ async function directorySizeBytes(root: string): Promise<number> {
 }
 
 async function runJob(supabase: SupabaseClient, job: Job): Promise<string> {
-  const source = sourceFor(job);
+  if (!job.repositoryUrl) throw new Error('A job needs a repository URL');
+
+  const remote = parseRemote(job.repositoryUrl);
+  const source = sourceFor(job, await cloneToken(supabase, job, remote.provider === 'github'));
   const checkout = await prepareCheckout(source, job.branch ? { branch: job.branch } : {});
 
   // The per-file cap already exists — walk.ts skips anything over 1MB — but
@@ -127,7 +196,7 @@ async function runJob(supabase: SupabaseClient, job: Job): Promise<string> {
     throw new Error(`Repository checkout is ${repoMb.toFixed(1)}MB, over the ${MAX_REPO_MB}MB cap (CODE_QUALITY_MAX_REPO_MB)`);
   }
 
-  const projectKey = normalizeKey(job.projectKey || keyFromRemote(parseRemote(source.url)));
+  const projectKey = normalizeKey(job.projectKey || keyFromRemote(remote));
   if (!projectKey) throw new Error('Could not work out a project key for this repository');
 
   const report: ScanReport = toReport(await analyze(checkout.path));
@@ -141,7 +210,7 @@ async function runJob(supabase: SupabaseClient, job: Job): Promise<string> {
     p_provider: job.provider,
     p_branch: checkout.branch,
     p_trigger: job.trigger,
-    p_repository_url: parseRemote(source.url).cleanUrl,
+    p_repository_url: remote.cleanUrl,
     // The vault id, never the token: the project keeps a reference, and only
     // this worker ever sees the plaintext.
     ...(job.accessTokenId ? { p_access_token_id: job.accessTokenId } : {}),
@@ -246,6 +315,11 @@ async function main(): Promise<void> {
   process.on('SIGTERM', stop);
 
   console.log(`worker: polling every ${POLL_INTERVAL_MS}ms as ${WORKER_ID}`);
+  console.log(
+    GITHUB_APP
+      ? `worker: GitHub App ${GITHUB_APP.appId} configured; private repositories clone with installation tokens`
+      : 'worker: no GitHub App configured (GITHUB_APP_ID / GITHUB_APP_PRIVATE_KEY); private repositories need a stored token',
+  );
 
   while (running) {
     try {
