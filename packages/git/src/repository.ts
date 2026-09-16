@@ -112,7 +112,8 @@ export async function listCommits(path: string, ref = 'HEAD', limit = 20): Promi
   return output === '' ? [] : output.split('\n').map(parseCommit);
 }
 
-async function defaultBranch(path: string): Promise<string> {
+/** What `origin/HEAD` points at — the branch the repository itself calls default. */
+export async function defaultBranch(path: string): Promise<string> {
   try {
     // symbolic-ref knows what origin/HEAD points at, which is the real default.
     const ref = await git(['symbolic-ref', '--short', 'refs/remotes/origin/HEAD'], path);

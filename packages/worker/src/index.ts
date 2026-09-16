@@ -6,7 +6,9 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { analyze, toReport } from '@code-quality/analyzer';
 import { ratingValue, type ScanReport, SONAR_WAY_GATE } from '@code-quality/core';
 import {
+  defaultBranch,
   keyFromRemote,
+  listBranches,
   parseRemote,
   prepareCheckout,
   type RemoteInfo,
@@ -168,6 +170,40 @@ async function cloneToken(supabase: SupabaseClient, job: Job, remoteIsGitHub: bo
 }
 
 /**
+ * Tells the dashboard what branches the repository has.
+ *
+ * The clone is right here and `git for-each-ref` is free at this point, which
+ * is the whole reason this happens in the worker rather than through the
+ * GitHub API: it works for GitLab, for a repository connected with a pasted
+ * token, and before any app is installed.
+ *
+ * Best-effort. The analysis is the job; a stale branch list is a stale menu.
+ */
+async function recordBranches(supabase: SupabaseClient, projectId: string, checkoutPath: string): Promise<void> {
+  if (projectId === '') return;
+
+  try {
+    const [branches, headBranch] = await Promise.all([
+      listBranches(checkoutPath),
+      defaultBranch(checkoutPath).catch(() => null),
+    ]);
+
+    if (branches.length === 0) return;
+
+    const { error } = await supabase.rpc('record_project_branches', {
+      p_project_id: projectId,
+      p_branches: branches,
+      ...(headBranch ? { p_default_branch: headBranch } : {}),
+    });
+
+    if (error) throw new Error(error.message);
+    console.log(`  ${branches.length} branch${branches.length === 1 ? '' : 'es'} recorded`);
+  } catch (error) {
+    console.warn(`  could not record the branch list: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+
+/**
  * Says what the gate decided, on the commit that was analysed.
  *
  * Best-effort on purpose: the analysis is already stored and the dashboard
@@ -298,7 +334,9 @@ async function runJob(supabase: SupabaseClient, job: Job): Promise<string> {
 
   const result = (data ?? {}) as Record<string, unknown>;
   const analysisId = typeof result['analysisId'] === 'string' ? result['analysisId'] : '';
+  const projectId = typeof result['projectId'] === 'string' ? result['projectId'] : '';
 
+  await recordBranches(supabase, projectId, checkout.path);
   await decorateCommit(supabase, credential, remote, checkout.commit.sha, analysisId, projectKey, result);
 
   console.log(

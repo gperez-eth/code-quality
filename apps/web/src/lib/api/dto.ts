@@ -25,7 +25,7 @@ import type { Enums, Tables } from './database.types';
  */
 
 export const PROJECT_COLUMNS =
-  'id, organization_id, key, name, provider, repository_url, local_path, main_branch, analyze_on_push, quality_gate_id, created_at, last_analyzed_at' as const;
+  'id, organization_id, key, name, provider, repository_url, local_path, main_branch, analyze_on_push, analyze_branch_patterns, analyze_on_new_branch, quality_gate_id, created_at, last_analyzed_at' as const;
 
 export type ProjectDto = Pick<
   Tables<'projects'>,
@@ -38,6 +38,8 @@ export type ProjectDto = Pick<
   | 'local_path'
   | 'main_branch'
   | 'analyze_on_push'
+  | 'analyze_branch_patterns'
+  | 'analyze_on_new_branch'
   | 'quality_gate_id'
   | 'created_at'
   | 'last_analyzed_at'
@@ -53,6 +55,8 @@ export interface Project {
   localPath: string | null;
   mainBranch: string;
   analyzeOnPush: boolean;
+  analyzeBranchPatterns: string[];
+  analyzeOnNewBranch: boolean;
   qualityGateId: string | null;
   createdAt: string;
   lastAnalyzedAt: string | null;
@@ -69,6 +73,8 @@ export function toProject(dto: ProjectDto): Project {
     localPath: dto.local_path,
     mainBranch: dto.main_branch,
     analyzeOnPush: dto.analyze_on_push,
+    analyzeBranchPatterns: dto.analyze_branch_patterns,
+    analyzeOnNewBranch: dto.analyze_on_new_branch,
     qualityGateId: dto.quality_gate_id,
     createdAt: dto.created_at,
     lastAnalyzedAt: dto.last_analyzed_at,
@@ -288,6 +294,35 @@ export function toAnalysisJob(dto: AnalysisJobDto): AnalysisJob {
     startedAt: dto.started_at,
     finishedAt: dto.finished_at,
   };
+}
+
+/**
+ * One row of the Branches table: a branch the repository has, and how it last
+ * fared.
+ *
+ * `firstSeenAt` is what makes "new" meaningful — the worker keeps it across
+ * refreshes, so a branch that appeared this morning still says so tomorrow.
+ * Every analysis field is null for a branch nobody has analysed yet, which is
+ * the common case and not an error.
+ */
+export interface ProjectBranch {
+  name: string;
+  isDefault: boolean;
+  firstSeenAt: string;
+  lastSeenAt: string;
+  analysisId: string | null;
+  analysisStatus: Enums<'analysis_status'> | null;
+  gateStatus: GateStatus | null;
+  commitSha: string | null;
+  commitMessage: string | null;
+  lastAnalyzedAt: string | null;
+}
+
+/** When this project gets analysed without anyone pressing a button. */
+export interface AnalysisAutomation {
+  analyzeOnPush: boolean;
+  branchPatterns: string[];
+  analyzeOnNewBranch: boolean;
 }
 
 /** Everything the queue needs to know to do the work later. */

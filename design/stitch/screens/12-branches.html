@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Quality — Branches</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #0f172a;
+      background-color: #f3f4f6;
+    }
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#f3f4f6] text-slate-800 text-xs antialiased selection:bg-blue-100 selection:text-blue-900">
+
+  <!-- TOP UTILITY BAR (48px, #1e293b dark) -->
+  <header class="h-12 bg-[#1e293b] text-slate-200 px-4 flex items-center justify-between border-b border-slate-900 z-50 select-none flex-shrink-0">
+    <div class="flex items-center gap-6">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2 text-white font-semibold tracking-tight text-sm hover:opacity-90 transition-opacity">
+        <svg class="w-5 h-5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="16 18 22 12 16 6"></polyline>
+          <polyline points="8 6 2 12 8 18"></polyline>
+        </svg>
+        <span class="tracking-normal font-bold">Code Quality</span>
+      </a>
+
+      <!-- Global Search -->
+      <div class="relative w-80">
+        <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </div>
+        <input 
+          type="text" 
+          placeholder="Search for projects, files or rules... (⌘K)" 
+          class="w-full h-7 pl-8 pr-3 bg-slate-800/90 text-slate-200 placeholder-slate-400 text-[11px] rounded border border-slate-700/80 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+        />
+      </div>
+    </div>
+
+    <!-- Right Top Utility -->
+    <div class="flex items-center gap-4 text-[11px]">
+      <div class="flex items-center gap-1.5 text-slate-300">
+        <span class="w-5 h-5 rounded-full bg-slate-700 flex items-center justify-center font-mono font-medium text-[10px] text-blue-300 border border-slate-600">GP</span>
+        <span class="font-medium text-slate-200">gperez-eth</span>
+      </div>
+      <div class="h-3 w-px bg-slate-700"></div>
+      <button title="Sign out" class="flex items-center gap-1 text-slate-400 hover:text-white transition-colors">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        <span>Sign out</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- SUB-HEADER ROW (42px, white, 1px bottom border) -->
+  <div class="h-[42px] bg-white border-b border-slate-200 px-4 flex items-center justify-between z-40 relative flex-shrink-0">
+    <!-- Left: Project name & Navigation tabs -->
+    <div class="flex items-center h-full gap-3">
+      <div class="flex items-center gap-1.5 font-medium text-slate-900 text-xs">
+        <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+        </svg>
+        <span class="font-mono font-semibold tracking-tight">gperez-eth-code-quality</span>
+      </div>
+
+      <div class="h-4 w-px bg-slate-200 mx-1"></div>
+
+      <!-- View tabs -->
+      <nav class="flex items-center h-full gap-0 text-xs font-medium">
+        <a href="#" class="h-full flex items-center px-3 text-slate-600 hover:text-slate-900 transition-colors">Overview</a>
+        <a href="#" class="h-full flex items-center px-3 text-slate-600 hover:text-slate-900 transition-colors">Issues</a>
+        <a href="#" class="h-full flex items-center px-3 text-slate-600 hover:text-slate-900 transition-colors">Measures</a>
+        <a href="#" class="h-full flex items-center px-3 text-slate-600 hover:text-slate-900 transition-colors">Code</a>
+        <a href="#" class="h-full flex items-center px-3 text-slate-600 hover:text-slate-900 transition-colors">Activity</a>
+        <a href="#" class="h-full flex items-center px-3 text-[#2563eb] font-semibold border-b-2 border-[#2563eb] bg-blue-50/20">Branches</a>
+      </nav>
+    </div>
+
+    <!-- Right: Metadata & OPEN Branch Switcher Popover -->
+    <div class="flex items-center gap-3 relative">
+      <!-- Timestamp -->
+      <div class="flex items-center gap-1.5 text-slate-500 text-[11px]">
+        <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span>Sep 16, 2026, 11:51 PM</span>
+      </div>
+
+      <!-- Chip: Version not provided -->
+      <span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-50 border border-slate-200 text-slate-500">
+        Version not provided
+      </span>
+
+      <!-- Branch Switcher Anchor Container -->
+      <div class="relative">
+        <button class="h-7 px-2.5 rounded bg-slate-100 hover:bg-slate-200/80 border border-slate-300 text-slate-800 text-xs font-medium flex items-center gap-1.5 transition-colors focus:ring-1 focus:ring-blue-500 shadow-sm">
+          <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="6" y1="3" x2="6" y2="15"></line>
+            <circle cx="18" cy="6" r="3"></circle>
+            <circle cx="6" cy="18" r="3"></circle>
+            <path d="M18 9a9 9 0 0 1-9 9"></path>
+          </svg>
+          <span class="font-mono-code text-[11px] font-semibold text-slate-900">master</span>
+          <svg class="w-3 h-3 text-slate-500 transform rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+
+        <!-- OPEN DROPDOWN POPOVER -->
+        <div class="absolute right-0 top-[34px] w-[260px] bg-white rounded border border-[#cbd5e1] shadow-[0_2px_4px_rgba(0,0,0,0.08)] z-50 text-slate-800 overflow-hidden">
+          <!-- Popover search header -->
+          <div class="p-2 border-b border-slate-100 bg-slate-50/50">
+            <div class="relative">
+              <input 
+                type="text" 
+                placeholder="Filter branches" 
+                value=""
+                class="w-full h-7 pl-7 pr-2 bg-white text-[11px] rounded border border-slate-200 text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+              />
+              <svg class="w-3.5 h-3.5 text-slate-400 absolute left-2 top-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Branch List Items -->
+          <div class="py-1 max-h-60 overflow-y-auto divide-y divide-slate-50">
+            <!-- Row: master (selected) -->
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 bg-blue-50/60 hover:bg-blue-50 transition-colors group">
+              <div class="flex items-center gap-1.5 overflow-hidden">
+                <svg class="w-3.5 h-3.5 text-blue-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="6" y1="3" x2="6" y2="15"></line>
+                  <circle cx="18" cy="6" r="3"></circle>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <path d="M18 9a9 9 0 0 1-9 9"></path>
+                </svg>
+                <span class="font-mono-code text-[11px] font-semibold text-slate-900 truncate">master</span>
+                <span class="text-[9px] px-1 py-0.2 bg-slate-100 border border-slate-200 text-slate-600 rounded">default</span>
+              </div>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <span class="w-2 h-2 rounded-full bg-emerald-500" title="Quality Gate: Passed"></span>
+                <svg class="w-3.5 h-3.5 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+            </a>
+
+            <!-- Row: develop -->
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 hover:bg-slate-50 transition-colors group">
+              <div class="flex items-center gap-1.5 overflow-hidden">
+                <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="6" y1="3" x2="6" y2="15"></line>
+                  <circle cx="18" cy="6" r="3"></circle>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <path d="M18 9a9 9 0 0 1-9 9"></path>
+                </svg>
+                <span class="font-mono-code text-[11px] text-slate-700 group-hover:text-slate-900 truncate">develop</span>
+              </div>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <span class="w-2 h-2 rounded-full bg-red-500" title="Quality Gate: Failed"></span>
+              </div>
+            </a>
+
+            <!-- Row: feat/github-check-runs -->
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 hover:bg-slate-50 transition-colors group">
+              <div class="flex items-center gap-1.5 overflow-hidden">
+                <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="6" y1="3" x2="6" y2="15"></line>
+                  <circle cx="18" cy="6" r="3"></circle>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <path d="M18 9a9 9 0 0 1-9 9"></path>
+                </svg>
+                <span class="font-mono-code text-[11px] text-slate-700 group-hover:text-slate-900 truncate">feat/github-check-runs</span>
+              </div>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <span class="w-2 h-2 rounded-full bg-emerald-500" title="Quality Gate: Passed"></span>
+              </div>
+            </a>
+
+            <!-- Row: feat/installation-tokens -->
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 hover:bg-slate-50 transition-colors group">
+              <div class="flex items-center gap-1.5 overflow-hidden">
+                <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="6" y1="3" x2="6" y2="15"></line>
+                  <circle cx="18" cy="6" r="3"></circle>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <path d="M18 9a9 9 0 0 1-9 9"></path>
+                </svg>
+                <span class="font-mono-code text-[11px] text-slate-700 group-hover:text-slate-900 truncate">feat/installation-tokens</span>
+              </div>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <span class="w-2 h-2 rounded-full bg-slate-300" title="Quality Gate: Not analysed"></span>
+              </div>
+            </a>
+
+            <!-- Row: fix/tune-rules -->
+            <a href="#" class="flex items-center justify-between px-2.5 py-1.5 hover:bg-slate-50 transition-colors group">
+              <div class="flex items-center gap-1.5 overflow-hidden">
+                <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="6" y1="3" x2="6" y2="15"></line>
+                  <circle cx="18" cy="6" r="3"></circle>
+                  <circle cx="6" cy="18" r="3"></circle>
+                  <path d="M18 9a9 9 0 0 1-9 9"></path>
+                </svg>
+                <span class="font-mono-code text-[11px] text-slate-400 truncate">fix/tune-rules</span>
+              </div>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <span class="w-2 h-2 rounded-full bg-slate-300" title="Not analysed"></span>
+              </div>
+            </a>
+          </div>
+
+          <!-- Bottom Popover Action -->
+          <div class="p-2 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
+            <a href="#" class="text-[11px] font-medium text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1">
+              <svg class="w-3 h-3 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+              </svg>
+              <span>Manage automation</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Button: Analyse again -->
+      <button class="h-7 px-2.5 rounded bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-medium flex items-center gap-1.5 transition-colors shadow-sm">
+        <svg class="w-3 h-3 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="23 4 23 10 17 10"></polyline>
+          <polyline points="1 20 1 14 7 14"></polyline>
+          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+        </svg>
+        <span>Analyse again</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- MAIN CANVAS (#f3f4f6, 16px padding) -->
+  <main class="flex-1 p-4 max-w-[1400px] w-full mx-auto">
+    <!-- Header row: title, subtitle, right action -->
+    <div class="flex items-center justify-between mb-4">
+      <div>
+        <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Branches</h1>
+        <p class="text-slate-500 text-xs mt-0.5 font-normal">
+          5 branches · 3 analysed · last refreshed 4 minutes ago
+        </p>
+      </div>
+
+      <!-- Secondary button with gear icon: Analysis automation -->
+      <button class="h-8 px-3 rounded bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-medium flex items-center gap-1.5 shadow-sm transition-colors">
+        <svg class="w-3.5 h-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span>Analysis automation</span>
+      </button>
+    </div>
+
+    <!-- MAIN PANEL: DENSE TABLE WITH CRISP 1px BORDER -->
+    <div class="bg-white rounded border border-[#e1e4e8] overflow-hidden shadow-none">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-50/80 border-b border-[#e1e4e8] text-[11px] font-bold text-[#64748b] tracking-wider uppercase select-none">
+              <th class="py-2.5 px-4 font-bold">BRANCH</th>
+              <th class="py-2.5 px-3 font-bold w-36">LAST ANALYSIS</th>
+              <th class="py-2.5 px-3 font-bold w-36">QUALITY GATE</th>
+              <th class="py-2.5 px-3 font-bold text-right w-24">ISSUES</th>
+              <th class="py-2.5 px-3 font-bold text-right w-24">COVERAGE</th>
+              <th class="py-2.5 px-3 font-bold text-right w-28">DUPLICATIONS</th>
+              <th class="py-2.5 px-4 font-bold text-right w-28"></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-[#e1e4e8] text-xs">
+            
+            <!-- ROW 1: master -->
+            <tr class="h-11 hover:bg-slate-50/70 transition-colors group">
+              <td class="py-2 px-4">
+                <div class="flex items-center gap-2">
+                  <svg class="w-3.5 h-3.5 text-slate-500 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="6" y1="3" x2="6" y2="15"></line>
+                    <circle cx="18" cy="6" r="3"></circle>
+                    <circle cx="6" cy="18" r="3"></circle>
+                    <path d="M18 9a9 9 0 0 1-9 9"></path>
+                  </svg>
+                  <span class="font-mono-code font-semibold text-slate-900 text-[12px]">master</span>
+                  <span class="px-1.5 py-0.2 rounded text-[10px] font-medium border border-slate-300 text-slate-600 bg-slate-100">default</span>
+                </div>
+                <div class="text-[12px] text-slate-500 truncate mt-0.5 ml-5 font-normal max-w-xl">
+                  Merge pull request #43 from gperez-eth/feat/github-check-runs
+                </div>
+              </td>
+              <td class="py-2 px-3 text-slate-600 text-xs font-medium whitespace-nowrap">
+                4 hours ago
+              </td>
+              <td class="py-2 px-3 whitespace-nowrap">
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  PASSED
+                </span>
+              </td>
+              <td class="py-2 px-3 text-right font-mono-code font-medium text-slate-800">
+                123
+              </td>
+              <td class="py-2 px-3 text-right text-slate-400 font-mono-code">
+                —
+              </td>
+              <td class="py-2 px-3 text-right font-mono-code font-medium text-slate-800">
+                2.0%
+              </td>
+              <td class="py-2 px-4 text-right whitespace-nowrap">
+                <button class="h-6 px-2.5 rounded bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 text-[11px] font-medium shadow-none transition-colors">
+                  Analyse
+                </button>
+              </td>
+            </tr>
+
+            <!-- ROW 2: develop -->
+            <tr class="h-11 hover:bg-slate-50/70 transition-colors group cursor-pointer">
+              <td class="py-2 px-4">
+                <div class="flex items-center gap-2">
+                  <svg class="w-3.5 h-3.5 text-blue-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="6" y1="3" x2="6" y2="15"></line>
+                    <circle cx="18" cy="6" r="3"></circle>
+                    <circle cx="6" cy="18" r="3"></circle>
+                    <path d="M18 9a9 9 0 0 1-9 9"></path>
+                  </svg>
+                  <span class="font-mono-code font-semibold text-slate-900 text-[12px] group-hover:text-blue-600 transition-colors">develop</span>
+                  <span class="px-1.5 py-0.2 rounded text-[10px] font-medium border border-blue-300 text-blue-700 bg-blue-50/50">tracked</span>
+                </div>
+                <div class="text-[12px] text-slate-500 truncate mt-0.5 ml-5 font-normal max-w-xl">
+                  feat(worker): record the branch list on every clone
+                </div>
+              </td>
+              <td class="py-2 px-3 text-slate-600 text-xs font-medium whitespace-nowrap">
+                12 minutes ago
+              </td>
+              <td class="py-2 px-3 whitespace-nowrap">
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-semibold bg-red-50 text-red-700 border border-red-200">
+                  <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                  FAILED
+                </span>
+              </td>
+              <td class="py-2 px-3 text-right font-mono-code font-medium text-slate-800">
+                131
+              </td>
+              <td class="py-2 px-3 text-right text-slate-400 font-mono-code">
+                —
+              </td>
+              <td class="py-2 px-3 text-right font-mono-code font-medium text-slate-800">
+                2.4%
+              </td>
+              <td class="py-2 px-4 text-right whitespace-nowrap">
+                <div class="flex items-center justify-end gap-2">
+                  <button class="h-6 px-2.5 rounded bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 text-[11px] font-medium shadow-none transition-colors">
+                    Analyse
+                  </button>
+                  <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </div>
+              </td>
+            </tr>
+
+            <!-- ROW 3: feat/github-check-runs -->
+            <tr class="h-11 hover:bg-slate-50/70 transition-colors group cursor-pointer">
+              <td class="py-2 px-4">
+                <div class="flex items-center gap-2">
+                  <svg class="w-3.5 h-3.5 text-slate-500 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="6" y1="3" x2="6" y2="15"></line>
+                    <circle cx="18" cy="6" r="3"></circle>
+                    <circle cx="6" cy="18" r="3"></circle>
+                    <path d="M18 9a9 9 0 0 1-9 9"></path>
+                  </svg>
+                  <span class="font-mono-code font-semibold text-slate-900 text-[12px] group-hover:text-blue-600 transition-colors">feat/github-check-runs</span>
+                </div>
+                <div class="text-[12px] text-slate-500 truncate mt-0.5 ml-5 font-normal max-w-xl">
+                  feat(github): publish the quality gate as a check run
+                </div>
+              </td>
+              <td class="py-2 px-3 text-slate-600 text-xs font-medium whitespace-nowrap">
+                2 hours ago
+              </td>
+              <td class="py-2 px-3 whitespace-nowrap">
+                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  PASSED
+                </span>
+              </td>
+              <td class="py-2 px-3 text-right font-mono-code font-medium text-slate-800">
+                124
+              </td>
+              <td class="py-2 px-3 text-right text-slate-400 font-mono-code">
+                —
+              </td>
+              <td class="py-2 px-3 text-right font-mono-code font-medium text-slate-800">
+                2.0%
+              </td>
+              <td class="py-2 px-4 text-right whitespace-nowrap">
+                <div class="flex items-center justify-end gap-2">
+                  <button class="h-6 px-2.5 rounded bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 text-[11px] font-medium shadow-none transition-colors">
+                    Analyse
+                  </button>
+                  <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </div>
+              </td>
+            </tr>
+
+            <!-- ROW 4: feat/installation-tokens (never analysed) -->
+            <tr class="h-11 hover:bg-slate-50/70 transition-colors group">
+              <td class="py-2 px-4">
+                <div class="flex items-center gap-2">
+                  <svg class="w-3.5 h-3.5 text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="6" y1="3" x2="6" y2="15"></line>
+                    <circle cx="18" cy="6" r="3"></circle>
+                    <circle cx="6" cy="18" r="3"></circle>
+                    <path d="M18 9a9 9 0 0 1-9 9"></path>
+                  </svg>
+                  <span class="font-mono-code font-semibold text-slate-800 text-[12px]">feat/installation-tokens</span>
+                </div>
+                <div class="text-[12px] text-slate-400 truncate mt-0.5 ml-5 font-normal">
+                  Branch discovered from remote git repository
+                </div>
+              </td>
+              <td class="py-2 px-3 text-slate-400 text-xs italic whitespace-nowrap">
+                Never analysed
+              </td>
+              <td class="py-2 px-3 whitespace-nowrap">
+                <span class="text-slate-400 font-medium ml-3">—</span>
+              </td>
+              <td class="py-2 px-3 text-right text-slate-400 font-mono-code">
+                —
+              </td>
+              <td class="py-2 px-3 text-right text-slate-400 font-mono-code">
+                —
+              </td>
+              <td class="py-2 px-3 text-right text-slate-400 font-mono-code">
+                —
+              </td>
+              <td class="py-2 px-4 text-right whitespace-nowrap">
+                <!-- Primary blue "Analyse" button -->
+                <button class="h-6 px-2.5 rounded bg-[#2563eb] hover:bg-blue-700 text-white text-[11px] font-medium shadow-none transition-colors">
+                  Analyse
+                </button>
+              </td>
+            </tr>
+
+            <!-- ROW 5: fix/tune-rules (muted row with small grey "merged" tag) -->
+            <tr class="h-11 bg-slate-50/40 hover:bg-slate-100/50 transition-colors group opacity-85">
+              <td class="py-2 px-4">
+                <div class="flex items-center gap-2">
+                  <svg class="w-3.5 h-3.5 text-slate-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="6" y1="3" x2="6" y2="15"></line>
+                    <circle cx="18" cy="6" r="3"></circle>
+                    <circle cx="6" cy="18" r="3"></circle>
+                    <path d="M18 9a9 9 0 0 1-9 9"></path>
+                  </svg>
+                  <span class="font-mono-code font-medium text-slate-500 text-[12px]">fix/tune-rules</span>
+                  <span class="px-1.5 py-0.2 rounded text-[10px] font-medium border border-slate-200 text-slate-500 bg-slate-100">merged</span>
+                </div>
+                <div class="text-[12px] text-slate-400 truncate mt-0.5 ml-5 font-normal">
+                  Merged into master via PR #41
+                </div>
+              </td>
+              <td class="py-2 px-3 text-slate-400 text-xs italic whitespace-nowrap">
+                Never analysed
+              </td>
+              <td class="py-2 px-3 whitespace-nowrap">
+                <span class="text-slate-400 font-medium ml-3">—</span>
+              </td>
+              <td class="py-2 px-3 text-right text-slate-400 font-mono-code">
+                —
+              </td>
+              <td class="py-2 px-3 text-right text-slate-400 font-mono-code">
+                —
+              </td>
+              <td class="py-2 px-3 text-right text-slate-400 font-mono-code">
+                —
+              </td>
+              <td class="py-2 px-4 text-right whitespace-nowrap">
+                <button class="h-6 px-2.5 rounded bg-white hover:bg-slate-100 border border-slate-300 text-slate-600 text-[11px] font-medium shadow-none transition-colors">
+                  Analyse
+                </button>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <!-- FOOTER STRIP (#eff6ff background, 1px #bfdbfe top border) -->
+      <div class="bg-[#eff6ff] border-t border-[#bfdbfe] px-4 py-2 flex items-center gap-2 text-xs text-blue-900">
+        <svg class="w-4 h-4 text-blue-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <p class="text-[11.5px] leading-relaxed">
+          Branches are refreshed from the repository every time an analysis runs. New branches are analysed automatically — configure this in 
+          <a href="#" class="font-semibold underline hover:text-blue-700 ml-0.5">Analysis automation</a>.
+        </p>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

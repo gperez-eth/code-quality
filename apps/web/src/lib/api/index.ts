@@ -14,12 +14,16 @@ export {
   useGetAnalysisJobQuery,
   useGetIssuesQuery,
   useGetLatestAnalysisQuery,
+  useGetMatchingBranchesQuery,
   useGetMyOrganizationsQuery,
   useGetOverviewQuery,
+  useGetProjectBranchesQuery,
   useGetProjectByKeyQuery,
   useGetRepositoriesQuery,
   useGetRulesQuery,
+  useHasGitHubInstallationQuery,
   useRequestAnalysisMutation,
+  useSetAnalysisAutomationMutation,
 } from './api';
 export { ApiProvider } from './provider';
 export { useAppDispatch, useAppSelector } from './hooks';
@@ -44,6 +48,8 @@ export type {
   OrganizationDto,
   Overview,
   Project,
+  AnalysisAutomation,
+  ProjectBranch,
   ProjectDto,
   RepositoryRow,
   RequestAnalysisInput,
