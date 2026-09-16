@@ -328,9 +328,78 @@ export type Database = {
         Update: { created_at?: string; id?: string; name?: string; slug?: string };
         Relationships: [];
       };
+      github_installations: {
+        Row: {
+          account_login: string;
+          account_type: string | null;
+          id: number;
+          installed_at: string;
+          organization_id: string;
+          suspended_at: string | null;
+        };
+        Insert: {
+          account_login: string;
+          account_type?: string | null;
+          id: number;
+          installed_at?: string;
+          organization_id: string;
+          suspended_at?: string | null;
+        };
+        Update: {
+          account_login?: string;
+          account_type?: string | null;
+          id?: number;
+          installed_at?: string;
+          organization_id?: string;
+          suspended_at?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'github_installations_organization_id_fkey';
+            columns: ['organization_id'];
+            isOneToOne: false;
+            referencedRelation: 'organizations';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
+      project_branches: {
+        Row: {
+          first_seen_at: string;
+          is_default: boolean;
+          last_seen_at: string;
+          name: string;
+          project_id: string;
+        };
+        Insert: {
+          first_seen_at?: string;
+          is_default?: boolean;
+          last_seen_at?: string;
+          name: string;
+          project_id: string;
+        };
+        Update: {
+          first_seen_at?: string;
+          is_default?: boolean;
+          last_seen_at?: string;
+          name?: string;
+          project_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'project_branches_project_id_fkey';
+            columns: ['project_id'];
+            isOneToOne: false;
+            referencedRelation: 'projects';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       projects: {
         Row: {
           access_token_id: string | null;
+          analyze_branch_patterns: string[];
+          analyze_on_new_branch: boolean;
           analyze_on_push: boolean;
           created_at: string;
           id: string;
@@ -347,6 +416,8 @@ export type Database = {
         };
         Insert: {
           access_token_id?: string | null;
+          analyze_branch_patterns?: string[];
+          analyze_on_new_branch?: boolean;
           analyze_on_push?: boolean;
           created_at?: string;
           id?: string;
@@ -363,6 +434,8 @@ export type Database = {
         };
         Update: {
           access_token_id?: string | null;
+          analyze_branch_patterns?: string[];
+          analyze_on_new_branch?: boolean;
           analyze_on_push?: boolean;
           created_at?: string;
           id?: string;
@@ -521,6 +594,32 @@ export type Database = {
           },
         ];
       };
+      project_branch_latest_analysis: {
+        Row: {
+          analysis_id: string | null;
+          baseline_analysis_id: string | null;
+          branch: string | null;
+          commit_author: string | null;
+          commit_message: string | null;
+          commit_sha: string | null;
+          error: string | null;
+          finished_at: string | null;
+          gate_status: Database['public']['Enums']['gate_status'] | null;
+          project_id: string | null;
+          started_at: string | null;
+          status: Database['public']['Enums']['analysis_status'] | null;
+          version: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'analyses_project_id_projects_id_fk';
+            columns: ['project_id'];
+            isOneToOne: false;
+            referencedRelation: 'projects';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
       project_latest_analysis: {
         Row: {
           analysis_id: string | null;
@@ -623,6 +722,27 @@ export type Database = {
         };
         /** The organisation the installation now belongs to. Raises otherwise. */
         Returns: string;
+      };
+      set_analysis_automation: {
+        Args: {
+          p_project_id: string;
+          p_analyze_on_push: boolean;
+          p_branch_patterns: string[];
+          p_analyze_on_new_branch: boolean;
+        };
+        Returns: undefined;
+      };
+      matching_branches: {
+        Args: {
+          p_project_id: string;
+          p_patterns: string[];
+        };
+        /**
+         * The branches those patterns catch today. Evaluated by the same
+         * `branch_matches` the webhook uses, so the preview cannot disagree
+         * with what actually gets queued.
+         */
+        Returns: string[];
       };
     };
     Enums: {

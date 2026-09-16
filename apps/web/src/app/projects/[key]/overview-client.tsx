@@ -10,6 +10,7 @@ import {
   type MetricKey,
   ratingFromValue,
 } from '@code-quality/core';
+import { useSelectedBranch } from '@/components/branch-switcher';
 import { MetricCard } from '@/components/metric-card';
 import { GateStatusPill, Icon, Panel, PanelHeader } from '@/components/primitives';
 import { QueryError, QueryLoading } from '@/components/query-state';
@@ -214,7 +215,11 @@ function Size({ measures }: { measures: Measures }) {
 }
 
 export function OverviewClient({ projectKey }: { projectKey: string }) {
-  const { data: overview, error, isLoading, refetch } = useGetOverviewQuery(projectKey);
+  const branch = useSelectedBranch();
+  const { data: overview, error, isLoading, refetch } = useGetOverviewQuery({
+    projectKey,
+    ...(branch ? { branch } : {}),
+  });
 
   if (isLoading) return <QueryLoading label="Loading overview" />;
   if (error) return <QueryError error={error} onRetry={() => void refetch()} />;

@@ -11,6 +11,7 @@ import {
 import { supabaseBaseQuery } from './base-query';
 import type { Enums, Json } from './database.types';
 import {
+  type AnalysisAutomation,
   type AnalysisJob,
   type AnalysisJobDto,
   type IssueFacets,
@@ -21,6 +22,7 @@ import {
   type Organization,
   type Overview,
   type Project,
+  type ProjectBranch,
   PROJECT_COLUMNS,
   type ProjectDto,
   type RepositoryRow,
@@ -64,7 +66,7 @@ const NO_FACETS: IssueFacets = { types: [], severities: [], statuses: [], tags: 
 export const api = createApi({
   reducerPath: 'api',
   baseQuery: supabaseBaseQuery,
-  tagTypes: ['Organization', 'Project', 'Analysis', 'Issue', 'Rule', 'Job'],
+  tagTypes: ['Organization', 'Project', 'Analysis', 'Issue', 'Rule', 'Job', 'Branch'],
   endpoints: (build) => ({
     getMyOrganizations: build.query<Organization[], void>({
       query: () => async (client) => {
@@ -133,22 +135,137 @@ export const api = createApi({
       providesTags: (result) => (result ? [{ type: 'Project', id: result.id }] : []),
     }),
 
-    getLatestAnalysis: build.query<AnalysisSummary | null, string>({
+    /**
+     * The branches a repository has, with the last analysis of each.
+     *
+     * Two requests and a join here, the same shape as getRepositories and for
+     * the same reason: `project_branch_latest_analysis` is a view keyed by
+     * (project_id, branch) with no foreign key to `project_branches`, so there
+     * is nothing for PostgREST to embed through.
+     *
+     * The default branch sorts first and the rest by name, because a branch
+     * list is something you scan for a name rather than read in order.
+     */
+    getProjectBranches: build.query<ProjectBranch[], string>({
       query: (projectId) => async (client) => {
-        const { data, error } = await client
-          .from('project_latest_analysis')
-          .select('*')
-          .eq('project_id', projectId)
-          .maybeSingle();
+        const [branches, analyses] = await Promise.all([
+          client.from('project_branches').select('*').eq('project_id', projectId),
+          client.from('project_branch_latest_analysis').select('*').eq('project_id', projectId),
+        ]);
+
+        if (branches.error) return { data: null, error: branches.error };
+        if (analyses.error) return { data: null, error: analyses.error };
+
+        const latest = new Map(analyses.data.map((row) => [row.branch, row]));
+
+        const rows: ProjectBranch[] = branches.data
+          .map((branch) => {
+            const analysis = latest.get(branch.name);
+            return {
+              name: branch.name,
+              isDefault: branch.is_default,
+              firstSeenAt: branch.first_seen_at,
+              lastSeenAt: branch.last_seen_at,
+              analysisId: analysis?.analysis_id ?? null,
+              analysisStatus: analysis?.status ?? null,
+              gateStatus: analysis?.gate_status ?? null,
+              commitSha: analysis?.commit_sha ?? null,
+              commitMessage: analysis?.commit_message ?? null,
+              lastAnalyzedAt: analysis?.finished_at ?? null,
+            };
+          })
+          .sort((a, b) => Number(b.isDefault) - Number(a.isDefault) || a.name.localeCompare(b.name));
+
+        return { data: rows, error: null };
+      },
+      providesTags: (_result, _error, projectId) => [{ type: 'Branch', id: projectId }],
+    }),
+
+    /**
+     * Which branches a pattern set would catch. Asked of the database rather
+     * than worked out here, so the preview and the webhook that actually
+     * queues the work cannot disagree about what `release/*` means.
+     */
+    getMatchingBranches: build.query<string[], { projectId: string; patterns: string[] }>({
+      query: ({ projectId, patterns }) => async (client) => {
+        const { data, error } = await client.rpc('matching_branches', {
+          p_project_id: projectId,
+          p_patterns: patterns,
+        });
+
+        if (error) return { data: null, error };
+        return { data: data ?? [], error: null };
+      },
+    }),
+
+    setAnalysisAutomation: build.mutation<null, { projectId: string } & AnalysisAutomation>({
+      query: (input) => async (client) => {
+        const { error } = await client.rpc('set_analysis_automation', {
+          p_project_id: input.projectId,
+          p_analyze_on_push: input.analyzeOnPush,
+          p_branch_patterns: input.branchPatterns,
+          p_analyze_on_new_branch: input.analyzeOnNewBranch,
+        });
+
+        if (error) return { data: null, error };
+        return { data: null, error: null };
+      },
+      invalidatesTags: (_result, _error, input) => [{ type: 'Project', id: input.projectId }],
+    }),
+
+    /**
+     * The newest analysis of a project, or of one branch of it.
+     *
+     * The two views have the same columns on purpose, so asking about a branch
+     * is a different `from` and nothing else — see migration
+     * 20260916221011. Without a branch this stays exactly what it was: the
+     * newest analysis whatever branch it ran on.
+     */
+    /**
+     * Whether this organisation has a usable GitHub App installation.
+     *
+     * The automation settings are honest about doing nothing without one, and
+     * a screen that quietly promises automatic analysis it cannot deliver is
+     * worse than no screen. Suspended counts as absent: GitHub keeps the row
+     * but the installation cannot clone.
+     */
+    hasGitHubInstallation: build.query<boolean, void>({
+      query: () => async (client) => {
+        const { count, error } = await client
+          .from('github_installations')
+          .select('id', { count: 'exact', head: true })
+          .is('suspended_at', null);
+
+        if (error) return { data: null, error };
+        return { data: (count ?? 0) > 0, error: null };
+      },
+      providesTags: ['Organization'],
+    }),
+
+    getLatestAnalysis: build.query<AnalysisSummary | null, string | { projectId: string; branch?: string }>({
+      query: (arg) => async (client) => {
+        const projectId = typeof arg === 'string' ? arg : arg.projectId;
+        const branch = typeof arg === 'string' ? undefined : arg.branch;
+
+        const query = branch
+          ? client.from('project_branch_latest_analysis').select('*').eq('branch', branch)
+          : client.from('project_latest_analysis').select('*');
+
+        const { data, error } = await query.eq('project_id', projectId).maybeSingle();
 
         if (error) return { data: null, error };
         return { data: data ? toAnalysisSummary(data) : null, error: null };
       },
-      providesTags: (_result, _error, projectId) => [{ type: 'Analysis', id: projectId }],
+      providesTags: (_result, _error, arg) => [
+        { type: 'Analysis', id: typeof arg === 'string' ? arg : arg.projectId },
+      ],
     }),
 
-    getOverview: build.query<Overview | null, string>({
-      query: (projectKey) => async (client) => {
+    getOverview: build.query<Overview | null, string | { projectKey: string; branch?: string }>({
+      query: (arg) => async (client) => {
+        const projectKey = typeof arg === 'string' ? arg : arg.projectKey;
+        const branch = typeof arg === 'string' ? undefined : arg.branch;
+
         const projectResult = await client
           .from('projects')
           .select(PROJECT_COLUMNS)
@@ -160,11 +277,13 @@ export const api = createApi({
 
         const project = toProject(projectResult.data as ProjectDto);
 
-        const analysisResult = await client
-          .from('project_latest_analysis')
-          .select('*')
-          .eq('project_id', project.id)
-          .maybeSingle();
+        // Same columns in both views, so the branch case is a different `from`
+        // and nothing else downstream changes.
+        const analysisQuery = branch
+          ? client.from('project_branch_latest_analysis').select('*').eq('branch', branch)
+          : client.from('project_latest_analysis').select('*');
+
+        const analysisResult = await analysisQuery.eq('project_id', project.id).maybeSingle();
 
         if (analysisResult.error) return { data: null, error: analysisResult.error };
 
@@ -408,10 +527,14 @@ export const {
   useGetAnalysisJobQuery,
   useGetIssuesQuery,
   useGetLatestAnalysisQuery,
+  useGetMatchingBranchesQuery,
   useGetMyOrganizationsQuery,
   useGetOverviewQuery,
+  useGetProjectBranchesQuery,
   useGetProjectByKeyQuery,
   useGetRepositoriesQuery,
   useGetRulesQuery,
+  useHasGitHubInstallationQuery,
   useRequestAnalysisMutation,
+  useSetAnalysisAutomationMutation,
 } = api;

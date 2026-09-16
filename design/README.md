@@ -13,7 +13,7 @@ these files.
 | Resource | `projects/2566086563026806547` |
 | Design system | Static Analysis Engine (light, Inter + JetBrains Mono, `#2563eb` primary) |
 | Device target | Desktop, 1280px reference width (exports render at 2560px @2x) |
-| Exported | Screens 01-08 on 2026-09-15; 09-11 on 2026-09-16 |
+| Exported | Screens 01-08 on 2026-09-15; 09-11 on 2026-09-16; 12 on 2026-09-17 |
 
 ## Contents
 
@@ -39,6 +39,7 @@ these files.
 | 09 | Duplications | Cluster list with NEW badges against the baseline, side-by-side diff with synchronised gutters and a token count, scorecards split Overall / New Code, and a Reuse Trend band setting copy/paste against moved (refactored) code |
 | 10 | Maintainability | Composite slop score 0-100 with its four dimensions as meters, the six reuse signals with deltas, findings grouped by slop pattern, worst files, and a grouped bar chart against the baseline analysis |
 | 11 | Unused Code | Counts for unused files / exports / dependencies / unlisted / unresolved imports, a confidence filter and three-segment confidence meter, an import-graph reachability panel with the AST reference chain, static import evidence, and the caution that dynamic imports and path aliases can make a reachable file look unused |
+| 12 | Branches | The branch list with per-branch gate and Analyse action, and the branch switcher popover open in the sub-header: filter box, gate dot per branch, the default pinned and a link through to Analysis automation |
 
 Notes:
 
