@@ -140,7 +140,6 @@ export interface RepositoryRow {
   name: string;
   provider: Enums<'repository_provider'>;
   repositoryUrl: string | null;
-  localPath: string | null;
   branch: string;
   gateStatus: GateStatus | null;
   analysisStatus: Enums<'analysis_status'> | null;
@@ -296,7 +295,6 @@ export interface RequestAnalysisInput {
   organizationId: string;
   provider: Enums<'repository_provider'>;
   repositoryUrl?: string;
-  localPath?: string;
   projectKey?: string;
   projectName?: string;
   branch?: string;

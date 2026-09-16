@@ -5,18 +5,16 @@ import { type RequestAnalysisInput, useRequestAnalysisMutation } from '@/lib/api
 import { AnalysisJobStatus, useWatchAnalysisJob } from './analysis-job';
 import { Icon, ProviderIcon } from './primitives';
 
-type Source = 'GITHUB' | 'GITLAB' | 'LOCAL';
+type Source = 'GITHUB' | 'GITLAB';
 
 const SOURCES: Array<{ value: Source; label: string }> = [
   { value: 'GITHUB', label: 'GitHub' },
   { value: 'GITLAB', label: 'GitLab' },
-  { value: 'LOCAL', label: 'Local path' },
 ];
 
 const PLACEHOLDER: Record<Source, string> = {
   GITHUB: 'https://github.com/owner/repo.git',
   GITLAB: 'https://gitlab.com/group/repo.git',
-  LOCAL: 'C:\\Users\\you\\Documents\\my-app',
 };
 
 function Field({
@@ -77,7 +75,6 @@ export function ConnectRepository({ organizationId }: { organizationId: string }
     return () => clearTimeout(timer);
   }, [job?.status]);
 
-  const remote = source !== 'LOCAL';
   const busy = isLoading || (jobId !== null && !settled);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -88,7 +85,6 @@ export function ConnectRepository({ organizationId }: { organizationId: string }
       organizationId,
       provider: source,
       ...(text(form, 'url') ? { repositoryUrl: text(form, 'url')! } : {}),
-      ...(text(form, 'path') ? { localPath: text(form, 'path')! } : {}),
       ...(text(form, 'projectKey') ? { projectKey: text(form, 'projectKey')! } : {}),
       ...(text(form, 'branch') ? { branch: text(form, 'branch')! } : {}),
       ...(text(form, 'token') ? { accessToken: text(form, 'token')! } : {}),
@@ -144,7 +140,7 @@ export function ConnectRepository({ organizationId }: { organizationId: string }
             <form className="flex flex-col gap-3 px-4 py-4" onSubmit={onSubmit}>
               <div className="flex flex-col gap-1">
                 <span className="text-label-md">Repository source</span>
-                <div className="grid grid-cols-3 gap-1 rounded-sm border border-outline-variant p-0.5">
+                <div className="grid grid-cols-2 gap-1 rounded-sm border border-outline-variant p-0.5">
                   {SOURCES.map((option) => (
                     <button
                       className={`flex items-center justify-center gap-1.5 rounded-sm px-2 py-1 text-label-md ${
@@ -163,35 +159,23 @@ export function ConnectRepository({ organizationId }: { organizationId: string }
                 </div>
               </div>
 
-              {remote ? (
-                <Field
-                  hint="HTTPS or SSH. The repository is cloned into the worker's workspace."
-                  key="url"
-                  label="Repository URL"
-                >
-                  <input className={INPUT} name="url" placeholder={PLACEHOLDER[source]} required type="text" />
-                </Field>
-              ) : (
-                <Field hint="Read in place. Your working copy is never modified." key="path" label="Repository path">
-                  <input className={INPUT} name="path" placeholder={PLACEHOLDER.LOCAL} required type="text" />
-                </Field>
-              )}
+              <Field hint="HTTPS or SSH. The repository is cloned into the worker's workspace." label="Repository URL">
+                <input className={INPUT} name="url" placeholder={PLACEHOLDER[source]} required type="text" />
+              </Field>
 
-              {remote ? (
-                <Field
-                  hint="Only for private repositories. It goes straight into Supabase Vault — the app never holds it, and it cannot be read back through the API."
-                  label="Access token"
-                  optional
-                >
-                  <input
-                    autoComplete="off"
-                    className={INPUT}
-                    name="token"
-                    placeholder="ghp_… / glpat-…"
-                    type="password"
-                  />
-                </Field>
-              ) : null}
+              <Field
+                hint="Only for private repositories. It goes straight into Supabase Vault — the app never holds it, and it cannot be read back through the API."
+                label="Access token"
+                optional
+              >
+                <input
+                  autoComplete="off"
+                  className={INPUT}
+                  name="token"
+                  placeholder="ghp_… / glpat-…"
+                  type="password"
+                />
+              </Field>
 
               <div className="grid grid-cols-2 gap-3">
                 <Field hint="Empty tracks the default branch." label="Branch" optional>

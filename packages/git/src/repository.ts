@@ -1,7 +1,7 @@
 import { execFile } from 'node:child_process';
 import { mkdir, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
+import { join } from 'node:path';
 import { promisify } from 'node:util';
 import { authenticatedUrl, keyFromRemote, parseRemote, redact, type RemoteInfo } from './remote.js';
 
@@ -10,10 +10,15 @@ const run = promisify(execFile);
 /** Where clones live when the caller does not say. */
 export const DEFAULT_WORKSPACE = process.env['CODE_QUALITY_WORKSPACE'] ?? join(tmpdir(), 'code-quality-workspaces');
 
-/** A local checkout, or a remote to clone. */
-export type RepositorySource =
-  | { kind: 'local'; path: string }
-  | { kind: 'remote'; url: string; token?: string };
+/**
+ * A remote to clone. There is deliberately no local-path variant: we host the
+ * analysis, so a filesystem path would be a path on the worker's own box —
+ * reachable, and never what the caller meant. See ADR-0006 in the vault.
+ */
+export interface RepositorySource {
+  url: string;
+  token?: string;
+}
 
 export interface CommitInfo {
   sha: string;
@@ -136,21 +141,12 @@ async function cloneOrFetch(remote: RemoteInfo, token: string | undefined, works
 }
 
 /**
- * Gets a working copy ready to analyse, from a local path or any remote git
- * repository. Remotes are cloned once into the workspace and fetched after
- * that, so the second analysis of a repository is cheap.
+ * Gets a working copy ready to analyse from a remote git repository. It is
+ * cloned once into the workspace and fetched after that, so the second
+ * analysis of a repository is cheap.
  */
 export async function prepareCheckout(source: RepositorySource, options: PrepareOptions = {}): Promise<Checkout> {
   const workspace = options.workspace ?? DEFAULT_WORKSPACE;
-
-  if (source.kind === 'local') {
-    const path = resolve(source.path);
-    if (!(await isRepository(path))) throw new Error(`${path} is not a git repository`);
-
-    // A local repository is the user's working copy: read it, never touch it.
-    const branch = options.branch ?? (await currentBranch(path));
-    return { path, branch, commit: await readCommit(path, options.commit ?? 'HEAD') };
-  }
 
   const remote = parseRemote(source.url);
   const path = await cloneOrFetch(remote, source.token, workspace);
