@@ -18,8 +18,6 @@
     "scan": "npm run build --workspace @code-quality/analyzer && node packages/analyzer/dist/cli.js",
     "test": "npm run test --workspaces --if-present",
     "design": "node design/serve.mjs",
-    "db:push": "supabase db push",
-    "db:types": "supabase gen types typescript --linked > apps/web/src/lib/api/database.types.ts",
     "publish": "npm run build --workspace @code-quality/publish && node --env-file-if-exists=.env packages/publish/dist/cli.js",
     "worker": "npm run build --workspace @code-quality/worker && node --env-file-if-exists=.env packages/worker/dist/index.js"
   },

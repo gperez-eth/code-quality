@@ -1,8 +1,15 @@
 /**
  * Generated from the live schema — do not edit by hand.
  *
- * Regenerate after any migration:
- *   supabase gen types typescript --project-id cmdawpffhylpjbfexnus > src/lib/api/database.types.ts
+ * Regenerate after a migration that changes the SHAPE of the schema — a new
+ * column, a new table, a new enum value. A migration that only replaces a
+ * function body leaves this file correct.
+ *
+ * In this repository that means the Supabase MCP server:
+ *   mcp__supabase__generate_typescript_types, project cmdawpffhylpjbfexnus
+ *
+ * The CLI form works too, if you have it installed and the project linked:
+ *   npx supabase gen types typescript --project-id cmdawpffhylpjbfexnus
  *
  * This is the source of every DTO on the client: `Tables<'issues'>` is exactly
  * a row of `public.issues`, so a column that changes shape breaks the build

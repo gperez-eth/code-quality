@@ -14,8 +14,9 @@ const CONNECT_STEPS: Step[] = [
   },
   {
     title: 'Create the tables',
-    detail: 'Applies the migrations in supabase/migrations to the linked project.',
-    command: 'npm run db:push',
+    detail:
+      'Link the Supabase CLI to your project once — it asks for your database password — then push the migrations in supabase/migrations.',
+    command: 'npx supabase link --project-ref <ref> && npx supabase db push',
   },
   {
     title: 'Enable GitHub sign-in',
