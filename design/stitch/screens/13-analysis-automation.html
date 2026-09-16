@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Code Quality — Analysis automation</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #0f172a;
+      background-color: #f8fafc;
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .blinking-cursor {
+      animation: blink 1s step-end infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 relative antialiased selection:bg-blue-100 selection:text-blue-900">
+<!-- BACKGROUND: BRANCHES SCREEN -->
+<div class="w-full min-h-screen flex flex-col pointer-events-none select-none filter blur-[0.3px]">
+<!-- Top utility bar -->
+<header class="h-12 bg-[#1e293b] text-slate-200 px-5 flex items-center justify-between border-b border-slate-800 text-xs font-medium z-0">
+<div class="flex items-center space-x-6">
+<div class="flex items-center space-x-2 text-white font-semibold text-sm">
+<svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" viewbox="0 0 24 24">
+<polyline points="16 18 22 12 16 6"></polyline>
+<polyline points="8 6 2 12 8 18"></polyline>
+</svg>
+<span class="tracking-tight text-[13px] text-white">Code Quality</span>
+</div>
+<div class="relative w-72">
+<div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<input class="w-full pl-8 pr-3 py-1 bg-slate-800/80 border border-slate-700/80 rounded text-[11px] text-slate-300 placeholder-slate-400" disabled="" placeholder="Search for projects, files or rules... (⌘K)" type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<div class="flex items-center space-x-2">
+<span class="w-6 h-6 rounded bg-slate-700 text-[10px] font-bold text-slate-200 flex items-center justify-center border border-slate-600">GP</span>
+<span class="text-slate-300 text-xs">gperez-eth</span>
+</div>
+<div class="text-slate-500">|</div>
+<div class="flex items-center space-x-1 text-slate-400 text-xs">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>Sign out</span>
+</div>
+</div>
+</header>
+<!-- Subheader / Project nav -->
+<div class="bg-white border-b border-slate-200 px-6 h-11 flex items-center justify-between text-xs">
+<div class="flex items-center space-x-6 h-full">
+<div class="flex items-center space-x-2 font-semibold text-slate-900 pr-3 border-r border-slate-200 h-6">
+<svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span>gperez-eth-code-quality</span>
+</div>
+<nav class="flex space-x-5 h-full">
+<a class="h-full flex items-center text-slate-600 hover:text-slate-900" href="#">Overview</a>
+<a class="h-full flex items-center text-slate-600 hover:text-slate-900" href="#">Issues</a>
+<a class="h-full flex items-center text-slate-600 hover:text-slate-900" href="#">Measures</a>
+<a class="h-full flex items-center text-slate-600 hover:text-slate-900" href="#">Code</a>
+<a class="h-full flex items-center text-slate-600 hover:text-slate-900" href="#">Activity</a>
+<a class="h-full flex items-center text-blue-600 font-semibold border-b-2 border-blue-600" href="#">Branches</a>
+</nav>
+</div>
+<div class="flex items-center space-x-3 text-slate-500 text-[11px]">
+<span>Sep 16, 2026, 11:51 PM</span>
+<span class="px-2 py-0.5 bg-slate-100 border border-slate-200 rounded text-slate-600 font-mono">master</span>
+<button class="px-2.5 py-1 bg-white border border-slate-300 rounded text-slate-700 font-medium">Analyse again</button>
+</div>
+</div>
+<!-- Branches Content Underneath -->
+<main class="flex-1 px-8 py-6 max-w-7xl w-full mx-auto">
+<div class="flex items-center justify-between mb-5">
+<div>
+<h1 class="text-xl font-bold text-slate-900">Branches</h1>
+<p class="text-xs text-slate-500 mt-0.5">5 branches · 3 analysed · last refreshed 4 minutes ago</p>
+</div>
+<div class="flex items-center space-x-2">
+<button class="px-3 py-1.5 bg-white border border-slate-300 rounded text-xs font-medium text-slate-700">Analysis automation</button>
+</div>
+</div>
+<!-- Table preview behind modal -->
+<div class="bg-white border border-slate-200 rounded text-xs">
+<div class="grid grid-cols-12 px-4 py-2.5 bg-slate-50 border-b border-slate-200 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+<div class="col-span-5">Branch</div>
+<div class="col-span-2">Last Analysis</div>
+<div class="col-span-2">Quality Gate</div>
+<div class="col-span-1">Issues</div>
+<div class="col-span-1">Coverage</div>
+<div class="col-span-1 text-right">Action</div>
+</div>
+<div class="divide-y divide-slate-100">
+<div class="grid grid-cols-12 px-4 py-3 items-center">
+<div class="col-span-5">
+<div class="flex items-center space-x-2 font-medium text-slate-900">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2a2 2 0 01-2 2H8a2 2 0 01-2-2V9"></path><path d="M12 12v3"></path></svg>
+<span class="font-mono">master</span>
+<span class="px-1.5 py-0.2 bg-slate-100 text-slate-600 rounded text-[10px]">default</span>
+</div>
+<p class="text-[11px] text-slate-500 truncate mt-0.5">Merge pull request #43 from gperez-eth/feat/github-check-runs</p>
+</div>
+<div class="col-span-2 text-slate-600 text-[11px]">4 hours ago</div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+<span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-500"></span> Passed
+              </span>
+</div>
+<div class="col-span-1 text-slate-600 font-mono">0</div>
+<div class="col-span-1 text-slate-600 font-mono">84.2%</div>
+<div class="col-span-1 text-right">
+<span class="text-blue-600 hover:underline">Analyse</span>
+</div>
+</div>
+<div class="grid grid-cols-12 px-4 py-3 items-center">
+<div class="col-span-5">
+<div class="flex items-center space-x-2 font-medium text-slate-900">
+<svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><circle cx="12" cy="18" r="3"></circle><circle cx="6" cy="6" r="3"></circle><circle cx="18" cy="6" r="3"></circle><path d="M18 9v2a2 2 0 01-2 2H8a2 2 0 01-2-2V9"></path><path d="M12 12v3"></path></svg>
+<span class="font-mono">develop</span>
+<span class="px-1.5 py-0.2 bg-blue-50 text-blue-700 rounded text-[10px]">tracked</span>
+</div>
+<p class="text-[11px] text-slate-500 truncate mt-0.5">feat(worker): record the branch list on every clone</p>
+</div>
+<div class="col-span-2 text-slate-600 text-[11px]">12 minutes ago</div>
+<div class="col-span-2">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-rose-50 text-rose-700 border border-rose-200">
+<span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-rose-500"></span> Failed
+              </span>
+</div>
+<div class="col-span-1 text-slate-600 font-mono">14</div>
+<div class="col-span-1 text-slate-600 font-mono">71.0%</div>
+<div class="col-span-1 text-right">
+<span class="text-blue-600 hover:underline">Analyse</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- MODAL OVERLAY: #1e293b at 40% opacity -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(30, 41, 59, 0.40); backdrop-filter: blur(1.5px);">
+<!-- MODAL DIALOG: 620px wide, flat white, 1px #cbd5e1 border, 0 2px 4px rgba(0,0,0,0.08) shadow, 4px radius -->
+<div class="w-full max-w-[620px] bg-white border border-[#cbd5e1] rounded-[4px] shadow-[0_2px_4px_rgba(0,0,0,0.08)] flex flex-col overflow-hidden text-slate-900 animate-in fade-in zoom-in-95 duration-150">
+<!-- MODAL HEADER (48px, 1px bottom border) -->
+<div class="h-[48px] px-4 border-b border-[#e1e4e8] flex items-center justify-between bg-white select-none">
+<div class="flex items-center space-x-2.5">
+<!-- Gear icon in #2563eb -->
+<svg class="w-4 h-4 text-[#2563eb] flex-shrink-0" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+<circle cx="12" cy="12" r="3"></circle>
+</svg>
+<div class="flex flex-col leading-tight">
+<div class="flex items-center space-x-2">
+<span class="text-[15px] font-semibold text-slate-900 tracking-tight">Analysis automation</span>
+</div>
+<span class="text-[12px] text-slate-500 font-normal leading-none -mt-0.5">gperez-eth-code-quality</span>
+</div>
+</div>
+<!-- Close X icon -->
+<button class="text-slate-400 hover:text-slate-600 p-1 rounded hover:bg-slate-100 transition-colors" title="Close dialog">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<line x1="18" x2="6" y1="6" y2="18"></line>
+<line x1="6" x2="18" y1="6" y2="18"></line>
+</svg>
+</button>
+</div>
+<!-- MODAL BODY: 16px padding, sections separated by 1px #e1e4e8 dividers -->
+<div class="p-4 space-y-4 text-slate-800 text-[13px] overflow-y-auto max-h-[calc(100vh-160px)]">
+<!-- SECTION 1: Toggle switch (ON, #2563eb) -->
+<div class="flex items-start space-x-3.5 pt-0.5"><!-- Toggle switch (ON, #2563eb) -->
+<button aria-checked="true" class="relative inline-flex h-5 w-9 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-[#2563eb] transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#2563eb] focus:ring-offset-2 mt-0.5" id="auto-analyse-toggle" role="switch" type="button">
+<span class="sr-only">Analyse automatically</span>
+<span aria-hidden="true" class="pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out translate-x-4"></span>
+</button>
+<div class="flex flex-col leading-snug">
+<label class="text-[13px] font-medium text-slate-900 cursor-pointer" for="auto-analyse-toggle">Analyse automatically</label>
+<span class="text-[12px] text-slate-500">Off means this project is only ever analysed when someone presses Analyse.</span>
+</div></div>
+<div class="border-t border-[#e1e4e8]"></div>
+<!-- SECTION 2: WHEN TO ANALYSE -->
+<div class="space-y-3">
+<h3 class="text-[11px] font-bold uppercase tracking-wider text-[#64748b]">WHEN TO ANALYSE</h3>
+<div class="space-y-2.5">
+<!-- Row 1: Checked -->
+<label class="flex items-start space-x-2.5 cursor-pointer group">
+<input checked="" class="mt-0.5 w-4 h-4 rounded border-[#cbd5e1] text-[#2563eb] focus:ring-[#2563eb] focus:ring-1 focus:ring-offset-0 transition" type="checkbox"/>
+<div class="flex flex-col leading-tight">
+<span class="text-[13px] text-slate-900 font-normal group-hover:text-slate-950">On every push to a matching branch</span>
+<span class="text-[12px] text-slate-500 mt-0.5">A merge into master or develop is a push, so this is what covers merges.</span>
+</div>
+</label>
+<!-- Row 2: Checked -->
+<label class="flex items-start space-x-2.5 cursor-pointer group">
+<input checked="" class="mt-0.5 w-4 h-4 rounded border-[#cbd5e1] text-[#2563eb] focus:ring-[#2563eb] focus:ring-1 focus:ring-offset-0 transition" type="checkbox"/>
+<div class="flex flex-col leading-tight">
+<span class="text-[13px] text-slate-900 font-normal group-hover:text-slate-950">When a new branch is created</span>
+<span class="text-[12px] text-slate-500 mt-0.5">The first push that creates a branch gets one analysis, so a new feature branch has a baseline immediately.</span>
+</div>
+</label>
+<!-- Row 3: Unchecked and visibly DISABLED -->
+<div class="flex items-start space-x-2.5 select-none opacity-60 cursor-not-allowed">
+<input class="mt-0.5 w-4 h-4 rounded border-slate-300 bg-slate-100 text-slate-400 cursor-not-allowed" disabled="" type="checkbox"/>
+<div class="flex flex-col leading-tight">
+<div class="flex items-center space-x-2">
+<span class="text-[13px] text-slate-500">When a pull request is opened or updated</span>
+<span class="inline-flex items-center px-1.5 py-0.5 text-[10px] font-medium text-slate-500 bg-slate-50 border border-slate-300 rounded-[3px]">Needs branch analysis</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="border-t border-[#e1e4e8]"></div>
+<!-- SECTION 3: MATCHING BRANCHES -->
+<div class="space-y-2">
+<div>
+<h3 class="text-[11px] font-bold uppercase tracking-wider text-[#64748b]">MATCHING BRANCHES</h3>
+<p class="text-[12px] text-slate-500 mt-0.5">Glob patterns. * matches anything, so release/* covers every release branch.</p>
+</div>
+<!-- Bordered input area (#ffffff, 1px #cbd5e1, min-height 64px, 4px radius) -->
+<div class="bg-white border border-[#cbd5e1] rounded-[4px] min-h-[64px] p-2 flex flex-wrap items-center content-start gap-1.5 focus-within:border-[#2563eb] focus-within:ring-1 focus-within:ring-[#2563eb] transition-all">
+<!-- Chip 1: master -->
+<span class="inline-flex items-center font-mono text-[12px] text-blue-900 bg-[#eff6ff] border border-[#bfdbfe] rounded-[3px] px-2 py-0.5 space-x-1.5 select-none">
+<span>master</span>
+<button class="hover:text-blue-600 text-blue-400 focus:outline-none" title="Remove pattern">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24">
+<line x1="18" x2="6" y1="6" y2="18"></line>
+<line x1="6" x2="18" y1="6" y2="18"></line>
+</svg>
+</button>
+</span>
+<!-- Chip 2: develop -->
+<span class="inline-flex items-center font-mono text-[12px] text-blue-900 bg-[#eff6ff] border border-[#bfdbfe] rounded-[3px] px-2 py-0.5 space-x-1.5 select-none">
+<span>develop</span>
+<button class="hover:text-blue-600 text-blue-400 focus:outline-none" title="Remove pattern">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24">
+<line x1="18" x2="6" y1="6" y2="18"></line>
+<line x1="6" x2="18" y1="6" y2="18"></line>
+</svg>
+</button>
+</span>
+<!-- Chip 3: release/* -->
+<span class="inline-flex items-center font-mono text-[12px] text-blue-900 bg-[#eff6ff] border border-[#bfdbfe] rounded-[3px] px-2 py-0.5 space-x-1.5 select-none">
+<span>release/*</span>
+<button class="hover:text-blue-600 text-blue-400 focus:outline-none" title="Remove pattern">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24">
+<line x1="18" x2="6" y1="6" y2="18"></line>
+<line x1="6" x2="18" y1="6" y2="18"></line>
+</svg>
+</button>
+</span>
+<!-- Blinking cursor and placeholder -->
+<div class="inline-flex items-center text-[12px] text-slate-400 pl-1 py-0.5">
+<span class="w-[1.5px] h-4 bg-slate-800 blinking-cursor mr-1 inline-block"></span>
+<span>Add a pattern…</span>
+</div>
+</div>
+<!-- Tinted strip listing what currently matches -->
+<div class="bg-[#f8fafc] border border-[#e1e4e8] rounded-[3px] px-2.5 py-1.5 flex items-center space-x-2 text-[12px] text-slate-600">
+<svg class="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+<span class="font-normal text-slate-700">3 of 5 branches match right now:</span>
+<div class="flex items-center space-x-1.5 font-mono text-[11px] text-slate-800">
+<span class="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-slate-700 font-medium">master</span>
+<span class="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-slate-700 font-medium">develop</span>
+<span class="px-1.5 py-0.5 bg-white border border-slate-200 rounded text-slate-700 font-medium">release/2026.09</span>
+</div>
+</div>
+</div>
+<div class="border-t border-[#e1e4e8]"></div>
+<!-- SECTION 4: Callout box (#fffbeb background and 1px #fde68a border) -->
+<div class="bg-[#fffbeb] border border-[#fde68a] rounded-[4px] p-3 flex items-start space-x-2.5">
+<!-- Warning triangle icon -->
+<svg class="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24">
+<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+<line x1="12" x2="12" y1="9" y2="13"></line>
+<line x1="12" x2="12.01" y1="17" y2="17"></line>
+</svg>
+<div class="text-[12px] leading-relaxed text-amber-900">
+<p>Automatic analysis needs the GitHub App. This project's organisation has not installed it yet, so these settings are saved but nothing will trigger.</p>
+<a class="inline-block mt-1 text-[#2563eb] hover:underline font-medium" href="#">Install the GitHub App</a>
+</div>
+</div>
+</div>
+<!-- MODAL FOOTER (56px, 1px top border, #f8fafc background) -->
+<div class="h-[56px] px-4 border-t border-[#e1e4e8] bg-[#f8fafc] flex items-center justify-between select-none">
+<div class="text-[12px] text-slate-500">
+          Applies to this project only.
+        </div>
+<div class="flex items-center space-x-2">
+<button class="px-3.5 py-1.5 text-[13px] font-medium text-slate-700 bg-white border border-[#cbd5e1] rounded-[4px] hover:bg-slate-50 hover:text-slate-900 shadow-sm transition">
+            Cancel
+          </button>
+<button class="px-3.5 py-1.5 text-[13px] font-medium text-white bg-[#2563eb] hover:bg-blue-700 rounded-[4px] shadow-sm transition">
+            Save automation
+          </button>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

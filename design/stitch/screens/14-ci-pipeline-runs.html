@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CxPHP - CI Integration & Pipeline Runs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #f8f9fa;
+      color: #1f2937;
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    /* Custom thin scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#f8f9fa] text-[13px] leading-tight select-none">
+
+  <!-- 1. TOP GLOBAL UTILITY BAR (48px dark) -->
+  <header class="h-[48px] bg-[#1f232b] text-[#c9d1d9] px-4 flex items-center justify-between border-b border-[#30363d] shrink-0 text-[13px]">
+    <div class="flex items-center space-x-6">
+      <!-- Product Brand -->
+      <div class="flex items-center space-x-2 font-bold text-white tracking-tight text-[15px]">
+        <svg class="w-5 h-5 text-[#3b82f6]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+        </svg>
+        <span>SonarAudit</span>
+      </div>
+
+      <!-- Main Navigation Items -->
+      <nav class="flex items-center space-x-1 text-[13px] font-medium text-[#8b949e]">
+        <a href="#" class="px-2.5 py-1.5 rounded hover:text-white transition-colors">Projects</a>
+        <a href="#" class="px-2.5 py-1.5 rounded hover:text-white transition-colors">Issues</a>
+        <a href="#" class="px-2.5 py-1.5 rounded hover:text-white transition-colors">Rules</a>
+        <a href="#" class="px-2.5 py-1.5 rounded hover:text-white transition-colors">Quality Gates</a>
+        <a href="#" class="px-2.5 py-1.5 rounded hover:text-white transition-colors">Administration</a>
+      </nav>
+    </div>
+
+    <!-- Right utility controls -->
+    <div class="flex items-center space-x-3">
+      <!-- Global Search -->
+      <div class="relative w-72">
+        <input 
+          type="text" 
+          placeholder="Search for projects, files or rules... (⌘K)" 
+          class="w-full bg-[#161b22] border border-[#30363d] rounded text-[12px] text-white px-2.5 py-1 pl-7 focus:outline-none focus:border-[#388bfd] placeholder-[#6e7681]"
+        />
+        <svg class="w-3.5 h-3.5 text-[#6e7681] absolute left-2.5 top-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
+
+      <!-- Icons -->
+      <button class="text-[#8b949e] hover:text-white p-1 rounded" title="Help & Documentation">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </button>
+
+      <!-- User avatar -->
+      <div class="w-6 h-6 rounded bg-[#2563eb] text-white flex items-center justify-center font-semibold text-[11px] ring-1 ring-white/20">
+        GP
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. PROJECT SUB-HEADER (38px light border-b) -->
+  <div class="h-[38px] bg-white border-b border-[#e1e4e8] px-4 flex items-center justify-between shrink-0">
+    <div class="flex items-center space-x-6 h-full">
+      <!-- Breadcrumbs -->
+      <div class="flex items-center space-x-2 text-[13px] font-semibold text-gray-800">
+        <button class="text-amber-400 hover:text-amber-500">★</button>
+        <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+        </svg>
+        <span class="text-[#0969da] hover:underline cursor-pointer">CxPHP</span>
+        <span class="text-gray-300">/</span>
+        <span class="font-mono-code text-[12px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded border border-gray-200">main</span>
+      </div>
+
+      <!-- View tabs -->
+      <nav class="flex space-x-5 text-[13px] h-full">
+        <a href="#" class="inline-flex items-center text-gray-500 hover:text-gray-900 border-b-2 border-transparent h-full px-0.5">Overview</a>
+        <a href="#" class="inline-flex items-center text-gray-500 hover:text-gray-900 border-b-2 border-transparent h-full px-0.5">Issues</a>
+        <a href="#" class="inline-flex items-center text-gray-500 hover:text-gray-900 border-b-2 border-transparent h-full px-0.5">Measures</a>
+        <a href="#" class="inline-flex items-center text-gray-500 hover:text-gray-900 border-b-2 border-transparent h-full px-0.5">Code</a>
+        <a href="#" class="inline-flex items-center text-gray-500 hover:text-gray-900 border-b-2 border-transparent h-full px-0.5">Duplications</a>
+        <!-- ACTIVE CI TAB -->
+        <a href="#" class="inline-flex items-center text-[#0969da] font-semibold border-b-2 border-[#0969da] h-full px-0.5">CI</a>
+        <a href="#" class="inline-flex items-center text-gray-500 hover:text-gray-900 border-b-2 border-transparent h-full px-0.5">Activity</a>
+      </nav>
+    </div>
+
+    <!-- Metadata right side -->
+    <div class="flex items-center space-x-3 text-[12px] text-gray-500">
+      <span class="flex items-center space-x-1">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>AST tree shaken</span>
+      </span>
+      <span class="text-gray-300">|</span>
+      <span class="font-mono-code text-[11px]">v2.4.1</span>
+      <span class="text-gray-300">|</span>
+      <span>Last indexed 14 min ago</span>
+      <button class="p-1 text-gray-400 hover:text-gray-700 rounded" title="Trigger Re-scan">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. TOP BAND (Full Width): CONNECTION STRIP -->
+  <section class="bg-white border-b border-[#e1e4e8] px-4 py-2.5">
+    <div class="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-3">
+      <!-- Left side: GitHub repo & permissions chips -->
+      <div class="flex items-center flex-wrap gap-2.5">
+        <!-- GitHub icon -->
+        <div class="flex items-center space-x-2">
+          <svg class="w-5 h-5 text-gray-900 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+          <span class="font-mono-code font-semibold text-[13px] text-gray-900 tracking-tight">gperez-eth/code-quality</span>
+        </div>
+
+        <!-- App installed green badge -->
+        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+          <span class="w-1.5 h-1.5 mr-1.5 rounded-full bg-emerald-500"></span>
+          App installed
+        </span>
+
+        <span class="text-gray-300">|</span>
+
+        <!-- Neutral permission chips -->
+        <div class="flex items-center flex-wrap gap-1 text-[11px]">
+          <span class="text-gray-500 font-medium mr-1 text-[11px]">Permissions:</span>
+          <span class="px-1.5 py-0.5 bg-gray-100 border border-gray-200 rounded text-gray-700">Contents</span>
+          <span class="px-1.5 py-0.5 bg-gray-100 border border-gray-200 rounded text-gray-700">Metadata</span>
+          <span class="px-1.5 py-0.5 bg-gray-100 border border-gray-200 rounded text-gray-700">Checks</span>
+          <span class="px-1.5 py-0.5 bg-gray-100 border border-gray-200 rounded text-gray-700">Pull requests</span>
+          <span class="px-1.5 py-0.5 bg-gray-100 border border-gray-200 rounded text-gray-700">Actions</span>
+          <span class="px-1.5 py-0.5 bg-gray-100 border border-gray-200 rounded text-gray-700">Commit statuses</span>
+        </div>
+      </div>
+
+      <!-- Right side: Reconnect & info -->
+      <div class="flex items-center space-x-3 text-[12px]">
+        <span class="text-gray-500">installed 3 days ago by <span class="font-mono-code text-gray-700 font-medium">gperez-eth</span></span>
+        <button class="px-2.5 py-1 text-[12px] font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50 active:bg-gray-100 shadow-none transition-colors">
+          Reconnect
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. MAIN CONTENT AREA (2 Columns: Left Table + Right 340px Panels) -->
+  <main class="flex-1 p-4 max-w-[1600px] w-full mx-auto grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4">
+
+    <!-- LEFT COLUMN: Pipeline runs table -->
+    <div class="flex flex-col space-y-4">
+      <div class="bg-white border border-[#e1e4e8] rounded-[3px]">
+        
+        <!-- Table Header / Title Bar -->
+        <div class="px-3.5 py-2.5 border-b border-[#e1e4e8] flex items-center justify-between bg-white">
+          <div class="flex items-center space-x-3">
+            <h2 class="font-semibold text-gray-900 text-[13px] tracking-tight">Pipeline runs</h2>
+            <span class="text-[11px] text-gray-500 font-normal">Pulled from GitHub Actions CI</span>
+          </div>
+
+          <div class="flex items-center space-x-2 text-[12px]">
+            <!-- Filter button -->
+            <button class="px-2 py-0.5 text-gray-600 border border-gray-200 rounded text-[11px] hover:bg-gray-50 flex items-center space-x-1">
+              <svg class="w-3 h-3 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+              </svg>
+              <span>Filter branch: all</span>
+            </button>
+            <span class="font-mono-code text-[11px] text-gray-400">Total: 58 runs</span>
+          </div>
+        </div>
+
+        <!-- Table View -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-[12px] border-collapse">
+            <thead>
+              <tr class="bg-[#f6f8fa] text-gray-600 border-b border-[#e1e4e8] font-medium text-[11px] uppercase tracking-wider">
+                <th class="py-2 px-3 w-28">Status</th>
+                <th class="py-2 px-3">Workflow</th>
+                <th class="py-2 px-3">Branch</th>
+                <th class="py-2 px-3">Commit</th>
+                <th class="py-2 px-3 text-right">Duration</th>
+                <th class="py-2 px-3 text-right">Finished</th>
+                <th class="py-2 px-3 text-right">Artifacts</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#e1e4e8] text-gray-800">
+              
+              <!-- ROW 1: Running with spinner (Expanded demo) -->
+              <tr class="bg-[#eff6ff]/30 hover:bg-[#eff6ff]/50 transition-colors">
+                <td class="py-2 px-3 font-medium">
+                  <div class="flex items-center space-x-1.5 text-blue-700 font-semibold">
+                    <svg class="animate-spin w-3.5 h-3.5 text-blue-600 shrink-0" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                    </svg>
+                    <span>Running</span>
+                  </div>
+                </td>
+                <td class="py-2 px-3 font-medium text-gray-900">
+                  <div class="flex items-center space-x-1">
+                    <svg class="w-3.5 h-3.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>CI / Main Pipeline</span>
+                  </div>
+                </td>
+                <td class="py-2 px-3 font-mono-code text-[11px] text-gray-600">
+                  <span class="bg-gray-100 px-1 py-0.5 rounded border border-gray-200">feature/auth-remediation</span>
+                </td>
+                <td class="py-2 px-3 font-mono-code text-[11px]">
+                  <span class="text-[#0969da] hover:underline cursor-pointer">7f8c2b4</span>
+                  <span class="text-gray-500 font-sans ml-1 truncate max-w-[220px] inline-block align-bottom" title="refactor(auth): sanitize session parameters before db call">refactor(auth): sanitize session parameters before db call</span>
+                </td>
+                <td class="py-2 px-3 font-mono-code text-right text-gray-700">1m 42s</td>
+                <td class="py-2 px-3 text-right text-blue-600 font-medium">in progress</td>
+                <td class="py-2 px-3 text-right">
+                  <span class="font-mono-code text-[10px] bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded border border-blue-200">2 pending</span>
+                </td>
+              </tr>
+
+              <!-- ROW 2: Failed #1 (EXPANDED ROW AS REQUIRED BY PROMPT) -->
+              <tr class="bg-[#fff8f8] border-l-2 border-l-red-500">
+                <td class="py-2 px-3 font-medium">
+                  <div class="flex items-center space-x-1.5 text-red-700 font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-red-600 shrink-0"></span>
+                    <span>Failed</span>
+                  </div>
+                </td>
+                <td class="py-2 px-3 font-medium text-gray-900">
+                  <div class="flex items-center space-x-1.5">
+                    <svg class="w-3.5 h-3.5 text-gray-400 rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                    <span class="font-semibold text-gray-900">CI / Test & Static Analysis</span>
+                    <span class="font-mono-code text-[10px] text-gray-400 font-normal">#482</span>
+                  </div>
+                </td>
+                <td class="py-2 px-3 font-mono-code text-[11px] text-gray-600">
+                  <span class="bg-gray-100 px-1 py-0.5 rounded border border-gray-200">main</span>
+                </td>
+                <td class="py-2 px-3 font-mono-code text-[11px]">
+                  <span class="text-[#0969da] hover:underline cursor-pointer">4e7a091</span>
+                  <span class="text-gray-500 font-sans ml-1 truncate max-w-[220px] inline-block align-bottom" title="fix(path): patch compat.inc legacy include file">fix(path): patch compat.inc legacy include file</span>
+                </td>
+                <td class="py-2 px-3 font-mono-code text-right text-gray-700">3m 18s</td>
+                <td class="py-2 px-3 text-right text-gray-500">14 min ago</td>
+                <td class="py-2 px-3 text-right">
+                  <span class="font-mono-code text-[10px] bg-red-50 text-red-700 px-1.5 py-0.5 rounded border border-red-200 font-medium">2 artifacts</span>
+                </td>
+              </tr>
+
+              <!-- EXPANDED DETAIL SUB-ROW FOR ROW 2 (Jobs + Ingested Artifacts) -->
+              <tr class="bg-[#fafbfc]">
+                <td colspan="7" class="p-0">
+                  <div class="border-y border-dashed border-gray-200 py-2.5 px-4 pl-9 space-y-2 bg-[#fcfcfd]">
+                    <div class="text-[11px] font-semibold text-gray-500 uppercase tracking-wider flex items-center justify-between">
+                      <span>Pipeline jobs</span>
+                      <span class="font-normal normal-case text-gray-400 font-mono-code text-[10px]">Runner: ubuntu-latest</span>
+                    </div>
+
+                    <!-- Indented Jobs List -->
+                    <div class="space-y-1.5 pl-2 border-l-2 border-gray-200">
+                      <!-- Job 1: Lint -->
+                      <div class="flex items-center justify-between py-1 px-2.5 bg-white border border-gray-200 rounded text-[11px]">
+                        <div class="flex items-center space-x-2">
+                          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                          <span class="font-medium text-gray-800">Lint & Syntax Check (PHP 8.2)</span>
+                        </div>
+                        <span class="font-mono-code text-gray-500 text-[11px]">24s</span>
+                      </div>
+
+                      <!-- Job 2: Unit Tests (coverage generated) -->
+                      <div class="flex items-center justify-between py-1 px-2.5 bg-white border border-gray-200 rounded text-[11px]">
+                        <div class="flex items-center space-x-2">
+                          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                          <span class="font-medium text-gray-800">PHPUnit Test Suite & Coverage Report</span>
+                        </div>
+                        <span class="font-mono-code text-gray-500 text-[11px]">1m 45s</span>
+                      </div>
+
+                      <!-- Job 3: SonarQube / Gate Check (Failed) -->
+                      <div class="flex items-center justify-between py-1 px-2.5 bg-red-50/50 border border-red-200 rounded text-[11px]">
+                        <div class="flex items-center space-x-2">
+                          <span class="w-2 h-2 rounded-full bg-red-600"></span>
+                          <span class="font-semibold text-red-900">SonarAudit Quality Gate Evaluation</span>
+                          <span class="text-red-600 text-[10px] bg-red-100 px-1 py-0.2 rounded">Gate Breached: Rating worse than A</span>
+                        </div>
+                        <span class="font-mono-code text-red-700 text-[11px] font-medium">1m 09s</span>
+                      </div>
+                    </div>
+
+                    <!-- ARTIFACTS CALLOUT SECTION (As requested) -->
+                    <div class="pt-1.5 flex flex-wrap items-center gap-2 text-[11px]">
+                      <span class="text-gray-500 font-medium">Artifacts:</span>
+                      
+                      <!-- Callout 1: coverage.lcov ingested (checkmark) -->
+                      <div class="inline-flex items-center space-x-1.5 bg-emerald-50 border border-emerald-200 text-emerald-800 px-2 py-0.5 rounded font-mono-code text-[11px]">
+                        <svg class="w-3.5 h-3.5 text-emerald-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>coverage.lcov · 42 KB · ingested</span>
+                      </div>
+
+                      <!-- Callout 2: test-results.xml not ingested (greyed out) -->
+                      <div class="inline-flex items-center space-x-1.5 bg-gray-100 border border-gray-200 text-gray-400 px-2 py-0.5 rounded font-mono-code text-[11px]">
+                        <svg class="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" />
+                        </svg>
+                        <span>test-results.xml · not ingested</span>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- ROW 3: Failed #2 -->
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="py-2 px-3 font-medium">
+                  <div class="flex items-center space-x-1.5 text-red-700">
+                    <span class="w-2 h-2 rounded-full bg-red-600 shrink-0"></span>
+                    <span>Failed</span>
+                  </div>
+                </td>
+                <td class="py-2 px-3 font-medium text-gray-900">
+                  <div class="flex items-center space-x-1.5">
+                    <svg class="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                    <span>PR Quality Gate / Checkmarx AST</span>
+                    <span class="font-mono-code text-[10px] text-gray-400">#481</span>
+                  </div>
+                </td>
+                <td class="py-2 px-3 font-mono-code text-[11px] text-gray-600">
+                  <span class="bg-gray-100 px-1 py-0.5 rounded border border-gray-200">pr-142</span>
+                </td>
+                <td class="py-2 px-3 font-mono-code text-[11px]">
+                  <span class="text-[#0969da] hover:underline cursor-pointer">a19c30f</span>
+                  <span class="text-gray-500 font-sans ml-1 truncate max-w-[220px] inline-block align-bottom" title="fix(security): sanitize path traversal in user upload endpoints">fix(security): sanitize path traversal in user upload endpoints</span>
+                </td>
+                <td class="py-2 px-3 font-mono-code text-right text-gray-700">2m 45s</td>
+                <td class="py-2 px-3 text-right text-gray-500">2 hrs ago</td>
+                <td class="py-2 px-3 text-right">
+                  <span class="font-mono-code text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded border border-gray-200">1 artifact</span>
+                </td>
+              </tr>
+
+              <!-- ROW 4: Success -->
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="py-2 px-3 font-medium">
+                  <div class="flex items-center space-x-1.5 text-emerald-700">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                    <span>Success</span>
+                  </div>
+                </td>
+                <td class="py-2 px-3 font-medium text-gray-900">
+                  <div class="flex items-center space-x-1.5">
+                    <svg class="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                    <span>CI / Main Pipeline</span>
+                    <span class="font-mono-code text-[10px] text-gray-400">#480</span>
+                  </div>
+                </td>
+                <td class="py-2 px-3 font-mono-code text-[11px] text-gray-600">
+                  <span class="bg-gray-100 px-1 py-0.5 rounded border border-gray-200">main</span>
+                </td>
+                <td class="py-2 px-3 font-mono-code text-[11px]">
+                  <span class="text-[#0969da] hover:underline cursor-pointer">c3809df</span>
+                  <span class="text-gray-500 font-sans ml-1 truncate max-w-[220px] inline-block align-bottom" title="chore(deps): bump symfony/yaml from 4.4 to 5.4">chore(deps): bump symfony/yaml from 4.4 to 5.4</span>
+                </td>
+                <td class="py-2 px-3 font-mono-code text-right text-gray-700">3m 02s</td>
+                <td class="py-2 px-3 text-right text-gray-500">Yesterday</td>
+                <td class="py-2 px-3 text-right">
+                  <span class="font-mono-code text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded border border-gray-200">2 artifacts</span>
+                </td>
+              </tr>
+
+              <!-- ROW 5: Queued -->
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="py-2 px-3 font-medium">
+                  <div class="flex items-center space-x-1.5 text-amber-700">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+                    <span>Queued</span>
+                  </div>
+                </td>
+                <td class="py-2 px-3 font-medium text-gray-900">
+                  <div class="flex items-center space-x-1.5">
+                    <svg class="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                    <span>Nightly Code Smells & Duplications</span>
+                    <span class="font-mono-code text-[10px] text-gray-400">#479</span>
+                  </div>
+                </td>
+                <td class="py-2 px-3 font-mono-code text-[11px] text-gray-600">
+                  <span class="bg-gray-100 px-1 py-0.5 rounded border border-gray-200">main</span>
+                </td>
+                <td class="py-2 px-3 font-mono-code text-[11px]">
+                  <span class="text-[#0969da] hover:underline cursor-pointer">4e7a091</span>
+                  <span class="text-gray-500 font-sans ml-1 truncate max-w-[220px] inline-block align-bottom" title="scheduled weekly maintenance scan">scheduled weekly maintenance scan</span>
+                </td>
+                <td class="py-2 px-3 font-mono-code text-right text-gray-400">—</td>
+                <td class="py-2 px-3 text-right text-amber-600 font-medium">waiting runner</td>
+                <td class="py-2 px-3 text-right">
+                  <span class="font-mono-code text-[10px] text-gray-400">0</span>
+                </td>
+              </tr>
+
+              <!-- ROW 6: Success -->
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="py-2 px-3 font-medium">
+                  <div class="flex items-center space-x-1.5 text-emerald-700">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                    <span>Success</span>
+                  </div>
+                </td>
+                <td class="py-2 px-3 font-medium text-gray-900">
+                  <div class="flex items-center space-x-1.5">
+                    <svg class="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                    <span>CI / Main Pipeline</span>
+                    <span class="font-mono-code text-[10px] text-gray-400">#478</span>
+                  </div>
+                </td>
+                <td class="py-2 px-3 font-mono-code text-[11px] text-gray-600">
+                  <span class="bg-gray-100 px-1 py-0.5 rounded border border-gray-200">main</span>
+                </td>
+                <td class="py-2 px-3 font-mono-code text-[11px]">
+                  <span class="text-[#0969da] hover:underline cursor-pointer">88e01bd</span>
+                  <span class="text-gray-500 font-sans ml-1 truncate max-w-[220px] inline-block align-bottom" title="docs: update security advisory readme">docs: update security advisory readme</span>
+                </td>
+                <td class="py-2 px-3 font-mono-code text-right text-gray-700">2m 58s</td>
+                <td class="py-2 px-3 text-right text-gray-500">2 days ago</td>
+                <td class="py-2 px-3 text-right">
+                  <span class="font-mono-code text-[10px] bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded border border-gray-200">2 artifacts</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table footer pagination -->
+        <div class="px-3.5 py-2 border-t border-[#e1e4e8] bg-[#fcfcfd] flex items-center justify-between text-[11px] text-gray-500">
+          <span>Showing 6 of 58 pipeline executions</span>
+          <div class="flex items-center space-x-1 font-mono-code">
+            <button class="px-2 py-0.5 bg-white border border-gray-200 rounded text-gray-400 cursor-not-allowed">prev</button>
+            <span class="px-2 py-0.5 bg-[#0969da] text-white rounded font-semibold">1</span>
+            <button class="px-2 py-0.5 bg-white border border-gray-200 rounded text-gray-600 hover:bg-gray-50">2</button>
+            <button class="px-2 py-0.5 bg-white border border-gray-200 rounded text-gray-600 hover:bg-gray-50">3</button>
+            <button class="px-2 py-0.5 bg-white border border-gray-200 rounded text-gray-600 hover:bg-gray-50">next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN (340px): 2 Stacked Panels -->
+    <div class="w-full space-y-4">
+
+      <!-- PANEL 1: "Our check on their pull requests" -->
+      <div class="bg-white border border-[#e1e4e8] rounded-[3px]">
+        <div class="px-3.5 py-2.5 border-b border-[#e1e4e8] bg-white">
+          <h3 class="font-semibold text-gray-900 text-[13px]">Our check on their pull requests</h3>
+        </div>
+
+        <div class="p-3.5 space-y-3.5">
+          <!-- GitHub-rendered check run preview card -->
+          <div class="border border-[#d0d7de] rounded-[4px] p-3 bg-white space-y-2">
+            <!-- Card header: App avatar + Title + Red Failed conclusion -->
+            <div class="flex items-start justify-between">
+              <div class="flex items-center space-x-2">
+                <!-- App avatar -->
+                <div class="w-5 h-5 rounded bg-[#1f232b] text-white flex items-center justify-center font-bold text-[10px] shrink-0 border border-gray-300">
+                  SA
+                </div>
+                <div class="font-semibold text-gray-900 text-[12px] leading-snug">
+                  Code Quality — Quality Gate
+                </div>
+              </div>
+
+              <!-- Conclusion: red Failed pill -->
+              <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-700 border border-red-200">
+                Failed
+              </span>
+            </div>
+
+            <!-- One-line summary -->
+            <div class="text-[11px] text-gray-700 leading-normal pl-7">
+              1 condition failed: <span class="font-medium text-gray-900">Reliability Rating on New Code is worse than A</span>
+            </div>
+
+            <!-- Footer link -->
+            <div class="pt-1 border-t border-gray-100 pl-7 text-[11px]">
+              <a href="#" class="text-[#0969da] hover:underline font-medium inline-flex items-center space-x-1">
+                <span>Details</span>
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Configuration Toggles -->
+          <div class="space-y-3 pt-1">
+            <!-- Toggle 1: Post check runs on pull requests (ON) -->
+            <div class="flex items-start justify-between">
+              <div class="pr-2">
+                <label class="font-medium text-gray-900 text-[12px] block cursor-pointer">Post check runs on pull requests</label>
+                <span class="text-[11px] text-gray-500 block leading-tight">Sends real-time commit statuses and GitHub check summaries.</span>
+              </div>
+              <!-- Switch On -->
+              <div class="relative inline-flex items-center shrink-0 cursor-pointer pt-0.5">
+                <input type="checkbox" checked class="sr-only peer" id="toggle-checkruns">
+                <div class="w-8 h-4 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[3px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3.5 after:transition-all peer-checked:bg-[#0969da]"></div>
+              </div>
+            </div>
+
+            <!-- Toggle 2: Block merge when gate fails (OFF) -->
+            <div class="flex items-start justify-between">
+              <div class="pr-2">
+                <label class="font-medium text-gray-900 text-[12px] block cursor-pointer">Block merge when the gate fails</label>
+                <span class="text-[11px] text-gray-400 block leading-tight">Requires GitHub branch protection rule enabled in repository settings.</span>
+              </div>
+              <!-- Switch Off -->
+              <div class="relative inline-flex items-center shrink-0 cursor-pointer pt-0.5">
+                <input type="checkbox" class="sr-only peer" id="toggle-blockmerge">
+                <div class="w-8 h-4 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[3px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3.5 after:transition-all peer-checked:bg-[#0969da]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 2: "Coverage" -->
+      <div class="bg-white border border-[#e1e4e8] rounded-[3px]">
+        <div class="px-3.5 py-2.5 border-b border-[#e1e4e8] bg-white flex items-center justify-between">
+          <h3 class="font-semibold text-gray-900 text-[13px]">Coverage</h3>
+          <span class="font-mono-code text-[11px] text-gray-500 font-medium">0.0%</span>
+        </div>
+
+        <div class="p-3.5 space-y-3">
+          <!-- Short prose explanation -->
+          <p class="text-[12px] text-gray-600 leading-relaxed">
+            Coverage can only come from your own pipeline because it requires executing your project's test suite.
+          </p>
+
+          <!-- Current source box -->
+          <div class="p-2.5 bg-[#f6f8fa] border border-[#d0d7de] rounded-[3px] space-y-1">
+            <div class="text-[11px] text-gray-500 font-medium">Current source:</div>
+            <div class="font-mono-code text-[11px] text-gray-900 font-semibold break-all">
+              coverage.lcov from workflow CI, run #482
+            </div>
+          </div>
+
+          <!-- Action link -->
+          <div class="pt-1 flex items-center justify-between text-[11px]">
+            <a href="#" class="text-[#0969da] hover:underline font-medium inline-flex items-center space-x-1">
+              <span>Change artifact</span>
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+            <span class="text-gray-400 font-mono-code text-[10px]">LCOV format</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 5. BOTTOM BAND (Full Width): ANALYSIS TRIGGERS -->
+  <section class="bg-white border-t border-[#e1e4e8] px-4 py-3 mt-auto shrink-0">
+    <div class="max-w-[1600px] mx-auto">
+      <div class="mb-2">
+        <h3 class="font-semibold text-gray-900 text-[13px] tracking-tight">Analysis triggers</h3>
+        <p class="text-[11px] text-gray-500">Configure when automated static scans and quality evaluations run.</p>
+      </div>
+
+      <!-- Three rows with checkboxes and muted descriptions -->
+      <div class="border border-[#e1e4e8] rounded-[3px] divide-y divide-[#e1e4e8] bg-white">
+        
+        <!-- Row 1: On push to the tracked branch -->
+        <div class="flex items-center justify-between p-2.5 hover:bg-[#fafbfc] transition-colors">
+          <label class="flex items-center space-x-2.5 cursor-pointer select-none">
+            <input type="checkbox" checked class="w-3.5 h-3.5 text-[#0969da] rounded border-gray-300 focus:ring-0 focus:outline-none">
+            <span class="font-medium text-gray-900 text-[12px]">On push to the tracked branch</span>
+          </label>
+          <span class="text-[11px] text-gray-400 font-mono-code">refs/heads/main · automatically triggers on every git push</span>
+        </div>
+
+        <!-- Row 2: On pull request -->
+        <div class="flex items-center justify-between p-2.5 hover:bg-[#fafbfc] transition-colors">
+          <label class="flex items-center space-x-2.5 cursor-pointer select-none">
+            <input type="checkbox" checked class="w-3.5 h-3.5 text-[#0969da] rounded border-gray-300 focus:ring-0 focus:outline-none">
+            <span class="font-medium text-gray-900 text-[12px]">On pull request</span>
+          </label>
+          <span class="text-[11px] text-gray-400 font-mono-code">evaluates clean-as-you-code delta against target base branch</span>
+        </div>
+
+        <!-- Row 3: On a schedule (with disabled field reading "not built yet") -->
+        <div class="flex items-center justify-between p-2.5 bg-gray-50/70">
+          <div class="flex items-center space-x-2.5">
+            <input type="checkbox" disabled class="w-3.5 h-3.5 text-gray-300 rounded border-gray-200 cursor-not-allowed">
+            <span class="font-medium text-gray-400 text-[12px]">On a schedule</span>
+          </div>
+          <div class="flex items-center space-x-3">
+            <span class="text-[11px] text-gray-400">Cron schedule execution:</span>
+            <input 
+              type="text" 
+              disabled 
+              value="not built yet" 
+              class="w-32 bg-gray-100 border border-gray-200 text-gray-400 text-[11px] font-mono-code px-2 py-0.5 rounded cursor-not-allowed text-center"
+            />
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>
