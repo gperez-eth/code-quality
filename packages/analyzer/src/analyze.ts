@@ -51,6 +51,8 @@ export interface AnalysisResult {
   gate: QualityGate;
   gateResult: QualityGateResult;
   errors: AnalysisError[];
+  /** Findings dropped by a NOSONAR marker, so they are not invisible. */
+  suppressed: number;
   durationMs: number;
 }
 
@@ -67,7 +69,37 @@ function bySeverityThenLocation(a: Issue, b: Issue): number {
 }
 
 /** Runs every rule that applies to the file and turns each report into an Issue. */
-function runRules(file: SourceFile, rules: readonly Rule[], errors: AnalysisError[]): Issue[] {
+/**
+ * Sonar's own escape hatch, and the reason this analyzer needs one at all:
+ * any rule worth having is wrong somewhere, and a tool with no way to say so
+ * gets switched off entirely rather than argued with. Eleven findings on the
+ * worker's own logging was the argument.
+ *
+ * A bare `NOSONAR` on the reported line drops every finding there. Naming
+ * keys — `// NOSONAR ts:no-console` — drops only those, which is what you
+ * want when one line legitimately trips one rule and the others still matter.
+ */
+const SUPPRESSION_MARKER = 'NOSONAR';
+/** `ts:no-eval` and friends. No escapes, deliberately — see the note below. */
+const RULE_KEY_IN_MARKER = /[a-z]+:[a-z0-9-]+/gi;
+
+function suppresses(lineText: string, ruleKey: string): boolean {
+  const at = lineText.indexOf(SUPPRESSION_MARKER);
+  if (at < 0) return false;
+
+  // Rule keys after the marker narrow it to those; a bare marker takes every
+  // finding on the line.
+  const named: string[] =
+    lineText.slice(at + SUPPRESSION_MARKER.length).match(RULE_KEY_IN_MARKER) ?? [];
+  return named.length === 0 || named.includes(ruleKey);
+}
+
+function runRules(
+  file: SourceFile,
+  rules: readonly Rule[],
+  errors: AnalysisError[],
+  counts: { suppressed: number },
+): Issue[] {
   const issues: Issue[] = [];
   const occurrences = new Map<string, number>();
 
@@ -80,6 +112,13 @@ function runRules(file: SourceFile, rules: readonly Rule[], errors: AnalysisErro
           if (!range) return;
 
           const lineText = file.lines[range.startLine - 1] ?? '';
+          // Counted rather than silently dropped: a number that quietly went
+          // missing is the same lie as one that was never measured.
+          if (suppresses(lineText, rule.key)) {
+            counts.suppressed += 1;
+            return;
+          }
+
           // Two findings from one rule on one line are told apart by order.
           const key = [rule.key, file.path, lineText.trim()].join('\u0000');
           const occurrence = occurrences.get(key) ?? 0;
@@ -125,6 +164,7 @@ export async function analyze(root: string, options: AnalyzeOptions = {}): Promi
   // fails the whole scan rather than quietly turning into "no coverage".
   const coverageContent = options.coverage ? await readCoverageFile(options.coverage) : undefined;
 
+  const counts = { suppressed: 0 };
   const walkOptions: WalkOptions = {};
   if (options.ignore) walkOptions.ignore = options.ignore;
   if (options.maxBytes !== undefined) walkOptions.maxBytes = options.maxBytes;
@@ -148,7 +188,7 @@ export async function analyze(root: string, options: AnalyzeOptions = {}): Promi
       continue;
     }
 
-    const fileIssues = runRules(file, rules, errors);
+    const fileIssues = runRules(file, rules, errors, counts);
     const metrics = computeFileMetrics(file.lines, file.tree);
 
     const report: FileReport = {
@@ -187,6 +227,7 @@ export async function analyze(root: string, options: AnalyzeOptions = {}): Promi
     gate,
     gateResult: evaluateQualityGate(gate, measureReader(measures)),
     errors,
+    suppressed: counts.suppressed,
     durationMs: Date.now() - startedAt,
   };
   if (coverage) result.coverage = coverage;

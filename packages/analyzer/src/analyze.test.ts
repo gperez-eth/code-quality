@@ -114,6 +114,8 @@ function widenThenNarrow(raw: unknown) {
 
 const noop = () => {};
 
+function notWrittenYet() {}
+
 async function loadUser(id: string) {
   try {
     return await fetchUser(id);
@@ -236,13 +238,31 @@ describe('analyze', () => {
     assert.equal(issue.range.startLine, 8);
   });
 
+  it('leaves an empty arrow placeholder alone and still flags an empty named function', () => {
+    const found = result.issues.filter((issue) => issue.ruleKey === 'ts:no-empty-function-body');
+
+    // `const noop = () => {}` is a deliberate no-op and `let x = () => {}`
+    // gets its real body assigned later. Neither is an unimplemented stub,
+    // and functionName resolves both to the variable, so the rule used to
+    // fire on them.
+    assert.deepEqual(
+      found.filter((issue) => issue.message.includes('noop')),
+      [],
+      'an empty arrow assigned to a variable must not be reported',
+    );
+    assert.ok(
+      found.some((issue) => issue.message.includes('notWrittenYet')),
+      'an empty named function is still the shape this rule is for',
+    );
+  });
+
   it('flags a catch that only logs and lets the caller believe it succeeded', () => {
     const issue = result.issues.find((issue) => issue.ruleKey === 'ts:no-swallowed-catch');
 
     assert.ok(issue, 'expected the console-only catch to be found');
-    assert.equal(issue.type, 'BUG');
+    assert.equal(issue.type, 'CODE_SMELL');
     assert.equal(issue.severity, 'CRITICAL');
-    assert.equal(issue.range.startLine, 23);
+    assert.equal(issue.range.startLine, 25);
   });
 
   it('flags a variable widened to "unknown" and asserted back on the next line', () => {
@@ -280,7 +300,7 @@ describe('analyze', () => {
     const issue = result.issues.find((issue) => issue.ruleKey === 'ts:no-reduce-accumulator-copy');
 
     assert.ok(issue, 'expected the accumulator-copying reduce to be found');
-    assert.equal(issue.range.startLine, 46);
+    assert.equal(issue.range.startLine, 48);
     assert.match(issue.message, /copying everything seen so far/);
   });
 
@@ -288,7 +308,7 @@ describe('analyze', () => {
     const issue = result.issues.find((issue) => issue.ruleKey === 'ts:no-redundant-comment');
 
     assert.ok(issue, 'expected the "// return userName" comment to be found');
-    assert.equal(issue.range.startLine, 50);
+    assert.equal(issue.range.startLine, 52);
   });
 
   it('keeps fingerprints stable when unrelated lines move', async () => {
@@ -443,5 +463,57 @@ describe('computeSlopScore', () => {
       duplicated.score < 60,
       `98% duplication must sink the score however good the rest is, got ${duplicated.score}`,
     );
+  });
+});
+
+describe('suppression', () => {
+  /** Two findings on one line, so a targeted marker has something to leave. */
+  const SOURCE = [
+    'export function noMarker(x: unknown) {',
+    '  console.log(x);',
+    '}',
+    'export function bare(y: unknown) {',
+    '  console.log(y); // NOSONAR',
+    '}',
+    'export function named(z: unknown) {',
+    '  console.log(z); // NOSONAR ts:no-console',
+    '}',
+  ].join('\n');
+
+  let root: string;
+  let result: AnalysisResult;
+
+  before(async () => {
+    root = await mkdtemp(join(tmpdir(), 'code-quality-'));
+    await writeFile(join(root, 'marked.ts'), SOURCE, 'utf8');
+    result = await analyze(root);
+  });
+
+  after(async () => {
+    await rm(root, { recursive: true, force: true });
+  });
+
+  it('drops every finding on a line carrying a bare marker', () => {
+    const consoles = result.issues.filter((issue) => issue.ruleKey === 'ts:no-console');
+
+    // Only the unmarked line keeps its finding.
+    assert.deepEqual(
+      consoles.map((issue) => issue.range.startLine),
+      [2],
+      'the marked console calls should both be gone',
+    );
+  });
+
+  it('leaves the other rules alone when the marker names one', () => {
+    // The marker on line 8 names ts:no-console, and the unknown parameter on
+    // line 7 is a different rule on a different line either way — a marker is
+    // scoped to its own line, which is what makes it reviewable.
+    const unknowns = result.issues.filter((issue) => issue.ruleKey === 'ts:no-unknown-parameters');
+
+    assert.equal(unknowns.length, 3, 'every function still reports its unknown parameter');
+  });
+
+  it('counts what it dropped rather than losing it quietly', () => {
+    assert.equal(result.suppressed, 2);
   });
 });

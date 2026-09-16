@@ -193,13 +193,21 @@ function printScorecards(result: AnalysisResult, palette: Palette): void {
   }
 }
 
-function printSeverityCounts(issues: Issue[], palette: Palette): void {
+function printSeverityCounts(issues: Issue[], suppressed: number, palette: Palette): void {
   const counts = new Map<Severity, number>(SEVERITIES.map((severity) => [severity, 0]));
   for (const issue of issues) counts.set(issue.severity, (counts.get(issue.severity) ?? 0) + 1);
 
   const cells = SEVERITIES.filter((severity) => (counts.get(severity) ?? 0) > 0).map((severity) =>
     severityColor(palette, severity)(`${severity} ${counts.get(severity)}`),
   );
+
+  // Suppressions are shown, not just counted. A finding that vanished
+  // without saying so is the same lie as one that was never measured, and
+  // the marker is meant to be an argument in the open rather than a way to
+  // make the number look better.
+  if (suppressed > 0) {
+    cells.push(palette.dim(`${suppressed} suppressed`));
+  }
 
   console.log();
   console.log(`  ${palette.bold(count(issues.length, 'issue'))}  ${cells.join(palette.dim(' · '))}`);
@@ -275,7 +283,7 @@ async function main(): Promise<number> {
 
   printGate(result, palette);
   printScorecards(result, palette);
-  printSeverityCounts(result.issues, palette);
+  printSeverityCounts(result.issues, result.suppressed, palette);
   printTopIssues(result, palette, options.top);
   printEffortByFile(result, palette);
 
