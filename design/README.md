@@ -13,7 +13,7 @@ these files.
 | Resource | `projects/2566086563026806547` |
 | Design system | Static Analysis Engine (light, Inter + JetBrains Mono, `#2563eb` primary) |
 | Device target | Desktop, 1280px reference width (exports render at 2560px @2x) |
-| Exported | Screens 01-08 on 2026-09-15; 09-11 on 2026-09-16; 12 on 2026-09-17 |
+| Exported | Screens 01-08 on 2026-09-15; 09-11 and 14 on 2026-09-16; 12-13 on 2026-09-17 |
 
 ## Contents
 
@@ -40,6 +40,8 @@ these files.
 | 10 | Maintainability | Composite slop score 0-100 with its four dimensions as meters, the six reuse signals with deltas, findings grouped by slop pattern, worst files, and a grouped bar chart against the baseline analysis |
 | 11 | Unused Code | Counts for unused files / exports / dependencies / unlisted / unresolved imports, a confidence filter and three-segment confidence meter, an import-graph reachability panel with the AST reference chain, static import evidence, and the caution that dynamic imports and path aliases can make a reachable file look unused |
 | 12 | Branches | The branch list with per-branch gate and Analyse action, and the branch switcher popover open in the sub-header: filter box, gate dot per branch, the default pinned and a link through to Analysis automation |
+| 13 | Analysis automation | The per-project dialog: a master toggle, on-push and on-new-branch rules, pull-request analysis disabled behind a "Needs branch analysis" pill, glob pattern chips with a live "3 of 5 branches match right now" preview, and the warning that none of it fires without the GitHub App |
+| 14 | CI Integration & Pipeline Runs | The customer's own CI runs shown beside our analyses — point 4 of ADR-0006. Generated 2026-09-16, not built |
 
 Notes:
 
@@ -52,6 +54,16 @@ Notes:
 - Screens 01-07 predate the repository model and still show SonarQube's demo
   project. Screen 08 is the first one designed around what the tool actually
   does: connect a git repository and analyse its commits.
+> [!warning] `list_screens` lags badly; `get_screen` by id is the truth.
+> A screen created and confirmed `COMPLETE` was still missing from
+> `list_screens` ten minutes later, and screen 14 was written off as "never
+> generated" on 2026-09-16 on exactly that evidence — it had existed all along,
+> and so had screen 13, whose generation call had timed out. **A generation
+> that times out has usually still succeeded.** Keep the id the generate call
+> returns and fetch it directly; only conclude something is missing after a
+> much longer wait, and never regenerate on a timeout alone — that is how the
+> duplicate of screen 08 below happened.
+
 - Screen 08 exists twice in Stitch (`ccb3776b…` and `701904e7…`, the second
   titled "Code Quality — Repositories") because a generation that appeared to
   time out had in fact succeeded. They differ only in the header chip and some
