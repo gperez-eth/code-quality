@@ -40,6 +40,14 @@ permissions:
 jobs:
   analyze:
     runs-on: ubuntu-latest
+
+    # Hoisted to the job so the publish step below can check whether the
+    # credential is there. `secrets` is not a context a step-level `if` may
+    # read — GitHub rejects the whole file for it — but `env` is.
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }} # CHANGE ME: add this secret
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} # CHANGE ME: add this secret
+
     steps:
       - name: Check out your repository
         uses: actions/checkout@v4
@@ -88,7 +96,10 @@ jobs:
       # CHANGE ME: --org YOUR_ORG_SLUG below — your organisation's slug, from
       # its dashboard URL.
       - name: Publish report
-        if: ${{ !cancelled() && secrets.SUPABASE_SERVICE_ROLE_KEY != '' }}
+        # `secrets` is not available to a step-level `if` — GitHub rejects
+        # the workflow file outright for it. The value is hoisted into the
+        # job's env below so this guard has something it may read.
+        if: ${{ !cancelled() && env.SUPABASE_SERVICE_ROLE_KEY != '' }}
         run: >
           node scanner/packages/publish/dist/cli.js report.json
           --org YOUR_ORG_SLUG

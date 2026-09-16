@@ -23,6 +23,21 @@ permissions:
 jobs:
   analyze:
     runs-on: ubuntu-latest
+
+    # Hoisted to the job so the publish step can test whether it is present.
+    # `secrets` is NOT one of the contexts available to a step-level `if` —
+    # GitHub rejects the whole workflow file for it, with "this run likely
+    # failed because of a workflow file issue" and no log to read. `env` is
+    # available there, so the guard reads the hoisted copy instead.
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      # code-quality-import falls back to this when --org is absent — see
+      # .env.example. The organisation this repository owns its analyses
+      # under is runtime data in the live Supabase project, not something
+      # the codebase knows, so it has to come from a secret.
+      CODE_QUALITY_ORG: ${{ secrets.CODE_QUALITY_ORG }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -60,17 +75,10 @@ jobs:
       # keeps this step running even though the scan step above may have
       # failed the gate — a failed analysis is still worth recording.
       - name: Publish report
-        if: ${{ !cancelled() && secrets.SUPABASE_SERVICE_ROLE_KEY != '' }}
+        if: ${{ !cancelled() && env.SUPABASE_SERVICE_ROLE_KEY != '' }}
         run: >
           npm run publish -- report.json
           --repo "${{ github.server_url }}/${{ github.repository }}"
           --branch "${{ github.head_ref || github.ref_name }}"
           --commit "${{ github.sha }}"
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          # code-quality-import falls back to this when --org is absent —
-          # see .env.example. The org this repo's own analyses belong to is
-          # runtime data in the live Supabase project, not something the
-          # codebase knows, so it has to come from a secret.
-          CODE_QUALITY_ORG: ${{ secrets.CODE_QUALITY_ORG }}
+
