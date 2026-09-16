@@ -92,6 +92,53 @@ const third = 'a repeated literal';
 /** Long enough to trip the file-size rule, with no two lines alike. */
 const LONG = Array.from({ length: 800 }, (_, index) => `const filler${index} = ${index};`).join('\n');
 
+/** One shape per slop rule: structurally plausible code that does not hold up. */
+const SLOP = `type Payload = unknown;
+
+type Loose = {
+  [key: string]: any;
+};
+
+function parsePayload(raw: unknown): unknown {
+  const parsed = raw as unknown as Payload;
+  return parsed;
+}
+
+function widenThenNarrow(raw: unknown) {
+  const value: unknown = raw;
+  const record = value as Payload;
+  return record;
+}
+
+const noop = () => {};
+
+async function loadUser(id: string) {
+  try {
+    return await fetchUser(id);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// implement this once the API is ready
+function fetchUser(id: string): Promise<unknown> {
+  return Promise.resolve({ id });
+}
+
+function activeNames(users: { name: string; active: boolean }[]) {
+  return users.filter((user) => user.active).map((user) => user.name);
+}
+
+function merge(entries: Record<string, number>[]) {
+  return entries.reduce((acc, entry) => ({ ...acc, ...entry }), {});
+}
+
+function getUserName(userName: string) {
+  // return userName
+  return userName;
+}
+`;
+
 /** Twelve significant lines shared between two files: above the 10-line block. */
 const DUPLICATED = `export function shared(values) {
   const out = [];
@@ -118,6 +165,7 @@ describe('analyze', () => {
     await writeFile(join(root, 'copy-a.ts'), DUPLICATED, 'utf8');
     await writeFile(join(root, 'copy-b.ts'), DUPLICATED, 'utf8');
     await writeFile(join(root, 'long.ts'), LONG, 'utf8');
+    await writeFile(join(root, 'slop.ts'), SLOP, 'utf8');
     result = await analyze(root);
   });
 
@@ -126,7 +174,7 @@ describe('analyze', () => {
   });
 
   it('scans every source file it finds', () => {
-    assert.equal(result.files.length, 4);
+    assert.equal(result.files.length, 5);
     assert.deepEqual(result.errors, []);
   });
 
@@ -167,6 +215,54 @@ describe('analyze', () => {
   it('fails the quality gate on the security hotspots it found', () => {
     assert.equal(result.gateResult.status, 'FAILED');
     assert.ok(result.gateResult.failing.some((condition) => condition.metric === 'security_hotspots'));
+  });
+
+  it('flags a chain of "as" assertions as fabricated type evidence', () => {
+    const issue = result.issues.find((issue) => issue.ruleKey === 'ts:no-chained-type-assertions');
+
+    assert.ok(issue, 'expected the "raw as unknown as Payload" chain to be found');
+    assert.equal(issue.filePath, 'slop.ts');
+    assert.equal(issue.severity, 'MAJOR');
+    assert.equal(issue.range.startLine, 8);
+  });
+
+  it('flags a catch that only logs and lets the caller believe it succeeded', () => {
+    const issue = result.issues.find((issue) => issue.ruleKey === 'ts:no-swallowed-catch');
+
+    assert.ok(issue, 'expected the console-only catch to be found');
+    assert.equal(issue.type, 'BUG');
+    assert.equal(issue.severity, 'CRITICAL');
+    assert.equal(issue.range.startLine, 23);
+  });
+
+  it('flags a variable widened to "unknown" and asserted back on the next line', () => {
+    const issue = result.issues.find((issue) => issue.ruleKey === 'ts:no-widen-then-assert');
+
+    assert.ok(issue, 'expected the widen-then-narrow pair to be found');
+    assert.equal(issue.range.startLine, 14);
+    assert.match(issue.message, /widened to "unknown"/);
+  });
+
+  it('flags filter().map() chained on the same array', () => {
+    const issue = result.issues.find((issue) => issue.ruleKey === 'ts:no-filter-then-map');
+
+    assert.ok(issue, 'expected the filter().map() chain to be found');
+    assert.equal(issue.range.startLine, 34);
+  });
+
+  it('flags a reduce that spreads its accumulator into a fresh object every call', () => {
+    const issue = result.issues.find((issue) => issue.ruleKey === 'ts:no-reduce-accumulator-copy');
+
+    assert.ok(issue, 'expected the accumulator-copying reduce to be found');
+    assert.equal(issue.range.startLine, 38);
+    assert.match(issue.message, /copying everything seen so far/);
+  });
+
+  it('flags a comment that just restates the line below it', () => {
+    const issue = result.issues.find((issue) => issue.ruleKey === 'ts:no-redundant-comment');
+
+    assert.ok(issue, 'expected the "// return userName" comment to be found');
+    assert.equal(issue.range.startLine, 42);
   });
 
   it('keeps fingerprints stable when unrelated lines move', async () => {
