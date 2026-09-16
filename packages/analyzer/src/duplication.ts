@@ -1,7 +1,20 @@
 import { createHash } from 'node:crypto';
 
-/** How many significant lines have to line up before it counts as duplication. */
-const DEFAULT_BLOCK_LINES = 10;
+/**
+ * How many significant lines have to line up before it counts as duplication.
+ *
+ * Five, following the GitClear research (see the vault note
+ * `Duplication and slop detection`), and confirmed by measuring this
+ * repository: at ten, `packages/` reported **0.00%** across 3820 lines — a
+ * threshold that coarse says nothing about real code. At five both workspaces
+ * land near 2.5%. At four the block count in `apps/web/src` jumps from 12 to
+ * 36, which is where common idioms start matching each other rather than
+ * anything worth reporting.
+ *
+ * Sonar needs 100 successive tokens for the same verdict. That is the
+ * coarseness the AI-era duplication research is about.
+ */
+const DEFAULT_BLOCK_LINES = 5;
 
 /** Lines that are nothing but punctuation match everywhere and mean nothing. */
 const TRIVIAL_LINE = /^[\s{}()[\];,]*$/;
