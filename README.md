@@ -30,7 +30,8 @@ Needs Node 20.9+ and a Supabase project. The parser is a native module, so
 npm install
 cp apps/web/.env.example apps/web/.env   # dashboard: project URL + publishable key
 cp .env.example .env                     # worker: service role key. Both from Settings -> API
-npm run db:push               # apply supabase/migrations to the linked project
+npx supabase link --project-ref <ref>   # once; asks for your database password
+npx supabase db push                    # apply supabase/migrations
 npm run dev                   # dashboard on http://localhost:3000
 npm run worker                # in another terminal: what actually runs the analyses
 ```
