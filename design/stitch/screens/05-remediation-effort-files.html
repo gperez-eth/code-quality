@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-error-container":"#93000a","secondary":"#545f73","on-tertiary-fixed":"#001d31","on-secondary-fixed-variant":"#3c475a","on-primary-fixed":"#00174b","surface-container-lowest":"#ffffff","tertiary-fixed":"#cce5ff","error":"#ba1a1a","surface-container-highest":"#d3e4fe","surface-bright":"#f8f9ff","primary":"#004ac6","on-tertiary-fixed-variant":"#004b73","on-surface":"#0b1c30","secondary-fixed-dim":"#bcc7de","secondary-container":"#d5e0f8","on-surface-variant":"#434655","surface":"#f8f9ff","on-secondary-container":"#586377","on-secondary-fixed":"#111c2d","secondary-fixed":"#d8e3fb","surface-dim":"#cbdbf5","surface-variant":"#d3e4fe","background":"#f8f9ff","on-tertiary-container":"#e7f2ff","on-primary":"#ffffff","tertiary-container":"#0073ae","on-background":"#0b1c30","error-container":"#ffdad6","on-primary-fixed-variant":"#003ea8","on-tertiary":"#ffffff","inverse-surface":"#213145","tertiary":"#005a89","on-secondary":"#ffffff","inverse-primary":"#b4c5ff","primary-fixed":"#dbe1ff","primary-fixed-dim":"#b4c5ff","tertiary-fixed-dim":"#93ccff","on-primary-container":"#eeefff","surface-container":"#e5eeff","inverse-on-surface":"#eaf1ff","surface-container-low":"#eff4ff","on-error":"#ffffff","primary-container":"#2563eb","outline":"#737686","surface-container-high":"#dce9ff","outline-variant":"#c3c6d7","surface-tint":"#0053db"},borderRadius:{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},spacing:{"margin":"1rem","space-xl":"1.5rem","space-md":"0.75rem","gutter":"0.75rem","space-sm":"0.375rem","space-xs":"0.25rem","space-lg":"1rem"},fontFamily:{"headline-md":["Inter"],"body-sm":["Inter"],"body-lg":["Inter"],"body-md":["Inter"],"label-sm":["Inter"],"code-body":["JetBrains Mono"],"code-callout":["JetBrains Mono"],"headline-lg":["Inter"],"label-md":["Inter"],"headline-sm":["Inter"],"stat-display":["Inter"]},fontSize:{"headline-md":["18px",{"lineHeight":"24px","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"16px","fontWeight":"400"}],"body-lg":["14px",{"lineHeight":"20px","fontWeight":"400"}],"body-md":["13px",{"lineHeight":"18px","fontWeight":"400"}],"label-sm":["11px",{"lineHeight":"14px","fontWeight":"600"}],"code-body":["12px",{"lineHeight":"18px","fontWeight":"400"}],"code-callout":["11px",{"lineHeight":"14px","fontWeight":"600"}],"headline-lg":["24px",{"lineHeight":"32px","fontWeight":"600"}],"label-md":["12px",{"lineHeight":"16px","fontWeight":"500"}],"headline-sm":["15px",{"lineHeight":"20px","fontWeight":"600"}],"stat-display":["28px",{"lineHeight":"32px","fontWeight":"300"}]}}}}</script></head><body class="bg-background font-body-md text-body-md text-on-surface"><header class="fixed top-0 left-0 w-full z-50"><div class="h-12 bg-inverse-surface border-b border-outline/30 px-margin flex items-center justify-between"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-tertiary-fixed text-[20px]">waves</span><span class="font-headline-sm text-headline-sm text-on-primary tracking-tight font-semibold">SonarQube</span></div><nav class="hidden xl:flex items-center gap-space-md h-12" data-active-classes="text-on-primary border-b-2 border-primary-container font-semibold"><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="projects" href="#">Projects</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-issues" href="#">Issues</a><a aria-current="page" class="h-full flex items-center transition-colors px-space-xs text-on-primary border-b-2 border-primary-container font-semibold" data-path="project-measures" href="#">Measures</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-code" href="#">Code</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-activity" href="#">Activity</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="quality-profiles" href="#">Quality Profiles</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="quality-gates" href="#">Quality Gates</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="system-administration" href="#">Administration</a></nav></div><div class="flex items-center gap-space-md"><div class="relative w-[260px]"><span class="material-symbols-outlined absolute left-space-sm top-1/2 -translate-y-1/2 text-inverse-on-surface/60 text-[16px]">search</span><input class="w-full h-[28px] pl-7 pr-space-sm bg-surface-container-highest/20 border border-outline/30 rounded text-inverse-on-surface placeholder-inverse-on-surface/50 font-body-sm text-body-sm focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container" placeholder="Search for projects, files..." type="text"/></div><button class="w-7 h-7 flex items-center justify-center text-inverse-on-surface/80 hover:text-on-primary transition-colors" title="Documentation & Help" type="button"><span class="material-symbols-outlined text-[18px]">help</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div><div class="h-[42px] bg-surface-container-lowest border-b border-outline-variant px-margin flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)]"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-xs"><button class="text-secondary hover:text-primary transition-colors flex items-center" type="button"><span class="material-symbols-outlined text-[16px]">star</span></button><span class="material-symbols-outlined text-secondary text-[16px]">folder</span><span class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight">CxPHP</span></div><div class="h-4 w-[1px] bg-outline-variant mx-space-xs"></div><nav class="flex items-center gap-space-md h-[42px]" data-active-classes="text-primary border-b-2 border-primary font-semibold"><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-overview" href="#">Overview</a><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-issues" href="#">Issues</a><a aria-current="page" class="h-full flex items-center transition-colors px-space-xs text-primary border-b-2 border-primary font-semibold" data-path="project-measures" href="#">Measures</a><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-code" href="#">Code</a><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-activity" href="#">Activity</a><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-settings" href="#">Administration</a><button class="h-full flex items-center gap-space-xs text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs" type="button"><span>More</span><span class="material-symbols-outlined text-[14px]">arrow_drop_down</span></button></nav></div><div class="flex items-center gap-space-md font-body-sm text-body-sm text-on-surface-variant"><span class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[14px]">schedule</span>October 25, 2017, 11:23 AM</span><span class="text-outline-variant">•</span><span class="px-space-xs py-[1px] bg-surface-container text-on-secondary-container rounded font-label-sm text-label-sm border border-outline-variant">Version not provided</span></div></div></header><main class="w-full pt-[90px] bg-background min-h-screen px-margin pb-margin"><div class="flex flex-col w-full">
+<div class="grid grid-cols-12 gap-space-md w-full items-start">
+<!-- Left Measures Navigation Sidebar -->
+<aside class="col-span-12 lg:col-span-3 xl:col-span-3 bg-surface-container-lowest rounded-sm shadow-sm flex flex-col overflow-hidden text-body-sm font-body-sm">
+<div class="px-space-md py-space-sm bg-surface-container text-on-surface-variant font-label-md text-label-md flex items-center justify-between">
+<span class="flex items-center gap-space-xs font-semibold text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-primary">assessment</span>
+          Project Overview
+        </span>
+<span class="material-symbols-outlined text-[16px] cursor-pointer hover:text-on-surface">tune</span>
+</div>
+<!-- Measures Hierarchy Navigation -->
+<div class="p-space-xs flex flex-col">
+<!-- Reliability Category -->
+<div class="flex items-center justify-between px-space-sm py-space-xs hover:bg-surface-container-low cursor-pointer rounded-DEFAULT">
+<div class="flex items-center gap-space-xs text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">chevron_right</span>
+<span class="font-medium">Reliability</span>
+<span class="material-symbols-outlined text-[14px] text-secondary">help</span>
+</div>
+<span class="px-space-xs py-[1px] bg-surface-container text-on-surface font-label-sm text-label-sm rounded-DEFAULT">A</span>
+</div>
+<!-- Security Category (Active & Expanded) -->
+<div class="flex flex-col mt-space-xs">
+<div class="flex items-center justify-between px-space-sm py-space-xs hover:bg-surface-container-low cursor-pointer rounded-DEFAULT">
+<div class="flex items-center gap-space-xs text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">expand_more</span>
+<span class="font-semibold text-on-surface">Security</span>
+<span class="material-symbols-outlined text-[14px] text-secondary">help</span>
+</div>
+<span class="w-4 h-4 rounded-full bg-error text-on-error flex items-center justify-center font-label-sm text-[10px] font-bold">D</span>
+</div>
+<!-- Security Nested Sub-options -->
+<div class="flex flex-col pl-space-lg pr-space-xs space-y-[2px]">
+<a class="px-space-xs py-[3px] text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-DEFAULT flex items-center justify-between" href="#">
+<span>Overview</span>
+</a>
+<!-- On New Code -->
+<div class="pt-space-xs pb-[2px] font-label-sm text-label-sm text-secondary uppercase tracking-wider">
+              On new code
+            </div>
+<div class="flex items-center justify-between px-space-xs py-[2px] text-on-surface-variant hover:bg-surface-container-low rounded-DEFAULT cursor-pointer">
+<span>Vulnerabilities</span>
+<span class="px-space-xs py-[1px] bg-surface-container text-on-surface font-label-sm text-label-sm rounded-DEFAULT">725</span>
+</div>
+<div class="flex items-center justify-between px-space-xs py-[2px] text-on-surface-variant hover:bg-surface-container-low rounded-DEFAULT cursor-pointer">
+<span>Rating</span>
+<span class="w-4 h-4 rounded-full bg-error text-on-error flex items-center justify-center font-label-sm text-[10px] font-bold">D</span>
+</div>
+<div class="flex items-center justify-between px-space-xs py-[2px] text-on-surface-variant hover:bg-surface-container-low rounded-DEFAULT cursor-pointer">
+<span>Remediation Effort</span>
+<span class="px-space-xs py-[1px] bg-surface-container text-on-surface font-label-sm text-label-sm rounded-DEFAULT">4d 4h</span>
+</div>
+<!-- Overall Measures -->
+<div class="pt-space-sm pb-[2px] font-label-sm text-label-sm text-secondary uppercase tracking-wider">
+              Overall
+            </div>
+<div class="flex items-center justify-between px-space-xs py-[2px] text-on-surface-variant hover:bg-surface-container-low rounded-DEFAULT cursor-pointer">
+<span>Vulnerabilities</span>
+<span class="px-space-xs py-[1px] bg-surface-container text-on-surface font-label-sm text-label-sm rounded-DEFAULT">725</span>
+</div>
+<div class="flex items-center justify-between px-space-xs py-[2px] text-on-surface-variant hover:bg-surface-container-low rounded-DEFAULT cursor-pointer">
+<span>Rating</span>
+<span class="w-4 h-4 rounded-full bg-error text-on-error flex items-center justify-center font-label-sm text-[10px] font-bold">D</span>
+</div>
+<!-- ACTIVE Selected Metric Row -->
+<div class="flex items-center justify-between px-space-xs py-[3px] bg-primary-fixed text-on-primary-fixed rounded-DEFAULT font-semibold cursor-pointer shadow-sm">
+<span class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[14px] text-primary">play_arrow</span>
+                Remediation Effort
+              </span>
+<span class="px-space-xs py-[1px] bg-surface-container-lowest text-primary font-label-sm text-label-sm rounded-DEFAULT">4d 4h</span>
+</div>
+<!-- Checkmarx breakdown list -->
+<div class="flex flex-col space-y-[2px] pt-space-xs">
+<div class="flex items-center justify-between px-space-xs py-[2px] text-secondary hover:bg-surface-container-low rounded-DEFAULT cursor-pointer text-body-sm">
+<span class="truncate">Checkmarx - 1. High Vulnerabilities</span>
+<span class="font-mono text-[11px]">125</span>
+</div>
+<div class="flex items-center justify-between px-space-xs py-[2px] text-secondary hover:bg-surface-container-low rounded-DEFAULT cursor-pointer text-body-sm">
+<span class="truncate">Checkmarx - 2. Medium Vulnerabilities</span>
+<span class="font-mono text-[11px]">238</span>
+</div>
+<div class="flex items-center justify-between px-space-xs py-[2px] text-secondary hover:bg-surface-container-low rounded-DEFAULT cursor-pointer text-body-sm">
+<span class="truncate">Checkmarx - 3. Low Vulnerabilities</span>
+<span class="font-mono text-[11px]">362</span>
+</div>
+<div class="flex items-center justify-between px-space-xs py-[2px] text-secondary hover:bg-surface-container-low rounded-DEFAULT cursor-pointer text-body-sm">
+<span class="truncate">Checkmarx - 4. Total Vulnerabilities</span>
+<span class="font-mono text-[11px]">725</span>
+</div>
+<div class="flex items-center justify-between px-space-xs py-[2px] text-secondary hover:bg-surface-container-low rounded-DEFAULT cursor-pointer text-body-sm">
+<span class="truncate">Checkmarx - 5. New High Vulnerabilities</span>
+<span class="font-mono text-[11px]">125</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Other Standard Categories -->
+<div class="flex items-center justify-between px-space-sm py-space-xs hover:bg-surface-container-low cursor-pointer rounded-DEFAULT mt-space-xs">
+<div class="flex items-center gap-space-xs text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">chevron_right</span>
+<span class="font-medium">Maintainability</span>
+</div>
+<span class="px-space-xs py-[1px] bg-surface-container text-on-surface font-label-sm text-label-sm rounded-DEFAULT">A</span>
+</div>
+<div class="flex items-center justify-between px-space-sm py-space-xs hover:bg-surface-container-low cursor-pointer rounded-DEFAULT">
+<div class="flex items-center gap-space-xs text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">chevron_right</span>
+<span class="font-medium">Coverage</span>
+</div>
+<span class="px-space-xs py-[1px] bg-surface-container text-on-surface font-label-sm text-label-sm rounded-DEFAULT">0.0%</span>
+</div>
+<div class="flex items-center justify-between px-space-sm py-space-xs hover:bg-surface-container-low cursor-pointer rounded-DEFAULT">
+<div class="flex items-center gap-space-xs text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">chevron_right</span>
+<span class="font-medium">Duplications</span>
+</div>
+<span class="px-space-xs py-[1px] bg-surface-container text-on-surface font-label-sm text-label-sm rounded-DEFAULT">1.8%</span>
+</div>
+<div class="flex items-center justify-between px-space-sm py-space-xs hover:bg-surface-container-low cursor-pointer rounded-DEFAULT">
+<div class="flex items-center gap-space-xs text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">chevron_right</span>
+<span class="font-medium">Size</span>
+</div>
+<span class="px-space-xs py-[1px] bg-surface-container text-on-surface font-label-sm text-label-sm rounded-DEFAULT">145k</span>
+</div>
+<div class="flex items-center justify-between px-space-sm py-space-xs hover:bg-surface-container-low cursor-pointer rounded-DEFAULT">
+<div class="flex items-center gap-space-xs text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-secondary">chevron_right</span>
+<span class="font-medium">Complexity</span>
+</div>
+<span class="px-space-xs py-[1px] bg-surface-container text-on-surface font-label-sm text-label-sm rounded-DEFAULT">24.2k</span>
+</div>
+</div>
+</aside>
+<!-- Main Content Area: Remediation Effort File Breakdown -->
+<section class="col-span-12 lg:col-span-9 xl:col-span-9 flex flex-col gap-space-sm">
+<!-- Context & Shortcut Controller Bar -->
+<div class="bg-surface-container-lowest p-space-sm rounded-sm shadow-sm flex flex-wrap items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-xs font-body-sm text-body-sm text-on-surface">
+<span class="font-semibold text-primary">CxPHP</span>
+<button class="w-6 h-6 flex items-center justify-center bg-surface-container hover:bg-surface-container-high rounded text-secondary" type="button">
+<span class="material-symbols-outlined text-[16px]">menu_open</span>
+</button>
+<button class="w-6 h-6 flex items-center justify-center bg-surface-container hover:bg-surface-container-high rounded text-secondary" type="button">
+<span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</button>
+</div>
+<div class="flex items-center gap-space-md font-body-sm text-body-sm">
+<!-- Keyboard Helper Badges -->
+<div class="flex items-center gap-space-xs text-secondary">
+<div class="flex items-center gap-[2px]">
+<kbd class="px-space-xs py-[1px] bg-surface-container text-on-surface-variant font-mono text-[10px] rounded shadow-sm">↑</kbd>
+<kbd class="px-space-xs py-[1px] bg-surface-container text-on-surface-variant font-mono text-[10px] rounded shadow-sm">↓</kbd>
+</div>
+<span class="text-[11px]">to select files</span>
+</div>
+<div class="flex items-center gap-space-xs text-secondary">
+<div class="flex items-center gap-[2px]">
+<kbd class="px-space-xs py-[1px] bg-surface-container text-on-surface-variant font-mono text-[10px] rounded shadow-sm">←</kbd>
+<kbd class="px-space-xs py-[1px] bg-surface-container text-on-surface-variant font-mono text-[10px] rounded shadow-sm">→</kbd>
+</div>
+<span class="text-[11px]">to navigate</span>
+</div>
+<!-- Position Counter -->
+<div class="px-space-sm py-[2px] bg-surface-container-high text-on-surface font-semibold text-label-sm rounded font-mono">
+            1 / 334 files
+          </div>
+</div>
+</div>
+<!-- Table Container -->
+<div class="bg-surface-container-lowest rounded-sm shadow-sm overflow-hidden">
+<!-- Section Header Card -->
+<div class="px-space-md py-space-sm bg-surface-container-lowest flex flex-wrap items-center justify-between gap-space-md shadow-[0_1px_0_rgba(0,0,0,0.05)]">
+<div class="flex items-center gap-space-sm">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-semibold flex items-center gap-space-xs">
+              Security Remediation Effort
+              <span class="font-normal text-secondary ml-space-xs">4d 4h</span>
+</h2>
+<button class="w-6 h-6 flex items-center justify-center bg-primary-fixed hover:bg-primary-fixed-dim text-primary rounded" title="View historical trend" type="button">
+<span class="material-symbols-outlined text-[16px]">show_chart</span>
+</button>
+</div>
+<!-- Leak Period Badge -->
+<div class="px-space-sm py-space-xs bg-secondary-container/60 text-on-secondary-fixed font-body-sm text-body-sm rounded-DEFAULT flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-tertiary">history_toggle_off</span>
+<span>Leak Period: <strong class="font-semibold">since previous version</strong></span>
+</div>
+</div>
+<!-- Dense Remediation Effort File Table -->
+<div class="w-full flex flex-col font-body-md text-body-md divide-y-0" id="fileTable">
+<!-- Row 1: Active Selected -->
+<div class="group px-space-md py-space-xs flex items-center justify-between bg-surface-container-highest/60 text-primary hover:bg-surface-container-highest cursor-pointer transition-colors shadow-[inset_3px_0_0_#004ac6]">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-[18px] text-primary">description</span>
+<a class="font-mono text-body-md text-primary font-medium hover:underline truncate" href="#">includes/file.inc</a>
+</div>
+<div class="flex items-center gap-space-md shrink-0">
+<div class="hidden sm:flex w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[85%]"></div>
+</div>
+<span class="font-mono text-body-sm text-on-surface font-semibold text-right min-w-[58px]">6h 9min</span>
+</div>
+</div>
+<!-- Row 2 -->
+<div class="group px-space-md py-space-xs flex items-center justify-between hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-[18px] text-secondary">description</span>
+<a class="font-mono text-body-md text-primary hover:underline truncate" href="#">includes/common.inc</a>
+</div>
+<div class="flex items-center gap-space-md shrink-0">
+<div class="hidden sm:flex w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary/70 h-full w-[60%]"></div>
+</div>
+<span class="font-mono text-body-sm text-secondary text-right min-w-[58px]">3h 48min</span>
+</div>
+</div>
+<!-- Row 3 -->
+<div class="group px-space-md py-space-xs flex items-center justify-between hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-[18px] text-secondary">description</span>
+<a class="font-mono text-body-md text-primary hover:underline truncate" href="#">includes/menu.inc</a>
+</div>
+<div class="flex items-center gap-space-md shrink-0">
+<div class="hidden sm:flex w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary/70 h-full w-[52%]"></div>
+</div>
+<span class="font-mono text-body-sm text-secondary text-right min-w-[58px]">3h 21min</span>
+</div>
+</div>
+<!-- Row 4 -->
+<div class="group px-space-md py-space-xs flex items-center justify-between hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-[18px] text-secondary">description</span>
+<a class="font-mono text-body-md text-primary hover:underline truncate" href="#">includes/theme.inc</a>
+</div>
+<div class="flex items-center gap-space-md shrink-0">
+<div class="hidden sm:flex w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary/70 h-full w-[48%]"></div>
+</div>
+<span class="font-mono text-body-sm text-secondary text-right min-w-[58px]">3h 3min</span>
+</div>
+</div>
+<!-- Row 5 -->
+<div class="group px-space-md py-space-xs flex items-center justify-between hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-[18px] text-secondary">description</span>
+<a class="font-mono text-body-md text-primary hover:underline truncate" href="#">includes/bootstrap.inc</a>
+</div>
+<div class="flex items-center gap-space-md shrink-0">
+<div class="hidden sm:flex w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary/70 h-full w-[45%]"></div>
+</div>
+<span class="font-mono text-body-sm text-secondary text-right min-w-[58px]">3h</span>
+</div>
+</div>
+<!-- Row 6 -->
+<div class="group px-space-md py-space-xs flex items-center justify-between hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-[18px] text-secondary">description</span>
+<a class="font-mono text-body-md text-primary hover:underline truncate" href="#">includes/form.inc</a>
+</div>
+<div class="flex items-center gap-space-md shrink-0">
+<div class="hidden sm:flex w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary/60 h-full w-[38%]"></div>
+</div>
+<span class="font-mono text-body-sm text-secondary text-right min-w-[58px]">2h 33min</span>
+</div>
+</div>
+<!-- Row 7 -->
+<div class="group px-space-md py-space-xs flex items-center justify-between hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-[18px] text-secondary">description</span>
+<a class="font-mono text-body-md text-primary hover:underline truncate" href="#">includes/module.inc</a>
+</div>
+<div class="flex items-center gap-space-md shrink-0">
+<div class="hidden sm:flex w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary/60 h-full w-[36%]"></div>
+</div>
+<span class="font-mono text-body-sm text-secondary text-right min-w-[58px]">2h 27min</span>
+</div>
+</div>
+<!-- Row 8 -->
+<div class="group px-space-md py-space-xs flex items-center justify-between hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-[18px] text-secondary">description</span>
+<a class="font-mono text-body-md text-primary hover:underline truncate" href="#">includes/install.inc</a>
+</div>
+<div class="flex items-center gap-space-md shrink-0">
+<div class="hidden sm:flex w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary/60 h-full w-[26%]"></div>
+</div>
+<span class="font-mono text-body-sm text-secondary text-right min-w-[58px]">1h 48min</span>
+</div>
+</div>
+<!-- Row 9 -->
+<div class="group px-space-md py-space-xs flex items-center justify-between hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-[18px] text-secondary">description</span>
+<a class="font-mono text-body-md text-primary hover:underline truncate" href="#">includes/database.mysql.inc</a>
+</div>
+<div class="flex items-center gap-space-md shrink-0">
+<div class="hidden sm:flex w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary/50 h-full w-[20%]"></div>
+</div>
+<span class="font-mono text-body-sm text-secondary text-right min-w-[58px]">1h 21min</span>
+</div>
+</div>
+<!-- Row 10 -->
+<div class="group px-space-md py-space-xs flex items-center justify-between hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-[18px] text-secondary">description</span>
+<a class="font-mono text-body-md text-primary hover:underline truncate" href="#">modules/system/system.admin.inc</a>
+</div>
+<div class="flex items-center gap-space-md shrink-0">
+<div class="hidden sm:flex w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary/50 h-full w-[14%]"></div>
+</div>
+<span class="font-mono text-body-sm text-secondary text-right min-w-[58px]">57min</span>
+</div>
+</div>
+<!-- Row 11 -->
+<div class="group px-space-md py-space-xs flex items-center justify-between hover:bg-surface-container-low cursor-pointer transition-colors">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-[18px] text-secondary">description</span>
+<a class="font-mono text-body-md text-primary hover:underline truncate" href="#">includes/pager.inc</a>
+</div>
+<div class="flex items-center gap-space-md shrink-0">
+<div class="hidden sm:flex w-24 h-1.5 bg-surface-container rounded-full overflow-hidden">
+<div class="bg-primary/50 h-full w-[10%]"></div>
+</div>
+<span class="font-mono text-body-sm text-secondary text-right min-w-[58px]">42min</span>
+</div>
+</div>
+</div>
+<!-- Table Footer Pagination bar -->
+<div class="px-space-md py-space-sm bg-surface-container-low flex items-center justify-between text-body-sm text-secondary">
+<span>Showing <strong class="text-on-surface">1–11</strong> of 334 components</span>
+<div class="flex items-center gap-space-xs">
+<button class="px-space-sm py-[2px] bg-surface-container text-secondary rounded hover:bg-surface-container-high disabled:opacity-50" disabled="">Previous</button>
+<button class="px-space-sm py-[2px] bg-primary text-on-primary rounded font-semibold">1</button>
+<button class="px-space-sm py-[2px] bg-surface-container text-on-surface rounded hover:bg-surface-container-high">2</button>
+<button class="px-space-sm py-[2px] bg-surface-container text-on-surface rounded hover:bg-surface-container-high">3</button>
+<span class="px-space-xs text-secondary">...</span>
+<button class="px-space-sm py-[2px] bg-surface-container text-on-surface rounded hover:bg-surface-container-high">31</button>
+<button class="px-space-sm py-[2px] bg-surface-container text-on-surface rounded hover:bg-surface-container-high">Next</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<script>
+  // Simple arrow key interaction helper for file selection
+  document.addEventListener('keydown', function(e) {
+    const table = document.getElementById('fileTable');
+    if (!table) return;
+    const rows = Array.from(table.children);
+    let currentIndex = rows.findIndex(row => row.classList.contains('bg-surface-container-highest/60'));
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (currentIndex < rows.length - 1) {
+        selectRow(rows, currentIndex + 1);
+      }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (currentIndex > 0) {
+        selectRow(rows, currentIndex - 1);
+      }
+    }
+  });
+
+  function selectRow(rows, nextIndex) {
+    rows.forEach((r, idx) => {
+      if (idx === nextIndex) {
+        r.classList.add('bg-surface-container-highest/60', 'text-primary', 'shadow-[inset_3px_0_0_#004ac6]');
+        r.querySelector('.text-right')?.classList.replace('text-secondary', 'text-on-surface');
+        r.querySelector('.text-right')?.classList.add('font-semibold');
+      } else {
+        r.classList.remove('bg-surface-container-highest/60', 'text-primary', 'shadow-[inset_3px_0_0_#004ac6]');
+        r.querySelector('.text-right')?.classList.replace('text-on-surface', 'text-secondary');
+        r.querySelector('.text-right')?.classList.remove('font-semibold');
+      }
+    });
+  }
+</script></main><footer class="w-full bg-surface-container-low border-t border-outline-variant py-space-md"><div class="w-full px-margin flex items-center justify-between font-body-sm text-body-sm text-on-surface-variant"><div>SonarQube Community Edition • LGPL v3 • Version 9.9 LTS</div><div class="flex items-center gap-space-lg"><a class="hover:text-primary transition-colors" href="#">Documentation</a><a class="hover:text-primary transition-colors" href="#">Support Forums</a><a class="hover:text-primary transition-colors" href="#">Web API</a></div></div></footer></body></html>

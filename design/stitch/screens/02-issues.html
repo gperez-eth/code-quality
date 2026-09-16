@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-error-container":"#93000a","secondary":"#545f73","on-tertiary-fixed":"#001d31","on-secondary-fixed-variant":"#3c475a","on-primary-fixed":"#00174b","surface-container-lowest":"#ffffff","tertiary-fixed":"#cce5ff","error":"#ba1a1a","surface-container-highest":"#d3e4fe","surface-bright":"#f8f9ff","primary":"#004ac6","on-tertiary-fixed-variant":"#004b73","on-surface":"#0b1c30","secondary-fixed-dim":"#bcc7de","secondary-container":"#d5e0f8","on-surface-variant":"#434655","surface":"#f8f9ff","on-secondary-container":"#586377","on-secondary-fixed":"#111c2d","secondary-fixed":"#d8e3fb","surface-dim":"#cbdbf5","surface-variant":"#d3e4fe","background":"#f8f9ff","on-tertiary-container":"#e7f2ff","on-primary":"#ffffff","tertiary-container":"#0073ae","on-background":"#0b1c30","error-container":"#ffdad6","on-primary-fixed-variant":"#003ea8","on-tertiary":"#ffffff","inverse-surface":"#213145","tertiary":"#005a89","on-secondary":"#ffffff","inverse-primary":"#b4c5ff","primary-fixed":"#dbe1ff","primary-fixed-dim":"#b4c5ff","tertiary-fixed-dim":"#93ccff","on-primary-container":"#eeefff","surface-container":"#e5eeff","inverse-on-surface":"#eaf1ff","surface-container-low":"#eff4ff","on-error":"#ffffff","primary-container":"#2563eb","outline":"#737686","surface-container-high":"#dce9ff","outline-variant":"#c3c6d7","surface-tint":"#0053db"},borderRadius:{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},spacing:{"margin":"1rem","space-xl":"1.5rem","space-md":"0.75rem","gutter":"0.75rem","space-sm":"0.375rem","space-xs":"0.25rem","space-lg":"1rem"},fontFamily:{"headline-md":["Inter"],"body-sm":["Inter"],"body-lg":["Inter"],"body-md":["Inter"],"label-sm":["Inter"],"code-body":["JetBrains Mono"],"code-callout":["JetBrains Mono"],"headline-lg":["Inter"],"label-md":["Inter"],"headline-sm":["Inter"],"stat-display":["Inter"]},fontSize:{"headline-md":["18px",{"lineHeight":"24px","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"16px","fontWeight":"400"}],"body-lg":["14px",{"lineHeight":"20px","fontWeight":"400"}],"body-md":["13px",{"lineHeight":"18px","fontWeight":"400"}],"label-sm":["11px",{"lineHeight":"14px","fontWeight":"600"}],"code-body":["12px",{"lineHeight":"18px","fontWeight":"400"}],"code-callout":["11px",{"lineHeight":"14px","fontWeight":"600"}],"headline-lg":["24px",{"lineHeight":"32px","fontWeight":"600"}],"label-md":["12px",{"lineHeight":"16px","fontWeight":"500"}],"headline-sm":["15px",{"lineHeight":"20px","fontWeight":"600"}],"stat-display":["28px",{"lineHeight":"32px","fontWeight":"300"}]}}}}</script></head><body class="bg-background font-body-md text-body-md text-on-surface"><header class="fixed top-0 left-0 w-full z-50"><div class="h-12 bg-inverse-surface border-b border-outline/30 px-margin flex items-center justify-between"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-tertiary-fixed text-[20px]">waves</span><span class="font-headline-sm text-headline-sm text-on-primary tracking-tight font-semibold">SonarQube</span></div><nav class="hidden xl:flex items-center gap-space-md h-12" data-active-classes="text-on-primary border-b-2 border-primary-container font-semibold"><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="projects" href="#">Projects</a><a aria-current="page" class="h-full flex items-center transition-colors px-space-xs text-on-primary border-b-2 border-primary-container font-semibold" data-path="project-issues" href="#">Issues</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-measures" href="#">Measures</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-code" href="#">Code</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-activity" href="#">Activity</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="quality-profiles" href="#">Quality Profiles</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="quality-gates" href="#">Quality Gates</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="system-administration" href="#">Administration</a></nav></div><div class="flex items-center gap-space-md"><div class="relative w-[260px]"><span class="material-symbols-outlined absolute left-space-sm top-1/2 -translate-y-1/2 text-inverse-on-surface/60 text-[16px]">search</span><input class="w-full h-[28px] pl-7 pr-space-sm bg-surface-container-highest/20 border border-outline/30 rounded text-inverse-on-surface placeholder-inverse-on-surface/50 font-body-sm text-body-sm focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container" placeholder="Search for projects, files..." type="text"/></div><button class="w-7 h-7 flex items-center justify-center text-inverse-on-surface/80 hover:text-on-primary transition-colors" title="Documentation & Help" type="button"><span class="material-symbols-outlined text-[18px]">help</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div><div class="h-[42px] bg-surface-container-lowest border-b border-outline-variant px-margin flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)]"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-xs"><button class="text-secondary hover:text-primary transition-colors flex items-center" type="button"><span class="material-symbols-outlined text-[16px]">star</span></button><span class="material-symbols-outlined text-secondary text-[16px]">folder</span><span class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight">CxPHP</span></div><div class="h-4 w-[1px] bg-outline-variant mx-space-xs"></div><nav class="flex items-center gap-space-md h-[42px]" data-active-classes="text-primary border-b-2 border-primary font-semibold"><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-overview" href="#">Overview</a><a aria-current="page" class="h-full flex items-center transition-colors px-space-xs text-primary border-b-2 border-primary font-semibold" data-path="project-issues" href="#">Issues</a><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-measures" href="#">Measures</a><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-code" href="#">Code</a><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-activity" href="#">Activity</a><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-settings" href="#">Administration</a><button class="h-full flex items-center gap-space-xs text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs" type="button"><span>More</span><span class="material-symbols-outlined text-[14px]">arrow_drop_down</span></button></nav></div><div class="flex items-center gap-space-md font-body-sm text-body-sm text-on-surface-variant"><span class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[14px]">schedule</span>October 25, 2017, 11:23 AM</span><span class="text-outline-variant">•</span><span class="px-space-xs py-[1px] bg-surface-container text-on-secondary-container rounded font-label-sm text-label-sm border border-outline-variant">Version not provided</span></div></div></header><main class="w-full pt-[90px] bg-background min-h-screen px-margin pb-margin"><div class="flex flex-col w-full">
+<div class="w-full flex gap-space-md items-start">
+<!-- Left Sidebar: Filters & Facets (Width: 260px) -->
+<aside class="w-[260px] shrink-0 flex flex-col gap-space-md">
+<!-- Toggle buttons: My Issues / All -->
+<div class="bg-surface-container-lowest p-space-xs rounded-lg shadow-sm flex items-center gap-space-xs">
+<button class="flex-1 py-1 px-space-xs text-center font-label-md text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors rounded" type="button">
+          My Issues
+        </button>
+<button class="flex-1 py-1 px-space-xs text-center font-label-md text-label-md bg-primary-container text-on-primary rounded font-semibold shadow-sm" type="button">
+          All
+        </button>
+</div>
+<!-- Bulk Change Action -->
+<div>
+<button class="w-full py-1.5 px-space-md bg-surface-container-lowest hover:bg-surface-container text-on-surface font-label-md text-label-md rounded shadow-sm flex items-center justify-center gap-space-xs transition-colors" type="button">
+<span class="material-symbols-outlined text-[16px] text-secondary">checklist</span>
+<span>Bulk Change</span>
+</button>
+</div>
+<!-- Facet Panel -->
+<div class="bg-surface-container-lowest rounded-lg shadow-sm p-space-md flex flex-col gap-space-md">
+<!-- Header / Clear -->
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight">Filters</span>
+<button class="font-label-sm text-label-sm text-error hover:underline transition-all" type="button">
+            Clear All Filters
+          </button>
+</div>
+<!-- Display Mode -->
+<div class="flex flex-col gap-space-xs">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Display Mode</span>
+<div class="flex items-center gap-space-xs text-body-sm font-body-sm">
+<span class="px-space-sm py-0.5 bg-secondary-container text-primary font-semibold rounded shadow-xs">Issues</span>
+<span class="text-on-surface-variant hover:text-on-surface cursor-pointer px-space-xs py-0.5">Effort</span>
+</div>
+</div>
+<!-- Section: Type -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between text-on-surface">
+<div class="flex items-center gap-1 cursor-pointer">
+<span class="material-symbols-outlined text-[15px] text-secondary">keyboard_arrow_down</span>
+<span class="font-label-md text-label-md font-semibold">Type</span>
+</div>
+<button class="font-label-sm text-label-sm text-error hover:underline" type="button">Clear</button>
+</div>
+<div class="flex flex-col gap-0.5 pl-space-xs">
+<div class="flex items-center justify-between py-1 px-space-xs text-body-sm font-body-sm text-secondary hover:bg-surface-container rounded cursor-pointer opacity-70">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[15px] text-secondary">pest_control</span>
+<span>Bug</span>
+</div>
+<span class="text-label-sm font-code-body">0</span>
+</div>
+<!-- Active Vulnerability row -->
+<div class="flex items-center justify-between py-1 px-space-xs text-body-sm font-body-sm bg-surface-container-high text-primary font-semibold rounded cursor-pointer shadow-xs">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[15px] text-primary" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span>Vulnerability</span>
+</div>
+<span class="font-code-callout text-label-sm px-1.5 py-0.2 bg-primary text-on-primary rounded">725</span>
+</div>
+<div class="flex items-center justify-between py-1 px-space-xs text-body-sm font-body-sm text-secondary hover:bg-surface-container rounded cursor-pointer opacity-70">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[15px] text-secondary">mode_heat</span>
+<span>Code Smell</span>
+</div>
+<span class="text-label-sm font-code-body">0</span>
+</div>
+</div>
+</div>
+<!-- Section: Resolution -->
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-1 cursor-pointer text-on-surface">
+<span class="material-symbols-outlined text-[15px] text-secondary">keyboard_arrow_down</span>
+<span class="font-label-md text-label-md font-semibold">Resolution</span>
+</div>
+<div class="grid grid-cols-2 gap-x-space-md gap-y-1 pl-space-xs text-body-sm font-body-sm">
+<div class="flex items-center justify-between py-0.5 px-1 bg-surface-container-high text-primary rounded font-semibold cursor-pointer">
+<span>Unresolved</span>
+<span class="font-code-callout text-label-sm">725</span>
+</div>
+<div class="flex items-center justify-between py-0.5 px-1 text-secondary hover:bg-surface-container rounded cursor-pointer opacity-70">
+<span>Fixed</span>
+<span class="font-code-body text-label-sm">2.3k</span>
+</div>
+<div class="flex items-center justify-between py-0.5 px-1 text-secondary hover:bg-surface-container rounded cursor-pointer opacity-50">
+<span>False Positive</span>
+<span class="font-code-body text-label-sm">0</span>
+</div>
+<div class="flex items-center justify-between py-0.5 px-1 text-secondary hover:bg-surface-container rounded cursor-pointer opacity-50">
+<span>Won't fix</span>
+<span class="font-code-body text-label-sm">0</span>
+</div>
+<div class="flex items-center justify-between py-0.5 px-1 text-secondary hover:bg-surface-container rounded cursor-pointer opacity-70">
+<span>Removed</span>
+<span class="font-code-body text-label-sm">2</span>
+</div>
+</div>
+</div>
+<!-- Collapsible Categorical Accordions -->
+<div class="flex flex-col gap-1 text-body-sm font-body-sm text-on-surface-variant">
+<div class="flex items-center justify-between py-1 px-1 hover:bg-surface-container rounded cursor-pointer">
+<div class="flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-secondary">chevron_right</span>
+<span>Severity</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary bg-surface-container px-1.5 py-0.2 rounded">4</span>
+</div>
+<div class="flex items-center justify-between py-1 px-1 hover:bg-surface-container rounded cursor-pointer">
+<div class="flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-secondary">chevron_right</span>
+<span>Status</span>
+</div>
+<span class="font-label-sm text-label-sm text-secondary bg-surface-container px-1.5 py-0.2 rounded">Open</span>
+</div>
+<div class="flex items-center justify-between py-1 px-1 hover:bg-surface-container rounded cursor-pointer">
+<div class="flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-secondary">chevron_right</span>
+<span>Creation Date</span>
+</div>
+</div>
+<div class="flex items-center justify-between py-1 px-1 hover:bg-surface-container rounded cursor-pointer">
+<div class="flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-secondary">chevron_right</span>
+<span>Rule</span>
+</div>
+</div>
+<div class="flex items-center justify-between py-1 px-1 hover:bg-surface-container rounded cursor-pointer">
+<div class="flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-secondary">chevron_right</span>
+<span>Tag</span>
+</div>
+</div>
+<div class="flex items-center justify-between py-1 px-1 hover:bg-surface-container rounded cursor-pointer">
+<div class="flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-secondary">chevron_right</span>
+<span>Module</span>
+</div>
+</div>
+<div class="flex items-center justify-between py-1 px-1 hover:bg-surface-container rounded cursor-pointer">
+<div class="flex items-center gap-1 font-label-md text-label-md">
+<span class="material-symbols-outlined text-[16px] text-secondary">chevron_right</span>
+<span>Directory</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+<!-- Right Area: Issues List with Dense Enterprise Toolbar & Rows (flex-1) -->
+<section class="flex-1 flex flex-col gap-space-sm min-w-0">
+<!-- Controls / Pagination Bar -->
+<div class="bg-surface-container-lowest py-2 px-space-md rounded-lg shadow-sm flex items-center justify-between text-body-sm font-body-sm text-on-surface-variant">
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-1 bg-surface-container px-2 py-0.5 rounded text-label-sm font-label-sm">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span>
+<span class="material-symbols-outlined text-[14px]">arrow_downward</span>
+<span class="ml-1 text-secondary">to select issues</span>
+</div>
+<div class="flex items-center gap-1 bg-surface-container px-2 py-0.5 rounded text-label-sm font-label-sm">
+<span class="material-symbols-outlined text-[14px]">arrow_back</span>
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+<span class="ml-1 text-secondary">to navigate</span>
+</div>
+</div>
+<div class="flex items-center gap-space-md">
+<span class="font-code-body text-code-body text-on-surface font-semibold">16 / 725 issues</span>
+<button class="hover:text-primary transition-colors flex items-center justify-center p-1 rounded hover:bg-surface-container" type="button">
+<span class="material-symbols-outlined text-[16px]">refresh</span>
+</button>
+</div>
+</div>
+<!-- Dense Vulnerability Rows Container -->
+<div class="flex flex-col gap-1">
+<!-- Row 1: Path Traversal (Major) -->
+<div class="bg-error-container/40 hover:bg-error-container/60 transition-colors p-space-sm rounded shadow-xs flex items-center justify-between gap-space-md text-body-sm font-body-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<input class="rounded text-primary focus:ring-0 cursor-pointer w-3.5 h-3.5" type="checkbox"/>
+<div class="flex flex-col gap-0.5 min-w-0">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-headline-sm text-body-md font-semibold text-on-error-container truncate">Checkmarx Vulnerability : Path_Traversal</span>
+<span class="material-symbols-outlined text-[13px] text-secondary cursor-pointer">more_horiz</span>
+</div>
+<div class="flex items-center gap-space-md text-label-sm font-label-sm text-on-surface-variant flex-wrap">
+<span class="flex items-center gap-1 text-tertiary-container"><span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">lock</span>Vulnerability</span>
+<span class="flex items-center gap-0.5 text-error font-semibold"><span class="material-symbols-outlined text-[13px]">keyboard_double_arrow_up</span>Major</span>
+<span class="flex items-center gap-1 text-primary"><span class="w-2 h-2 rounded-full bg-primary inline-block"></span>Open</span>
+<span class="text-secondary">Not assigned</span>
+<span class="text-secondary">3min effort</span>
+<span class="text-primary hover:underline cursor-pointer">Comment</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-md shrink-0 text-label-sm font-label-sm text-secondary">
+<span>last month</span>
+<span class="font-code-body text-code-body bg-surface-container px-1.5 py-0.5 rounded text-on-surface">L333</span>
+<span class="px-1.5 py-0.5 bg-surface-container rounded font-code-callout text-on-surface font-semibold">13</span>
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-0.5 rounded text-on-surface cursor-pointer hover:bg-surface-variant">
+<span class="material-symbols-outlined text-[13px] text-secondary">local_offer</span>
+<span>checkmarx-medium</span>
+<span class="material-symbols-outlined text-[13px]">arrow_drop_down</span>
+</div>
+</div>
+</div>
+<!-- Row 2: Path Traversal (Major) -->
+<div class="bg-error-container/40 hover:bg-error-container/60 transition-colors p-space-sm rounded shadow-xs flex items-center justify-between gap-space-md text-body-sm font-body-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<input class="rounded text-primary focus:ring-0 cursor-pointer w-3.5 h-3.5" type="checkbox"/>
+<div class="flex flex-col gap-0.5 min-w-0">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-headline-sm text-body-md font-semibold text-on-error-container truncate">Checkmarx Vulnerability : Path_Traversal</span>
+<span class="material-symbols-outlined text-[13px] text-secondary cursor-pointer">more_horiz</span>
+</div>
+<div class="flex items-center gap-space-md text-label-sm font-label-sm text-on-surface-variant flex-wrap">
+<span class="flex items-center gap-1 text-tertiary-container"><span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">lock</span>Vulnerability</span>
+<span class="flex items-center gap-0.5 text-error font-semibold"><span class="material-symbols-outlined text-[13px]">keyboard_double_arrow_up</span>Major</span>
+<span class="flex items-center gap-1 text-primary"><span class="w-2 h-2 rounded-full bg-primary inline-block"></span>Open</span>
+<span class="text-secondary">Not assigned</span>
+<span class="text-secondary">3min effort</span>
+<span class="text-primary hover:underline cursor-pointer">Comment</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-md shrink-0 text-label-sm font-label-sm text-secondary">
+<span>last month</span>
+<span class="font-code-body text-code-body bg-surface-container px-1.5 py-0.5 rounded text-on-surface">L399</span>
+<span class="px-1.5 py-0.5 bg-surface-container rounded font-code-callout text-on-surface font-semibold">17</span>
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-0.5 rounded text-on-surface cursor-pointer hover:bg-surface-variant">
+<span class="material-symbols-outlined text-[13px] text-secondary">local_offer</span>
+<span>checkmarx-medium</span>
+<span class="material-symbols-outlined text-[13px]">arrow_drop_down</span>
+</div>
+</div>
+</div>
+<!-- Row 3: Possible_Flow_Control (Minor) -->
+<div class="bg-error-container/40 hover:bg-error-container/60 transition-colors p-space-sm rounded shadow-xs flex items-center justify-between gap-space-md text-body-sm font-body-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<input class="rounded text-primary focus:ring-0 cursor-pointer w-3.5 h-3.5" type="checkbox"/>
+<div class="flex flex-col gap-0.5 min-w-0">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-headline-sm text-body-md font-semibold text-on-error-container truncate">Checkmarx Vulnerability : Possible_Flow_Control</span>
+<span class="material-symbols-outlined text-[13px] text-secondary cursor-pointer">more_horiz</span>
+</div>
+<div class="flex items-center gap-space-md text-label-sm font-label-sm text-on-surface-variant flex-wrap">
+<span class="flex items-center gap-1 text-tertiary-container"><span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">lock</span>Vulnerability</span>
+<span class="flex items-center gap-0.5 text-secondary font-semibold"><span class="material-symbols-outlined text-[13px] text-secondary">arrow_downward</span>Minor</span>
+<span class="flex items-center gap-1 text-primary"><span class="w-2 h-2 rounded-full bg-primary inline-block"></span>Open</span>
+<span class="text-secondary">Not assigned</span>
+<span class="text-secondary">3min effort</span>
+<span class="text-primary hover:underline cursor-pointer">Comment</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-md shrink-0 text-label-sm font-label-sm text-secondary">
+<span>last month</span>
+<span class="font-code-body text-code-body bg-surface-container px-1.5 py-0.5 rounded text-on-surface">L399</span>
+<span class="px-1.5 py-0.5 bg-surface-container rounded font-code-callout text-on-surface font-semibold">17</span>
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-0.5 rounded text-on-surface cursor-pointer hover:bg-surface-variant">
+<span class="material-symbols-outlined text-[13px] text-secondary">local_offer</span>
+<span>checkmarx-low</span>
+<span class="material-symbols-outlined text-[13px]">arrow_drop_down</span>
+</div>
+</div>
+</div>
+<!-- Row 4: Remote_File_Inclusion (Critical) -->
+<div class="bg-error-container/40 hover:bg-error-container/60 transition-colors p-space-sm rounded shadow-xs flex items-center justify-between gap-space-md text-body-sm font-body-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<input class="rounded text-primary focus:ring-0 cursor-pointer w-3.5 h-3.5" type="checkbox"/>
+<div class="flex flex-col gap-0.5 min-w-0">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-headline-sm text-body-md font-semibold text-on-error-container truncate">Checkmarx Vulnerability : Remote_File_Inclusion</span>
+<span class="material-symbols-outlined text-[13px] text-secondary cursor-pointer">more_horiz</span>
+</div>
+<div class="flex items-center gap-space-md text-label-sm font-label-sm text-on-surface-variant flex-wrap">
+<span class="flex items-center gap-1 text-tertiary-container"><span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">lock</span>Vulnerability</span>
+<span class="flex items-center gap-0.5 text-error font-semibold"><span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">error</span>Critical</span>
+<span class="flex items-center gap-1 text-primary"><span class="w-2 h-2 rounded-full bg-primary inline-block"></span>Open</span>
+<span class="text-secondary">Not assigned</span>
+<span class="text-secondary">3min effort</span>
+<span class="text-primary hover:underline cursor-pointer">Comment</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-md shrink-0 text-label-sm font-label-sm text-secondary">
+<span>last month</span>
+<span class="font-code-body text-code-body bg-surface-container px-1.5 py-0.5 rounded text-on-surface">L400</span>
+<span class="px-1.5 py-0.5 bg-surface-container rounded font-code-callout text-on-surface font-semibold">17</span>
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-0.5 rounded text-on-surface cursor-pointer hover:bg-surface-variant">
+<span class="material-symbols-outlined text-[13px] text-secondary">local_offer</span>
+<span>checkmarx-high</span>
+<span class="material-symbols-outlined text-[13px]">arrow_drop_down</span>
+</div>
+</div>
+</div>
+<!-- Row 5: File_Inclusion (Critical) -->
+<div class="bg-error-container/40 hover:bg-error-container/60 transition-colors p-space-sm rounded shadow-xs flex items-center justify-between gap-space-md text-body-sm font-body-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<input class="rounded text-primary focus:ring-0 cursor-pointer w-3.5 h-3.5" type="checkbox"/>
+<div class="flex flex-col gap-0.5 min-w-0">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-headline-sm text-body-md font-semibold text-on-error-container truncate">Checkmarx Vulnerability : File_Inclusion</span>
+<span class="material-symbols-outlined text-[13px] text-secondary cursor-pointer">more_horiz</span>
+</div>
+<div class="flex items-center gap-space-md text-label-sm font-label-sm text-on-surface-variant flex-wrap">
+<span class="flex items-center gap-1 text-tertiary-container"><span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">lock</span>Vulnerability</span>
+<span class="flex items-center gap-0.5 text-error font-semibold"><span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">error</span>Critical</span>
+<span class="flex items-center gap-1 text-primary"><span class="w-2 h-2 rounded-full bg-primary inline-block"></span>Open</span>
+<span class="text-secondary">Not assigned</span>
+<span class="text-secondary">3min effort</span>
+<span class="text-primary hover:underline cursor-pointer">Comment</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-md shrink-0 text-label-sm font-label-sm text-secondary">
+<span>last month</span>
+<span class="font-code-body text-code-body bg-surface-container px-1.5 py-0.5 rounded text-on-surface">L400</span>
+<span class="px-1.5 py-0.5 bg-surface-container rounded font-code-callout text-on-surface font-semibold">17</span>
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-0.5 rounded text-on-surface cursor-pointer hover:bg-surface-variant">
+<span class="material-symbols-outlined text-[13px] text-secondary">local_offer</span>
+<span>checkmarx-high</span>
+<span class="material-symbols-outlined text-[13px]">arrow_drop_down</span>
+</div>
+</div>
+</div>
+<!-- Row 6: Selected Item (Possible_Flow_Control) with Active Visual Focus Container -->
+<div class="bg-error-container/60 shadow-md p-space-sm rounded flex items-center justify-between gap-space-md text-body-sm font-body-sm relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-error"></div>
+<div class="flex items-center gap-space-sm min-w-0 pl-1">
+<input checked="" class="rounded text-primary focus:ring-0 cursor-pointer w-3.5 h-3.5" type="checkbox"/>
+<div class="flex flex-col gap-0.5 min-w-0">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-headline-sm text-body-md font-semibold text-on-error-container truncate">Checkmarx Vulnerability : Possible_Flow_Control</span>
+<span class="material-symbols-outlined text-[13px] text-secondary cursor-pointer">more_horiz</span>
+</div>
+<div class="flex items-center gap-space-md text-label-sm font-label-sm text-on-surface-variant flex-wrap">
+<span class="flex items-center gap-1 text-tertiary-container"><span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">lock</span>Vulnerability</span>
+<span class="flex items-center gap-0.5 text-secondary font-semibold"><span class="material-symbols-outlined text-[13px]">arrow_downward</span>Minor</span>
+<span class="flex items-center gap-1 text-primary"><span class="w-2 h-2 rounded-full bg-primary inline-block"></span>Open</span>
+<span class="text-secondary">Not assigned</span>
+<span class="text-secondary">3min effort</span>
+<span class="text-primary hover:underline cursor-pointer">Comment</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-md shrink-0 text-label-sm font-label-sm text-secondary">
+<span>last month</span>
+<span class="font-code-body text-code-body bg-surface-container px-1.5 py-0.5 rounded text-on-surface font-semibold">L426</span>
+<span class="px-1.5 py-0.5 bg-error text-on-error rounded font-code-callout font-bold">5</span>
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-0.5 rounded text-on-surface cursor-pointer hover:bg-surface-variant">
+<span class="material-symbols-outlined text-[13px] text-secondary">local_offer</span>
+<span>checkmarx-low</span>
+<span class="material-symbols-outlined text-[13px]">arrow_drop_down</span>
+</div>
+</div>
+</div>
+<!-- Row 7: Possible_Flow_Control (Minor) -->
+<div class="bg-error-container/40 hover:bg-error-container/60 transition-colors p-space-sm rounded shadow-xs flex items-center justify-between gap-space-md text-body-sm font-body-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<input class="rounded text-primary focus:ring-0 cursor-pointer w-3.5 h-3.5" type="checkbox"/>
+<div class="flex flex-col gap-0.5 min-w-0">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-headline-sm text-body-md font-semibold text-on-error-container truncate">Checkmarx Vulnerability : Possible_Flow_Control</span>
+<span class="material-symbols-outlined text-[13px] text-secondary cursor-pointer">more_horiz</span>
+</div>
+<div class="flex items-center gap-space-md text-label-sm font-label-sm text-on-surface-variant flex-wrap">
+<span class="flex items-center gap-1 text-tertiary-container"><span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">lock</span>Vulnerability</span>
+<span class="flex items-center gap-0.5 text-secondary font-semibold"><span class="material-symbols-outlined text-[13px]">arrow_downward</span>Minor</span>
+<span class="flex items-center gap-1 text-primary"><span class="w-2 h-2 rounded-full bg-primary inline-block"></span>Open</span>
+<span class="text-secondary">Not assigned</span>
+<span class="text-secondary">3min effort</span>
+<span class="text-primary hover:underline cursor-pointer">Comment</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-md shrink-0 text-label-sm font-label-sm text-secondary">
+<span>last month</span>
+<span class="font-code-body text-code-body bg-surface-container px-1.5 py-0.5 rounded text-on-surface">L426</span>
+<span class="px-1.5 py-0.5 bg-surface-container rounded font-code-callout text-on-surface font-semibold">7</span>
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-0.5 rounded text-on-surface cursor-pointer hover:bg-surface-variant">
+<span class="material-symbols-outlined text-[13px] text-secondary">local_offer</span>
+<span>checkmarx-low</span>
+<span class="material-symbols-outlined text-[13px]">arrow_drop_down</span>
+</div>
+</div>
+</div>
+<!-- Row 8: Possible_Flow_Control (Minor) -->
+<div class="bg-error-container/40 hover:bg-error-container/60 transition-colors p-space-sm rounded shadow-xs flex items-center justify-between gap-space-md text-body-sm font-body-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<input class="rounded text-primary focus:ring-0 cursor-pointer w-3.5 h-3.5" type="checkbox"/>
+<div class="flex flex-col gap-0.5 min-w-0">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-headline-sm text-body-md font-semibold text-on-error-container truncate">Checkmarx Vulnerability : Possible_Flow_Control</span>
+<span class="material-symbols-outlined text-[13px] text-secondary cursor-pointer">more_horiz</span>
+</div>
+<div class="flex items-center gap-space-md text-label-sm font-label-sm text-on-surface-variant flex-wrap">
+<span class="flex items-center gap-1 text-tertiary-container"><span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">lock</span>Vulnerability</span>
+<span class="flex items-center gap-0.5 text-secondary font-semibold"><span class="material-symbols-outlined text-[13px]">arrow_downward</span>Minor</span>
+<span class="flex items-center gap-1 text-primary"><span class="w-2 h-2 rounded-full bg-primary inline-block"></span>Open</span>
+<span class="text-secondary">Not assigned</span>
+<span class="text-secondary">3min effort</span>
+<span class="text-primary hover:underline cursor-pointer">Comment</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-md shrink-0 text-label-sm font-label-sm text-secondary">
+<span>last month</span>
+<span class="font-code-body text-code-body bg-surface-container px-1.5 py-0.5 rounded text-on-surface">L426</span>
+<span class="px-1.5 py-0.5 bg-surface-container rounded font-code-callout text-on-surface font-semibold">5</span>
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-0.5 rounded text-on-surface cursor-pointer hover:bg-surface-variant">
+<span class="material-symbols-outlined text-[13px] text-secondary">local_offer</span>
+<span>checkmarx-low</span>
+<span class="material-symbols-outlined text-[13px]">arrow_drop_down</span>
+</div>
+</div>
+</div>
+<!-- Row 9: Use_of_Broken_or_Risky_Cryptographic_Algorithm (Minor) -->
+<div class="bg-error-container/40 hover:bg-error-container/60 transition-colors p-space-sm rounded shadow-xs flex items-center justify-between gap-space-md text-body-sm font-body-sm">
+<div class="flex items-center gap-space-sm min-w-0">
+<input class="rounded text-primary focus:ring-0 cursor-pointer w-3.5 h-3.5" type="checkbox"/>
+<div class="flex flex-col gap-0.5 min-w-0">
+<div class="flex items-center gap-1.5 min-w-0">
+<span class="font-headline-sm text-body-md font-semibold text-on-error-container truncate">Checkmarx Vulnerability : Use_of_Broken_or_Risky_Cryptographic_Algorithm</span>
+<span class="material-symbols-outlined text-[13px] text-secondary cursor-pointer">more_horiz</span>
+</div>
+<div class="flex items-center gap-space-md text-label-sm font-label-sm text-on-surface-variant flex-wrap">
+<span class="flex items-center gap-1 text-tertiary-container"><span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">lock</span>Vulnerability</span>
+<span class="flex items-center gap-0.5 text-secondary font-semibold"><span class="material-symbols-outlined text-[13px]">arrow_downward</span>Minor</span>
+<span class="flex items-center gap-1 text-primary"><span class="w-2 h-2 rounded-full bg-primary inline-block"></span>Open</span>
+<span class="text-secondary">Not assigned</span>
+<span class="text-secondary">3min effort</span>
+<span class="text-primary hover:underline cursor-pointer">Comment</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-md shrink-0 text-label-sm font-label-sm text-secondary">
+<span>last month</span>
+<span class="font-code-body text-code-body bg-surface-container px-1.5 py-0.5 rounded text-on-surface">L470</span>
+<span class="px-1.5 py-0.5 bg-surface-container rounded font-code-callout text-on-surface font-semibold">1</span>
+<div class="flex items-center gap-1 bg-surface-container-high px-2 py-0.5 rounded text-on-surface cursor-pointer hover:bg-surface-variant">
+<span class="material-symbols-outlined text-[13px] text-secondary">local_offer</span>
+<span>checkmarx-low</span>
+<span class="material-symbols-outlined text-[13px]">arrow_drop_down</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div></main><footer class="w-full bg-surface-container-low border-t border-outline-variant py-space-md"><div class="w-full px-margin flex items-center justify-between font-body-sm text-body-sm text-on-surface-variant"><div>SonarQube Community Edition • LGPL v3 • Version 9.9 LTS</div><div class="flex items-center gap-space-lg"><a class="hover:text-primary transition-colors" href="#">Documentation</a><a class="hover:text-primary transition-colors" href="#">Support Forums</a><a class="hover:text-primary transition-colors" href="#">Web API</a></div></div></footer></body></html>
