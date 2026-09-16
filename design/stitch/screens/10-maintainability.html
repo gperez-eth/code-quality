@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>CxPHP - Maintainability Analysis | SonarAudit</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', 'monospace'],
+          },
+          colors: {
+            slateHeader: '#181b20',
+            sonargreen: '#10b981',
+            sonarorange: '#f59e0b',
+            sonarblue: '#2563eb',
+            sonarred: '#ef4444',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-typography">
+    body {
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .badge-c {
+      background-color: #fff7ed;
+      border: 1.5px solid #ea580c;
+      color: #ea580c;
+    }
+    .badge-c-dark {
+      background-color: #ea580c;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body class="bg-[#f8f9ff] text-slate-800 antialiased text-[13px] leading-tight min-h-screen flex flex-col font-sans selection:bg-blue-100 selection:text-blue-900">
+<!-- BEGIN: TopUtilityBar -->
+<header class="bg-[#181b20] h-12 flex items-center justify-between px-4 border-b border-[#2d333b] select-none shrink-0" data-purpose="top-utility-bar">
+<div class="flex items-center space-x-6">
+<!-- SonarAudit Logo Mark -->
+<a class="flex items-center space-x-2 text-white group focus:outline-none" href="#">
+<svg class="w-5 h-5 text-blue-400 group-hover:text-blue-300 transition-colors" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24">
+<path d="M2 12c.6-2 2-3.5 4-4 2.5-.6 4.5 1 6.5 1.5s4 .5 5.5-.5c1.5-1 2.5-3 2.5-3"></path>
+<path d="M2 17c1-1.5 2.5-2 4.5-2 2.5 0 4 1.5 6 2s4 .5 5.5-.5c1.5-1 2.5-2.5 2.5-2.5"></path>
+</svg>
+<span class="font-bold tracking-tight text-[15px] text-white">sonarqube<span class="text-blue-400 font-normal text-xs ml-1 opacity-90">audit</span></span>
+</a>
+<!-- Global Navigation -->
+<nav aria-label="Global Navigation" class="hidden md:flex items-center space-x-1 text-[13px] font-medium text-slate-300">
+<a class="px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800 transition" href="#">Projects</a>
+<a class="px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800 transition" href="#">Issues</a>
+<a class="px-2.5 py-1.5 rounded text-white bg-slate-800 font-semibold transition" href="#">Measures</a>
+<a class="px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800 transition" href="#">Rules</a>
+<a class="px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800 transition" href="#">Quality Profiles</a>
+<a class="px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800 transition" href="#">Quality Gates</a>
+<a class="px-2.5 py-1.5 rounded hover:text-white hover:bg-slate-800 transition" href="#">Administration</a>
+</nav>
+</div>
+<!-- Right Controls: Search, Help, Profile -->
+<div class="flex items-center space-x-3">
+<!-- Search Input -->
+<div class="relative w-64 md:w-72">
+<span class="absolute inset-y-0 left-0 flex items-center pl-2.5 pointer-events-none text-slate-400">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</span>
+<input class="w-full pl-8 pr-12 py-1 text-xs bg-[#242931] text-slate-200 placeholder-slate-400 border border-slate-700 rounded focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" placeholder="Search projects, files or rules..." type="text"/>
+<span class="absolute inset-y-0 right-0 flex items-center pr-2">
+<kbd class="text-[10px] text-slate-400 font-mono bg-[#181b20] border border-slate-700 px-1 rounded">⌘K</kbd>
+</span>
+</div>
+<!-- Help Button -->
+<button class="w-7 h-7 flex items-center justify-center text-slate-300 hover:text-white rounded hover:bg-slate-800 text-xs border border-transparent hover:border-slate-700 font-bold" title="Documentation &amp; Help" type="button">?</button>
+<!-- Notification Bell -->
+<button class="w-7 h-7 flex items-center justify-center text-slate-300 hover:text-white rounded hover:bg-slate-800 text-xs" title="Notifications" type="button">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</button>
+<!-- User Avatar -->
+<div class="flex items-center pl-1">
+<span class="w-7 h-7 rounded-full bg-emerald-600 border border-emerald-500 text-white font-semibold text-xs flex items-center justify-center" title="Logged in as Gary Prince (GP)">GP</span>
+</div>
+</div>
+</header>
+<!-- END: TopUtilityBar -->
+<!-- BEGIN: ProjectSubHeader -->
+<section class="bg-white border-b border-slate-200 px-4 pt-2.5 select-none" data-purpose="project-sub-header">
+<div class="flex flex-wrap items-center justify-between gap-2 pb-2">
+<!-- Breadcrumb and Project Meta -->
+<div class="flex items-center space-x-2 text-[14px]">
+<button class="text-slate-400 hover:text-amber-500 transition-colors" title="Favorite project" type="button">
+<svg class="w-4 h-4 fill-amber-400 text-amber-400" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path>
+</svg>
+</button>
+<span class="text-slate-400">/</span>
+<svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+<span class="font-bold text-slate-900 tracking-tight">CxPHP</span>
+<span class="text-[11px] font-mono font-medium px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-300">branch: main</span>
+<span class="text-[11px] font-mono text-slate-500">commit #4e7a091</span>
+</div>
+<!-- Right Meta: Analysis Timing & Period -->
+<div class="flex items-center space-x-3 text-xs text-slate-500">
+<span>AST Analyzed: <strong class="font-medium text-slate-700">October 25, 2023, 11:23 AM</strong></span>
+<span class="inline-flex items-center px-2 py-0.5 rounded bg-amber-50 text-amber-900 border border-amber-200 text-[11px] font-medium font-mono">
+          Leak Period: since previous version
+        </span>
+</div>
+</div>
+<!-- Project Tab Navigation -->
+<nav aria-label="Project Tabs" class="flex space-x-6 text-[13px] font-medium border-t border-slate-100 mt-1">
+<a class="py-2 text-slate-600 hover:text-slate-900 border-b-2 border-transparent transition" href="#">Overview</a>
+<a class="py-2 text-slate-600 hover:text-slate-900 border-b-2 border-transparent transition" href="#">Issues</a>
+<a class="py-2 text-slate-600 hover:text-slate-900 border-b-2 border-transparent transition" href="#">Measures</a>
+<a class="py-2 text-slate-600 hover:text-slate-900 border-b-2 border-transparent transition" href="#">Code</a>
+<a class="py-2 text-blue-600 border-b-2 border-blue-600 font-semibold" href="#">Maintainability</a>
+<a class="py-2 text-slate-600 hover:text-slate-900 border-b-2 border-transparent transition" href="#">Duplications</a>
+<a class="py-2 text-slate-600 hover:text-slate-900 border-b-2 border-transparent transition" href="#">Activity</a>
+</nav>
+</section>
+<!-- END: ProjectSubHeader -->
+<!-- BEGIN: MainContainer -->
+<main class="flex-1 max-w-[1400px] w-full mx-auto p-4 space-y-4" data-purpose="maintainability-dashboard">
+<!-- BEGIN: HeroBand -->
+<section class="bg-white border border-slate-200 rounded p-4 shadow-sm" data-purpose="hero-slop-and-meters">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+<!-- Left: Overall Slop Score (5 cols) -->
+<div class="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-slate-200 pb-4 lg:pb-0 lg:pr-6">
+<div class="flex items-center justify-between mb-1">
+<span class="text-[11px] font-bold tracking-wider uppercase text-slate-500 flex items-center">
+              Overall Slop Score
+              <span class="ml-1.5 inline-block text-slate-400 cursor-help" title="Weighted geometric index across all static maintenance signals. Lower is cleaner.">ⓘ</span>
+</span>
+<span class="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200 font-semibold">+4.2 vs base</span>
+</div>
+<div class="flex items-baseline space-x-3 mt-1">
+<div class="text-[40px] font-light tracking-tight text-slate-900 font-mono leading-none">68</div>
+<div class="text-sm text-slate-400 font-mono">/ 100</div>
+<!-- Letter Grade Badge (C) -->
+<div class="ml-auto flex items-center justify-center w-9 h-9 rounded-full badge-c font-bold text-lg leading-none" title="Maintainability Rating C: Significant Technical Debt">
+              C
+            </div>
+</div>
+<p class="mt-2 text-[11px] leading-normal text-slate-500">
+            Score is a weighted geometric mean, so one bad dimension cannot hide behind three good ones.
+          </p>
+</div>
+<!-- Right: 4 Horizontal Slim Metric Meters (8 cols) -->
+<div class="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+<!-- Meter 1: Logic Density -->
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-medium">
+<span class="text-slate-700">1. Logic Density</span>
+<span class="text-emerald-700 font-mono font-semibold">82% (Good)</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden border border-slate-200">
+<div class="bg-emerald-500 h-full rounded-full" style="width: 82%"></div>
+</div>
+<div class="flex justify-between text-[11px] text-slate-400 font-mono">
+<span>Raw: 0.82 opt</span>
+<span>Threshold: &gt;75%</span>
+</div>
+</div>
+<!-- Meter 2: Comment Inflation -->
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-medium">
+<span class="text-slate-700">2. Comment Inflation</span>
+<span class="text-amber-700 font-mono font-semibold">44% (Warning)</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden border border-slate-200">
+<div class="bg-amber-500 h-full rounded-full" style="width: 44%"></div>
+</div>
+<div class="flex justify-between text-[11px] text-slate-400 font-mono">
+<span>Stale/boilerplate</span>
+<span>Threshold: &lt;30%</span>
+</div>
+</div>
+<!-- Meter 3: Dependency Use -->
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-medium">
+<span class="text-slate-700">3. Dependency Use</span>
+<span class="text-blue-700 font-mono font-semibold">91% (Optimal)</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden border border-slate-200">
+<div class="bg-blue-600 h-full rounded-full" style="width: 91%"></div>
+</div>
+<div class="flex justify-between text-[11px] text-slate-400 font-mono">
+<span>Coupling idx: 0.14</span>
+<span>Threshold: &gt;80%</span>
+</div>
+</div>
+<!-- Meter 4: Critical Findings -->
+<div class="space-y-1">
+<div class="flex justify-between text-xs font-medium">
+<span class="text-slate-700">4. Critical Findings</span>
+<span class="text-rose-700 font-mono font-semibold">28% (High Risk)</span>
+</div>
+<div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden border border-slate-200">
+<div class="bg-rose-500 h-full rounded-full" style="width: 28%"></div>
+</div>
+<div class="flex justify-between text-[11px] text-slate-400 font-mono">
+<span class="text-rose-600 font-semibold">Breaches Gate Criteria</span>
+<span>Target: &gt;85%</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: HeroBand -->
+<!-- BEGIN: MainContentArea (Two Columns) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+<!-- Left Column: Signal & Drift Matrix (8 cols) -->
+<section class="lg:col-span-8 bg-white border border-slate-200 rounded flex flex-col justify-between shadow-sm overflow-hidden" data-purpose="reuse-drift-matrix">
+<div>
+<!-- Header -->
+<div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between bg-slate-50/70">
+<div class="flex items-center space-x-2">
+<h2 class="text-xs font-bold uppercase tracking-wider text-slate-800">Reuse Signals &amp; Drift Matrix</h2>
+<span class="text-[11px] font-normal text-slate-500">Last 30 days evolution</span>
+</div>
+<span class="text-[11px] font-mono font-semibold bg-slate-200/80 px-2 py-0.5 rounded text-slate-700">6 Core Indicators</span>
+</div>
+<!-- Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left text-xs border-collapse">
+<thead>
+<tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
+<th class="py-2.5 px-4">Signal Name</th>
+<th class="py-2.5 px-4 font-mono">Current Value</th>
+<th class="py-2.5 px-4">Inline Trend (30d)</th>
+<th class="py-2.5 px-4 text-right font-mono">Delta (Diff)</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100">
+<!-- Row 1: Block Duplication -->
+<tr class="hover:bg-slate-50/80 transition-colors">
+<td class="py-2.5 px-4 font-medium text-slate-800 flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span>Block Duplication</span>
+</td>
+<td class="py-2.5 px-4 font-mono font-semibold text-slate-700">1.7%</td>
+<td class="py-2.5 px-4">
+<!-- SVG Sparkline: Downward slope (green) -->
+<svg class="w-28 h-5 text-emerald-600 overflow-visible" preserveaspectratio="none" viewbox="0 0 100 20">
+<polyline fill="none" points="0,6 20,8 40,7 60,11 80,14 100,16" stroke="currentColor" stroke-width="1.75"></polyline>
+<circle cx="100" cy="16" fill="currentColor" r="2.5"></circle>
+</svg>
+</td>
+<td class="py-2.5 px-4 text-right font-mono">
+<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">-0.4%</span>
+</td>
+</tr>
+<!-- Row 2: Refactoring -->
+<tr class="hover:bg-slate-50/80 transition-colors">
+<td class="py-2.5 px-4 font-medium text-slate-800 flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span>Refactoring (moved code)</span>
+</td>
+<td class="py-2.5 px-4 font-mono font-semibold text-slate-700">14.2 kLoC</td>
+<td class="py-2.5 px-4">
+<!-- SVG Sparkline: Ascending (green) -->
+<svg class="w-28 h-5 text-emerald-600 overflow-visible" preserveaspectratio="none" viewbox="0 0 100 20">
+<polyline fill="none" points="0,17 20,15 40,12 60,11 80,7 100,4" stroke="currentColor" stroke-width="1.75"></polyline>
+<circle cx="100" cy="4" fill="currentColor" r="2.5"></circle>
+</svg>
+</td>
+<td class="py-2.5 px-4 text-right font-mono">
+<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-emerald-700 border border-slate-200">+3.1 kLoC</span>
+</td>
+</tr>
+<!-- Row 3: Copy/Paste (Alert) -->
+<tr class="hover:bg-rose-50/40 bg-rose-50/20 transition-colors">
+<td class="py-2.5 px-4 font-medium text-slate-900 flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-rose-500"></span>
+<span>Copy/Paste Drift</span>
+</td>
+<td class="py-2.5 px-4 font-mono font-bold text-rose-700">8.9%</td>
+<td class="py-2.5 px-4">
+<!-- SVG Sparkline: Rising in red -->
+<svg class="w-28 h-5 text-rose-600 overflow-visible" preserveaspectratio="none" viewbox="0 0 100 20">
+<polyline fill="none" points="0,15 20,13 40,14 60,8 80,6 100,3" stroke="currentColor" stroke-width="2"></polyline>
+<circle cx="100" cy="3" fill="currentColor" r="2.5"></circle>
+</svg>
+</td>
+<td class="py-2.5 px-4 text-right font-mono">
+<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-bold bg-rose-100 text-rose-800 border border-rose-300">+2.4%</span>
+</td>
+</tr>
+<!-- Row 4: Connectivity -->
+<tr class="hover:bg-slate-50/80 transition-colors">
+<td class="py-2.5 px-4 font-medium text-slate-800 flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-blue-500"></span>
+<span>Cross-File Connectivity</span>
+</td>
+<td class="py-2.5 px-4 font-mono font-semibold text-slate-700">4.8 deps/file</td>
+<td class="py-2.5 px-4">
+<!-- SVG Sparkline: Stable -->
+<svg class="w-28 h-5 text-blue-600 overflow-visible" preserveaspectratio="none" viewbox="0 0 100 20">
+<polyline fill="none" points="0,10 20,11 40,9 60,10 80,10 100,9" stroke="currentColor" stroke-width="1.75"></polyline>
+<circle cx="100" cy="9" fill="currentColor" r="2.5"></circle>
+</svg>
+</td>
+<td class="py-2.5 px-4 text-right font-mono">
+<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">+0.2</span>
+</td>
+</tr>
+<!-- Row 5: Error-Masking Catches (Alert) -->
+<tr class="hover:bg-rose-50/40 bg-rose-50/20 transition-colors">
+<td class="py-2.5 px-4 font-medium text-slate-900 flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-rose-500"></span>
+<span>Error-Masking Catches</span>
+</td>
+<td class="py-2.5 px-4 font-mono font-bold text-rose-700">142 occ</td>
+<td class="py-2.5 px-4">
+<!-- SVG Sparkline: Sharp jump -->
+<svg class="w-28 h-5 text-rose-600 overflow-visible" preserveaspectratio="none" viewbox="0 0 100 20">
+<polyline fill="none" points="0,16 20,15 40,15 60,9 80,4 100,2" stroke="currentColor" stroke-width="2"></polyline>
+<circle cx="100" cy="2" fill="currentColor" r="2.5"></circle>
+</svg>
+</td>
+<td class="py-2.5 px-4 text-right font-mono">
+<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-bold bg-rose-100 text-rose-800 border border-rose-300">+38 occ</span>
+</td>
+</tr>
+<!-- Row 6: Legacy Maintenance -->
+<tr class="hover:bg-slate-50/80 transition-colors">
+<td class="py-2.5 px-4 font-medium text-slate-800 flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span>Legacy Maintenance</span>
+</td>
+<td class="py-2.5 px-4 font-mono font-semibold text-slate-700">4d 4h effort</td>
+<td class="py-2.5 px-4">
+<!-- SVG Sparkline: Dropping -->
+<svg class="w-28 h-5 text-emerald-600 overflow-visible" preserveaspectratio="none" viewbox="0 0 100 20">
+<polyline fill="none" points="0,5 20,6 40,9 60,11 80,13 100,15" stroke="currentColor" stroke-width="1.75"></polyline>
+<circle cx="100" cy="15" fill="currentColor" r="2.5"></circle>
+</svg>
+</td>
+<td class="py-2.5 px-4 text-right font-mono">
+<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">-1h 20m</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Matrix Footer -->
+<div class="px-4 py-2.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-500">
+<span>Threshold baseline calibrated on 30-day commit snapshot.</span>
+<a class="text-blue-600 hover:underline font-medium" href="#">Configure metrics »</a>
+</div>
+</section>
+<!-- Right Column: Facets & Worst Files (4 cols) -->
+<aside class="lg:col-span-4 space-y-4" data-purpose="sidebar-facets-and-worst-files">
+<!-- Section A: Findings by Pattern -->
+<div class="bg-white border border-slate-200 rounded shadow-sm p-3.5 space-y-2.5">
+<div class="flex items-center justify-between border-b border-slate-100 pb-2">
+<h3 class="text-xs font-bold uppercase tracking-wider text-slate-800">Findings by Pattern</h3>
+<span class="text-[11px] font-mono font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">Total: 511</span>
+</div>
+<!-- Facet Checkbox List -->
+<ul class="space-y-1.5 text-xs">
+<li class="flex items-center justify-between group py-0.5">
+<label class="flex items-center space-x-2 text-slate-700 cursor-pointer select-none truncate">
+<input checked="" class="rounded border-slate-300 text-blue-600 focus:ring-0 focus:ring-offset-0 w-3.5 h-3.5" type="checkbox"/>
+<span class="truncate font-mono text-[12px] group-hover:text-blue-600">Chained type assertions</span>
+</label>
+<span class="font-mono text-[11px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-medium ml-2">184</span>
+</li>
+<li class="flex items-center justify-between group py-0.5">
+<label class="flex items-center space-x-2 text-slate-700 cursor-pointer select-none truncate">
+<input checked="" class="rounded border-slate-300 text-blue-600 focus:ring-0 focus:ring-offset-0 w-3.5 h-3.5" type="checkbox"/>
+<span class="truncate font-mono text-[12px] group-hover:text-blue-600">unknown in signatures</span>
+</label>
+<span class="font-mono text-[11px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-medium ml-2">129</span>
+</li>
+<li class="flex items-center justify-between group py-0.5">
+<label class="flex items-center space-x-2 text-slate-700 cursor-pointer select-none truncate">
+<input class="rounded border-slate-300 text-blue-600 focus:ring-0 focus:ring-offset-0 w-3.5 h-3.5" type="checkbox"/>
+<span class="truncate font-mono text-[12px] group-hover:text-blue-600">Empty stubs</span>
+</label>
+<span class="font-mono text-[11px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-medium ml-2">76</span>
+</li>
+<li class="flex items-center justify-between group py-0.5">
+<label class="flex items-center space-x-2 text-slate-700 cursor-pointer select-none truncate">
+<input class="rounded border-slate-300 text-blue-600 focus:ring-0 focus:ring-offset-0 w-3.5 h-3.5" type="checkbox"/>
+<span class="truncate font-mono text-[12px] group-hover:text-blue-600">Swallowed catches</span>
+</label>
+<span class="font-mono text-[11px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-medium ml-2">53</span>
+</li>
+<li class="flex items-center justify-between group py-0.5">
+<label class="flex items-center space-x-2 text-slate-700 cursor-pointer select-none truncate">
+<input class="rounded border-slate-300 text-blue-600 focus:ring-0 focus:ring-offset-0 w-3.5 h-3.5" type="checkbox"/>
+<span class="truncate font-mono text-[12px] group-hover:text-blue-600">Redundant comments</span>
+</label>
+<span class="font-mono text-[11px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-medium ml-2">41</span>
+</li>
+<li class="flex items-center justify-between group py-0.5">
+<label class="flex items-center space-x-2 text-slate-700 cursor-pointer select-none truncate">
+<input class="rounded border-slate-300 text-blue-600 focus:ring-0 focus:ring-offset-0 w-3.5 h-3.5" type="checkbox"/>
+<span class="truncate font-mono text-[12px] group-hover:text-blue-600">Widen-then-assert</span>
+</label>
+<span class="font-mono text-[11px] bg-slate-100 text-slate-600 px-1.5 py-0.2 rounded font-medium ml-2">28</span>
+</li>
+</ul>
+</div>
+<!-- Section B: Worst Files by Remediation Effort -->
+<div class="bg-white border border-slate-200 rounded shadow-sm p-3.5 space-y-3">
+<div class="flex items-center justify-between border-b border-slate-100 pb-2">
+<div>
+<h3 class="text-xs font-bold uppercase tracking-wider text-slate-800">Worst Files</h3>
+<div class="text-[11px] text-slate-400">by Remediation Effort</div>
+</div>
+<span class="text-[11px] font-mono text-slate-500">Top 6</span>
+</div>
+<div class="space-y-2.5">
+<!-- File 1 -->
+<div>
+<div class="flex justify-between items-center text-xs font-mono mb-1">
+<a class="text-blue-700 hover:underline truncate max-w-[190px]" href="#" title="includes/file.inc">includes/file.inc</a>
+<span class="text-slate-800 font-semibold font-mono text-[11px]">6h 09m</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded overflow-hidden">
+<div class="bg-rose-500 h-full" style="width: 100%"></div>
+</div>
+</div>
+<!-- File 2 -->
+<div>
+<div class="flex justify-between items-center text-xs font-mono mb-1">
+<a class="text-blue-700 hover:underline truncate max-w-[190px]" href="#" title="includes/common.inc">includes/common.inc</a>
+<span class="text-slate-700 font-medium font-mono text-[11px]">3h 48m</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded overflow-hidden">
+<div class="bg-amber-500 h-full" style="width: 61%"></div>
+</div>
+</div>
+<!-- File 3 -->
+<div>
+<div class="flex justify-between items-center text-xs font-mono mb-1">
+<a class="text-blue-700 hover:underline truncate max-w-[190px]" href="#" title="includes/menu.inc">includes/menu.inc</a>
+<span class="text-slate-700 font-medium font-mono text-[11px]">3h 21m</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded overflow-hidden">
+<div class="bg-amber-500 h-full" style="width: 54%"></div>
+</div>
+</div>
+<!-- File 4 -->
+<div>
+<div class="flex justify-between items-center text-xs font-mono mb-1">
+<a class="text-blue-700 hover:underline truncate max-w-[190px]" href="#" title="includes/theme.inc">includes/theme.inc</a>
+<span class="text-slate-700 font-medium font-mono text-[11px]">3h 03m</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded overflow-hidden">
+<div class="bg-amber-500 h-full" style="width: 49%"></div>
+</div>
+</div>
+<!-- File 5 -->
+<div>
+<div class="flex justify-between items-center text-xs font-mono mb-1">
+<a class="text-blue-700 hover:underline truncate max-w-[190px]" href="#" title="includes/bootstrap.inc">includes/bootstrap.inc</a>
+<span class="text-slate-700 font-medium font-mono text-[11px]">3h 00m</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded overflow-hidden">
+<div class="bg-amber-500 h-full" style="width: 48%"></div>
+</div>
+</div>
+<!-- File 6 -->
+<div>
+<div class="flex justify-between items-center text-xs font-mono mb-1">
+<a class="text-blue-700 hover:underline truncate max-w-[190px]" href="#" title="includes/form.inc">includes/form.inc</a>
+<span class="text-slate-700 font-medium font-mono text-[11px]">2h 33m</span>
+</div>
+<div class="w-full bg-slate-100 h-1 rounded overflow-hidden">
+<div class="bg-blue-500 h-full" style="width: 41%"></div>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</div>
+<!-- END: MainContentArea -->
+<!-- BEGIN: BottomFullWidthBand -->
+<section class="bg-white border border-slate-200 rounded p-4 shadow-sm space-y-4" data-purpose="since-baseline-comparison">
+<!-- Band Header with Legend -->
+<div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3">
+<div>
+<h2 class="text-xs font-bold uppercase tracking-wider text-slate-800">Since Baseline</h2>
+<div class="text-[11px] text-slate-500">Normalized metric shifts vs baseline v2.3.0</div>
+</div>
+<!-- Legend Indicator -->
+<div class="flex items-center space-x-4 text-xs">
+<div class="flex items-center space-x-1.5">
+<span class="w-3 h-3 rounded-sm bg-slate-700 inline-block"></span>
+<span class="text-slate-600 font-medium">Current Analysis (Oct 25)</span>
+</div>
+<div class="flex items-center space-x-1.5">
+<span class="w-3 h-3 rounded-sm bg-slate-300 inline-block"></span>
+<span class="text-slate-500 font-medium">Baseline v2.3.0 (Sep 20)</span>
+</div>
+</div>
+</div>
+<!-- High-Fidelity Comparative Grouped Bar Visualizer -->
+<div class="relative pt-4 pb-2">
+<!-- Background Grid Guidelines -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40 pt-4 pb-10">
+<div class="border-b border-dashed border-slate-200 w-full"></div>
+<div class="border-b border-dashed border-slate-200 w-full"></div>
+<div class="border-b border-dashed border-slate-200 w-full"></div>
+<div class="border-b border-slate-300 w-full"></div>
+</div>
+<!-- 6 Grouped Metric Pillars -->
+<div class="relative grid grid-cols-2 md:grid-cols-6 gap-3 z-10 items-end min-h-[140px]">
+<!-- Pillar 1: Block Dupl. -->
+<div class="flex flex-col items-center group">
+<div class="h-28 flex items-end space-x-1.5">
+<!-- Baseline Bar -->
+<div class="w-5 bg-slate-300 rounded-t transition-all group-hover:opacity-80" style="height: 52%" title="Baseline: 2.1%"></div>
+<!-- Current Bar (Better/Green) -->
+<div class="w-5 bg-emerald-600 rounded-t transition-all group-hover:opacity-90" style="height: 42%" title="Current: 1.7%"></div>
+</div>
+<span class="text-xs font-semibold text-slate-800 mt-2 text-center truncate w-full">Block Dupl.</span>
+<span class="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-1 py-0.5 rounded border border-emerald-200 mt-0.5 font-semibold">2.1% → 1.7%</span>
+</div>
+<!-- Pillar 2: Refactoring -->
+<div class="flex flex-col items-center group">
+<div class="h-28 flex items-end space-x-1.5">
+<!-- Baseline Bar -->
+<div class="w-5 bg-slate-300 rounded-t transition-all group-hover:opacity-80" style="height: 40%" title="Baseline: 11.1k"></div>
+<!-- Current Bar (Neutral/Green) -->
+<div class="w-5 bg-blue-600 rounded-t transition-all group-hover:opacity-90" style="height: 58%" title="Current: 14.2k"></div>
+</div>
+<span class="text-xs font-semibold text-slate-800 mt-2 text-center truncate w-full">Refactoring</span>
+<span class="text-[10px] font-mono text-blue-700 bg-blue-50 px-1 py-0.5 rounded border border-blue-200 mt-0.5 font-semibold">+3.1 kLoC</span>
+</div>
+<!-- Pillar 3: Copy/Paste (Regressed) -->
+<div class="flex flex-col items-center group">
+<div class="h-28 flex items-end space-x-1.5">
+<!-- Baseline Bar -->
+<div class="w-5 bg-slate-300 rounded-t transition-all group-hover:opacity-80" style="height: 45%" title="Baseline: 6.5%"></div>
+<!-- Current Bar (Worse/Red) -->
+<div class="w-5 bg-rose-600 rounded-t transition-all group-hover:opacity-90" style="height: 75%" title="Current: 8.9%"></div>
+</div>
+<span class="text-xs font-semibold text-slate-800 mt-2 text-center truncate w-full">Copy/Paste</span>
+<span class="text-[10px] font-mono text-rose-700 bg-rose-50 px-1 py-0.5 rounded border border-rose-200 mt-0.5 font-bold">6.5% → 8.9%</span>
+</div>
+<!-- Pillar 4: Connectivity -->
+<div class="flex flex-col items-center group">
+<div class="h-28 flex items-end space-x-1.5">
+<!-- Baseline Bar -->
+<div class="w-5 bg-slate-300 rounded-t transition-all group-hover:opacity-80" style="height: 60%" title="Baseline: 4.6"></div>
+<!-- Current Bar (Stable) -->
+<div class="w-5 bg-slate-700 rounded-t transition-all group-hover:opacity-90" style="height: 64%" title="Current: 4.8"></div>
+</div>
+<span class="text-xs font-semibold text-slate-800 mt-2 text-center truncate w-full">Connectivity</span>
+<span class="text-[10px] font-mono text-slate-600 bg-slate-100 px-1 py-0.5 rounded border border-slate-200 mt-0.5 font-semibold">4.6 → 4.8</span>
+</div>
+<!-- Pillar 5: Error Catches (Regressed) -->
+<div class="flex flex-col items-center group">
+<div class="h-28 flex items-end space-x-1.5">
+<!-- Baseline Bar -->
+<div class="w-5 bg-slate-300 rounded-t transition-all group-hover:opacity-80" style="height: 50%" title="Baseline: 104"></div>
+<!-- Current Bar (Sharp Jump/Red) -->
+<div class="w-5 bg-rose-600 rounded-t transition-all group-hover:opacity-90" style="height: 85%" title="Current: 142"></div>
+</div>
+<span class="text-xs font-semibold text-slate-800 mt-2 text-center truncate w-full">Error Catches</span>
+<span class="text-[10px] font-mono text-rose-700 bg-rose-50 px-1 py-0.5 rounded border border-rose-200 mt-0.5 font-bold">104 → 142</span>
+</div>
+<!-- Pillar 6: Legacy Maint. -->
+<div class="flex flex-col items-center group">
+<div class="h-28 flex items-end space-x-1.5">
+<!-- Baseline Bar -->
+<div class="w-5 bg-slate-300 rounded-t transition-all group-hover:opacity-80" style="height: 68%" title="Baseline: 4d 5h"></div>
+<!-- Current Bar (Better/Green) -->
+<div class="w-5 bg-emerald-600 rounded-t transition-all group-hover:opacity-90" style="height: 62%" title="Current: 4d 4h"></div>
+</div>
+<span class="text-xs font-semibold text-slate-800 mt-2 text-center truncate w-full">Legacy Maint.</span>
+<span class="text-[10px] font-mono text-emerald-700 bg-emerald-50 px-1 py-0.5 rounded border border-emerald-200 mt-0.5 font-semibold">-1h 20m</span>
+</div>
+</div>
+</div>
+</section>
+<!-- END: BottomFullWidthBand -->
+</main>
+<!-- END: MainContainer -->
+<!-- BEGIN: Footer -->
+<footer class="bg-white border-t border-slate-200 mt-auto py-3 px-4 text-xs text-slate-500" data-purpose="page-footer">
+<div class="max-w-[1400px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+<div class="flex items-center space-x-2">
+<span class="font-semibold text-slate-700">SonarAudit Community Engine</span>
+<span>•</span>
+<span>Version 10.4.1 (build 88267)</span>
+<span>•</span>
+<span class="text-slate-400">LGPL v3 Licensed</span>
+</div>
+<div class="flex items-center space-x-4">
+<a class="hover:text-blue-600 transition" href="#">Documentation</a>
+<a class="hover:text-blue-600 transition" href="#">Support Community</a>
+<a class="hover:text-blue-600 transition" href="#">Web API</a>
+<a class="hover:text-blue-600 transition" href="#">System Info</a>
+</div>
+</div>
+</footer>
+<!-- END: Footer -->
+</body></html>

@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SonarAudit - Duplications - CxPHP</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary": "#ffffff",
+            "primary-container": "#2563eb",
+            "on-primary": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "primary": "#004ac6",
+            "primary-fixed": "#dbe1ff",
+            "on-primary-fixed-variant": "#003ea8",
+            "primary-fixed-dim": "#b4c5ff",
+            "on-error": "#ffffff",
+            "secondary": "#545f73",
+            "inverse-surface": "#213145",
+            "background": "#f8f9ff",
+            "surface-container-low": "#eff4ff",
+            "outline": "#737686",
+            "on-primary-container": "#eeefff",
+            "surface-tint": "#0053db",
+            "inverse-primary": "#b4c5ff",
+            "error": "#ba1a1a",
+            "tertiary-fixed": "#cce5ff",
+            "error-container": "#ffdad6",
+            "surface": "#f8f9ff",
+            "on-tertiary-fixed-variant": "#004b73",
+            "on-background": "#0b1c30",
+            "on-tertiary-container": "#e7f2ff",
+            "on-tertiary": "#ffffff",
+            "on-secondary-fixed-variant": "#3c475a",
+            "inverse-on-surface": "#eaf1ff",
+            "on-primary-fixed": "#00174b",
+            "secondary-container": "#d5e0f8",
+            "tertiary": "#005a89",
+            "on-surface": "#0b1c30",
+            "tertiary-container": "#0073ae",
+            "on-tertiary-fixed": "#001d31",
+            "surface-variant": "#d3e4fe",
+            "surface-container-high": "#dce9ff",
+            "secondary-fixed-dim": "#bcc7de",
+            "on-secondary-container": "#586377",
+            "on-error-container": "#93000a",
+            "surface-dim": "#cbdbf5",
+            "outline-variant": "#c3c6d7",
+            "secondary-fixed": "#d8e3fb",
+            "on-secondary-fixed": "#111c2d",
+            "tertiary-fixed-dim": "#93ccff",
+            "surface-container": "#e5eeff",
+            "on-surface-variant": "#434655",
+            "surface-container-highest": "#d3e4fe",
+            "surface-bright": "#f8f9ff"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "space-md": "0.75rem",
+            "margin": "1rem",
+            "space-sm": "0.375rem",
+            "space-lg": "1rem",
+            "gutter": "0.75rem",
+            "space-xl": "1.5rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Inter"],
+            "code-callout": ["JetBrains Mono"],
+            "stat-display": ["Inter"],
+            "code-body": ["JetBrains Mono"],
+            "body-sm": ["Inter"],
+            "label-sm": ["Inter"],
+            "headline-md": ["Inter"],
+            "body-md": ["Inter"],
+            "label-md": ["Inter"],
+            "headline-lg": ["Inter"],
+            "headline-sm": ["Inter"]
+          },
+          "fontSize": {
+            "body-lg": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "code-callout": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "stat-display": ["28px", { "lineHeight": "32px", "fontWeight": "300" }],
+            "code-body": ["12px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "headline-md": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "body-md": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "headline-sm": ["15px", { "lineHeight": "20px", "fontWeight": "600" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 16px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 2px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex flex-col antialiased select-text">
+<!-- TOP APP BAR (Shared Component Execution) -->
+<header class="bg-inverse-surface text-inverse-on-surface border-b border-outline/30 sticky top-0 z-50 h-12 flex justify-between items-center w-full px-space-lg">
+<div class="flex items-center space-x-6">
+<!-- Brand Logo -->
+<a class="flex items-center space-x-2 text-headline-sm font-headline-sm font-bold text-inverse-on-surface tracking-tight" href="#">
+<svg class="w-5 h-5 text-primary-fixed-dim" fill="currentColor" viewbox="0 0 24 24">
+<path d="M12 3a9 9 0 0 0-9 9c0 2.12.74 4.07 1.97 5.61L3 21l3.5-.95A8.96 8.96 0 0 0 12 21a9 9 0 0 0 9-9 9 9 0 0 0-9-9zm-1 4h2v6h-2V7zm1 10.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5z"></path>
+</svg>
+<span>SonarAudit</span>
+</a>
+<!-- Primary Platform Navigation -->
+<nav class="flex items-center space-x-5 text-label-md font-label-md pt-3">
+<a class="text-inverse-on-surface font-semibold border-b-2 border-primary-container pb-3" href="#">Projects</a>
+<a class="text-outline-variant hover:text-inverse-on-surface transition-colors pb-3" href="#">Issues</a>
+<a class="text-outline-variant hover:text-inverse-on-surface transition-colors pb-3" href="#">Rules</a>
+<a class="text-outline-variant hover:text-inverse-on-surface transition-colors pb-3" href="#">Quality Gates</a>
+<a class="text-outline-variant hover:text-inverse-on-surface transition-colors pb-3" href="#">Administration</a>
+</nav>
+</div>
+<!-- Search & Secondary Trailing Actions -->
+<div class="flex items-center space-x-3">
+<div class="relative flex items-center">
+<span class="absolute left-2.5 text-slate-400 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[14px]">search</span>
+</span>
+<input class="h-7 w-64 bg-slate-700/60 border border-slate-600/70 text-inverse-on-surface placeholder:text-slate-400 pl-8 pr-3 text-body-sm rounded focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container" placeholder="Search for projects, files... (/)" type="text"/>
+</div>
+<button class="w-7 h-7 flex items-center justify-center rounded text-outline-variant hover:text-inverse-on-surface hover:bg-surface-variant/10 transition-colors" title="Documentation &amp; Help">
+<span class="material-symbols-outlined">help</span>
+</button>
+<button class="w-7 h-7 flex items-center justify-center rounded text-outline-variant hover:text-inverse-on-surface hover:bg-surface-variant/10 transition-colors relative" title="Notifications">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-1 right-1 w-1.5 h-1.5 bg-error rounded-full"></span>
+</button>
+<div class="flex items-center justify-center w-7 h-7 bg-primary-container text-on-primary font-headline-sm text-[12px] font-bold rounded">
+        GP
+      </div>
+</div>
+</header>
+<!-- SUB-HEADER (Project Context Bar) -->
+<div class="bg-surface-container-lowest border-b border-outline-variant/60 px-space-lg flex justify-between items-center text-body-sm h-10">
+<div class="flex items-center space-x-4">
+<div class="flex items-center space-x-1.5 text-on-surface">
+<button class="text-slate-400 hover:text-amber-500 transition-colors flex items-center">
+<span class="material-symbols-outlined text-[16px]">star</span>
+</button>
+<span class="material-symbols-outlined text-slate-500 text-[18px]">folder</span>
+<span class="font-semibold text-headline-sm text-on-surface tracking-tight">CxPHP</span>
+</div>
+<!-- Navigation Tabs -->
+<nav class="flex items-center space-x-1 ml-4 h-10 text-body-sm">
+<a class="px-2.5 h-full flex items-center text-slate-600 hover:text-on-surface transition-colors" href="#">Overview</a>
+<a class="px-2.5 h-full flex items-center text-slate-600 hover:text-on-surface transition-colors" href="#">Issues</a>
+<a class="px-2.5 h-full flex items-center text-slate-600 hover:text-on-surface transition-colors" href="#">Measures</a>
+<a class="px-2.5 h-full flex items-center text-slate-600 hover:text-on-surface transition-colors" href="#">Code</a>
+<a class="px-2.5 h-full flex items-center font-semibold text-primary border-b-2 border-primary" href="#">Duplications</a>
+<a class="px-2.5 h-full flex items-center text-slate-600 hover:text-on-surface transition-colors" href="#">Activity</a>
+<a class="px-2.5 h-full flex items-center text-slate-600 hover:text-on-surface transition-colors" href="#">Administration</a>
+</nav>
+</div>
+<!-- Metadata Pill & Timestamp -->
+<div class="flex items-center space-x-3 text-slate-500 text-[11px] font-body-sm">
+<span class="flex items-center space-x-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+<span>October 25, 2017, 11:23 AM</span>
+</span>
+<span class="text-slate-300">|</span>
+<span class="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200">Version not provided</span>
+</div>
+</div>
+<!-- MAIN OPERATIONAL WORKBENCH -->
+<main class="flex-1 p-space-md flex flex-col space-y-space-md overflow-hidden max-w-[1920px] mx-auto w-full">
+<!-- TOP ROW SCORECARDS (4 Metric Cards with Leak Period Sand Tint) -->
+<section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-space-md">
+<!-- Card 1: Duplicated Lines Density -->
+<div class="bg-surface-container-lowest border border-outline-variant/60 flex overflow-hidden rounded">
+<!-- Overall Code -->
+<div class="w-1/2 p-space-md flex flex-col justify-between border-r border-outline-variant/50">
+<div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Duplicated Lines</div>
+<div class="flex items-baseline space-x-2 my-1">
+<span class="font-stat-display text-stat-display text-primary font-light">1.7%</span>
+<span class="w-4 h-4 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-bold leading-none">A</span>
+</div>
+<div class="text-[11px] text-slate-500 flex items-center space-x-1">
+<span class="font-code-callout text-slate-700">1,420</span>
+<span>lines in codebase</span>
+</div>
+</div>
+<!-- Leak Period (New Code) -->
+<div class="w-1/2 p-space-md bg-[#fefbf1] flex flex-col justify-between border-l border-amber-200/50">
+<div class="text-[11px] font-semibold text-amber-800 flex items-center justify-between">
+<span>New Code</span>
+<span class="text-[10px] bg-amber-200/60 text-amber-900 px-1 rounded">Leak Period</span>
+</div>
+<div class="flex items-baseline space-x-2 my-1">
+<span class="font-stat-display text-stat-display text-amber-900 font-light">2.8%</span>
+<span class="w-4 h-4 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-bold leading-none">A</span>
+</div>
+<div class="text-[11px] text-amber-700 font-body-sm">
+<span class="font-semibold text-error">+310</span> lines added
+          </div>
+</div>
+</div>
+<!-- Card 2: Duplicated Blocks -->
+<div class="bg-surface-container-lowest border border-outline-variant/60 flex overflow-hidden rounded">
+<div class="w-1/2 p-space-md flex flex-col justify-between border-r border-outline-variant/50">
+<div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Duplicated Blocks</div>
+<div class="flex items-baseline space-x-2 my-1">
+<span class="font-stat-display text-stat-display text-on-surface font-light">126</span>
+</div>
+<div class="text-[11px] text-slate-500">Across 8 modules</div>
+</div>
+<div class="w-1/2 p-space-md bg-[#fefbf1] flex flex-col justify-between border-l border-amber-200/50">
+<div class="text-[11px] font-semibold text-amber-800 flex items-center justify-between">
+<span>New Blocks</span>
+<span class="text-[10px] bg-amber-200/60 text-amber-900 px-1 rounded">Leak Period</span>
+</div>
+<div class="flex items-baseline space-x-2 my-1">
+<span class="font-stat-display text-stat-display text-amber-900 font-light">18</span>
+</div>
+<div class="text-[11px] text-amber-800 font-semibold flex items-center space-x-1">
+<span class="material-symbols-outlined text-[12px] text-error">arrow_upward</span>
+<span>+14.2% block drift</span>
+</div>
+</div>
+</div>
+<!-- Card 3: Duplicated Files -->
+<div class="bg-surface-container-lowest border border-outline-variant/60 flex overflow-hidden rounded">
+<div class="w-1/2 p-space-md flex flex-col justify-between border-r border-outline-variant/50">
+<div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Duplicated Files</div>
+<div class="flex items-baseline space-x-2 my-1">
+<span class="font-stat-display text-stat-display text-on-surface font-light">42</span>
+</div>
+<div class="text-[11px] text-slate-500">12.6% of total files (334)</div>
+</div>
+<div class="w-1/2 p-space-md bg-[#fefbf1] flex flex-col justify-between border-l border-amber-200/50">
+<div class="text-[11px] font-semibold text-amber-800 flex items-center justify-between">
+<span>Files Impacted</span>
+<span class="text-[10px] bg-amber-200/60 text-amber-900 px-1 rounded">Leak Period</span>
+</div>
+<div class="flex items-baseline space-x-2 my-1">
+<span class="font-stat-display text-stat-display text-amber-900 font-light">6</span>
+</div>
+<div class="text-[11px] text-amber-700">includes/ &amp; modules/</div>
+</div>
+</div>
+<!-- Card 4: Cross-File Duplication -->
+<div class="bg-surface-container-lowest border border-outline-variant/60 flex overflow-hidden rounded">
+<div class="w-1/2 p-space-md flex flex-col justify-between border-r border-outline-variant/50">
+<div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Cross-File Clones</div>
+<div class="flex items-baseline space-x-2 my-1">
+<span class="font-stat-display text-stat-display text-on-surface font-light">74.2%</span>
+</div>
+<div class="text-[11px] text-slate-500">93 of 126 blocks cross-boundary</div>
+</div>
+<div class="w-1/2 p-space-md bg-[#fefbf1] flex flex-col justify-between border-l border-amber-200/50">
+<div class="text-[11px] font-semibold text-amber-800 flex items-center justify-between">
+<span>Cross-File in Leak</span>
+<span class="text-[10px] bg-amber-200/60 text-amber-900 px-1 rounded">Leak Period</span>
+</div>
+<div class="flex items-baseline space-x-2 my-1">
+<span class="font-stat-display text-stat-display text-amber-900 font-light">83.3%</span>
+</div>
+<div class="text-[11px] text-amber-800 font-medium">15 new cross-file blocks</div>
+</div>
+</div>
+</section>
+<!-- MAIN DUAL-PANE WORKBENCH (Split-Pane layout with 1px border) -->
+<div class="flex-1 flex flex-col lg:flex-row border border-outline-variant/70 bg-surface-container-lowest rounded overflow-hidden min-h-[580px]">
+<!-- LEFT PANE: Duplication Clusters Sidebar (320px fixed) -->
+<aside class="w-full lg:w-80 border-r border-outline-variant/70 flex flex-col bg-slate-50/50 flex-shrink-0">
+<!-- Sidebar Filter Toolbar -->
+<div class="p-space-md border-b border-outline-variant/60 bg-surface-container-lowest space-y-2">
+<div class="flex justify-between items-center">
+<span class="text-label-sm font-label-sm text-slate-700 tracking-tight flex items-center space-x-1.5">
+<span>Duplication Clusters</span>
+<span class="bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded text-[10px] font-mono">18</span>
+</span>
+<div class="text-[11px] text-slate-500">Sorted by Lines</div>
+</div>
+<div class="relative">
+<input class="w-full h-7 pl-7 pr-2 text-body-sm bg-white border border-outline-variant/80 rounded focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none" placeholder="Filter clusters or files..." type="text"/>
+<span class="material-symbols-outlined absolute left-2 top-1.5 text-slate-400 text-[14px]">filter_list</span>
+</div>
+</div>
+<!-- Clusters Scrollable List -->
+<div class="flex-1 overflow-y-auto custom-scroll divide-y divide-outline-variant/40">
+<!-- Cluster #01 (ACTIVE / SELECTED) -->
+<div class="p-3 bg-blue-50/70 border-l-4 border-primary cursor-pointer hover:bg-blue-50 transition-colors">
+<div class="flex justify-between items-start">
+<div class="flex items-center space-x-1.5">
+<span class="font-semibold text-primary font-headline-sm text-sm">Cluster #01</span>
+<span class="bg-amber-100 text-amber-800 border border-amber-300 text-[10px] font-bold px-1 rounded">NEW</span>
+</div>
+<span class="text-[11px] font-code-callout bg-blue-100/70 text-blue-800 px-1.5 rounded">3 occurrences</span>
+</div>
+<div class="grid grid-cols-2 gap-1 text-[11px] my-1.5 text-slate-600">
+<div><span class="font-medium text-slate-900">48</span> shared lines</div>
+<div><span class="font-medium text-slate-900">834</span> tokens</div>
+</div>
+<!-- Mini SVG Sparkline for Growth -->
+<div class="flex items-center justify-between mt-1 text-[10px] text-slate-500">
+<span class="flex items-center space-x-1 text-slate-500">
+<span>History:</span>
+<svg class="w-16 h-3.5 text-amber-600" fill="none" viewbox="0 0 60 14">
+<path d="M2 10 L16 8 L30 8 L44 2 L58 2" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path>
+<circle cx="58" cy="2" fill="currentColor" r="2"></circle>
+</svg>
+</span>
+<span class="text-amber-800 font-mono font-medium">+24 lines</span>
+</div>
+<!-- Referenced Files List -->
+<div class="mt-2 text-[11px] font-mono text-slate-600 space-y-0.5 truncate">
+<div class="flex items-center space-x-1 text-primary">
+<span class="material-symbols-outlined text-[12px]">description</span>
+<span class="truncate">includes/bootstrap.inc</span>
+</div>
+<div class="flex items-center space-x-1 text-slate-500">
+<span class="material-symbols-outlined text-[12px]">description</span>
+<span class="truncate">includes/common.inc</span>
+</div>
+</div>
+</div>
+<!-- Cluster #02 -->
+<div class="p-3 bg-white hover:bg-slate-50 transition-colors cursor-pointer">
+<div class="flex justify-between items-start">
+<div class="flex items-center space-x-1.5">
+<span class="font-semibold text-slate-800 text-sm">Cluster #02</span>
+<span class="bg-amber-100 text-amber-800 border border-amber-300 text-[10px] font-bold px-1 rounded">NEW</span>
+</div>
+<span class="text-[11px] font-code-callout bg-slate-100 text-slate-700 px-1.5 rounded">2 occurrences</span>
+</div>
+<div class="grid grid-cols-2 gap-1 text-[11px] my-1.5 text-slate-600">
+<div><span class="font-medium text-slate-900">34</span> shared lines</div>
+<div><span class="font-medium text-slate-900">520</span> tokens</div>
+</div>
+<div class="flex items-center justify-between mt-1 text-[10px] text-slate-500">
+<span class="flex items-center space-x-1">
+<span>History:</span>
+<svg class="w-16 h-3.5 text-amber-600" fill="none" viewbox="0 0 60 14">
+<path d="M2 12 L30 12 L44 4 L58 4" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path>
+<circle cx="58" cy="4" fill="currentColor" r="2"></circle>
+</svg>
+</span>
+<span class="text-amber-800 font-mono font-medium">+34 lines</span>
+</div>
+<div class="mt-2 text-[11px] font-mono text-slate-600 truncate">
+<div class="truncate text-slate-700">modules/system/system.admin.inc</div>
+</div>
+</div>
+<!-- Cluster #03 -->
+<div class="p-3 bg-white hover:bg-slate-50 transition-colors cursor-pointer">
+<div class="flex justify-between items-start">
+<span class="font-semibold text-slate-800 text-sm">Cluster #03</span>
+<span class="text-[11px] font-code-callout bg-slate-100 text-slate-700 px-1.5 rounded">4 occurrences</span>
+</div>
+<div class="grid grid-cols-2 gap-1 text-[11px] my-1.5 text-slate-600">
+<div><span class="font-medium text-slate-900">29</span> shared lines</div>
+<div><span class="font-medium text-slate-900">410</span> tokens</div>
+</div>
+<div class="flex items-center justify-between mt-1 text-[10px] text-slate-500">
+<span class="flex items-center space-x-1">
+<span>History:</span>
+<svg class="w-16 h-3.5 text-slate-400" fill="none" viewbox="0 0 60 14">
+<path d="M2 6 L16 6 L30 6 L44 6 L58 6" stroke="currentColor" stroke-linecap="round" stroke-width="1.5"></path>
+</svg>
+</span>
+<span class="text-slate-500 font-mono">0 net drift</span>
+</div>
+<div class="mt-2 text-[11px] font-mono text-slate-600 truncate">
+<div class="truncate text-slate-700">includes/database.mysql.inc</div>
+</div>
+</div>
+<!-- Cluster #04 -->
+<div class="p-3 bg-white hover:bg-slate-50 transition-colors cursor-pointer">
+<div class="flex justify-between items-start">
+<span class="font-semibold text-slate-800 text-sm">Cluster #04</span>
+<span class="text-[11px] font-code-callout bg-slate-100 text-slate-700 px-1.5 rounded">2 occurrences</span>
+</div>
+<div class="grid grid-cols-2 gap-1 text-[11px] my-1.5 text-slate-600">
+<div><span class="font-medium text-slate-900">22</span> shared lines</div>
+<div><span class="font-medium text-slate-900">315</span> tokens</div>
+</div>
+<div class="mt-2 text-[11px] font-mono text-slate-600 truncate">
+<div class="truncate text-slate-700">includes/file.inc</div>
+</div>
+</div>
+<!-- Cluster #05 -->
+<div class="p-3 bg-white hover:bg-slate-50 transition-colors cursor-pointer">
+<div class="flex justify-between items-start">
+<div class="flex items-center space-x-1.5">
+<span class="font-semibold text-slate-800 text-sm">Cluster #05</span>
+<span class="bg-amber-100 text-amber-800 border border-amber-300 text-[10px] font-bold px-1 rounded">NEW</span>
+</div>
+<span class="text-[11px] font-code-callout bg-slate-100 text-slate-700 px-1.5 rounded">3 occurrences</span>
+</div>
+<div class="grid grid-cols-2 gap-1 text-[11px] my-1.5 text-slate-600">
+<div><span class="font-medium text-slate-900">19</span> shared lines</div>
+<div><span class="font-medium text-slate-900">270</span> tokens</div>
+</div>
+<div class="mt-2 text-[11px] font-mono text-slate-600 truncate">
+<div class="truncate text-slate-700">includes/theme.inc</div>
+</div>
+</div>
+<!-- Cluster #06 & #07 -->
+<div class="p-3 bg-white hover:bg-slate-50 transition-colors cursor-pointer">
+<div class="flex justify-between items-start">
+<span class="font-semibold text-slate-800 text-sm">Cluster #06</span>
+<span class="text-[11px] font-code-callout bg-slate-100 text-slate-700 px-1.5 rounded">2 occurrences</span>
+</div>
+<div class="text-[11px] text-slate-600 my-1">16 shared lines • 240 tokens</div>
+<div class="text-[11px] font-mono text-slate-600 truncate">includes/menu.inc</div>
+</div>
+<div class="p-3 bg-white hover:bg-slate-50 transition-colors cursor-pointer">
+<div class="flex justify-between items-start">
+<span class="font-semibold text-slate-800 text-sm">Cluster #07</span>
+<span class="text-[11px] font-code-callout bg-slate-100 text-slate-700 px-1.5 rounded">2 occurrences</span>
+</div>
+<div class="text-[11px] text-slate-600 my-1">14 shared lines • 190 tokens</div>
+<div class="text-[11px] font-mono text-slate-600 truncate">includes/form.inc</div>
+</div>
+</div>
+</aside>
+<!-- RIGHT PANE: Side-by-Side Synchronized Diff Viewer -->
+<section class="flex-1 flex flex-col min-w-0 bg-white">
+<!-- Cluster Action Header Bar -->
+<div class="px-space-md py-2 border-b border-outline-variant/70 bg-slate-50 flex flex-wrap items-center justify-between gap-2">
+<!-- Occurrence Switcher & Token Metrics -->
+<div class="flex items-center space-x-3">
+<div class="flex items-center space-x-1 border border-outline-variant/80 rounded bg-white px-2 py-1 text-body-sm">
+<button class="text-slate-400 hover:text-slate-800 transition-colors">
+<span class="material-symbols-outlined text-[14px]">arrow_back</span>
+</button>
+<span class="font-semibold text-slate-800 px-1">Occurrence 1 of 3</span>
+<button class="text-slate-700 hover:text-slate-900 transition-colors">
+<span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+<div class="flex items-center space-x-1.5 text-xs text-slate-700 bg-amber-50 border border-amber-200 px-2 py-1 rounded">
+<span class="material-symbols-outlined text-[14px] text-amber-600">content_copy</span>
+<span class="font-semibold">834 identical tokens</span>
+<span class="text-slate-400">|</span>
+<span class="text-emerald-700 font-medium">Exact Match: 100%</span>
+</div>
+</div>
+<!-- Remediation Actions -->
+<div class="flex items-center space-x-2">
+<button class="h-7 px-2.5 bg-white border border-outline-variant/80 text-slate-700 hover:bg-slate-50 rounded text-body-sm flex items-center space-x-1">
+<span class="material-symbols-outlined text-[14px]">add_task</span>
+<span>Create Issue</span>
+</button>
+<button class="h-7 px-2.5 bg-white border border-outline-variant/80 text-slate-700 hover:bg-slate-50 rounded text-body-sm flex items-center space-x-1">
+<span class="material-symbols-outlined text-[14px]">visibility_off</span>
+<span>Ignore Block</span>
+</button>
+<button class="h-7 px-2.5 bg-primary-container text-on-primary hover:bg-blue-700 rounded text-body-sm font-medium flex items-center space-x-1">
+<span class="material-symbols-outlined text-[14px]">auto_fix_high</span>
+<span>Extract Common Helper</span>
+</button>
+</div>
+</div>
+<!-- Diff Headers for Files -->
+<div class="grid grid-cols-2 border-b border-outline-variant/70 text-body-sm font-code-body bg-slate-100/80">
+<div class="p-2 px-3 border-r border-outline-variant/70 flex justify-between items-center bg-blue-50/40">
+<div class="flex items-center space-x-2 truncate">
+<span class="material-symbols-outlined text-primary text-[16px]">draft</span>
+<span class="font-semibold text-slate-900">includes/bootstrap.inc</span>
+<span class="text-slate-500 font-normal">lines 324–372 (48 lines)</span>
+</div>
+<button class="text-slate-400 hover:text-slate-700" title="Copy file path">
+<span class="material-symbols-outlined text-[14px]">file_copy</span>
+</button>
+</div>
+<div class="p-2 px-3 flex justify-between items-center bg-amber-50/30">
+<div class="flex items-center space-x-2 truncate">
+<span class="material-symbols-outlined text-amber-700 text-[16px]">draft</span>
+<span class="font-semibold text-slate-900">includes/common.inc</span>
+<span class="text-slate-500 font-normal">lines 188–236 (48 lines)</span>
+</div>
+<button class="text-slate-400 hover:text-slate-700" title="Copy file path">
+<span class="material-symbols-outlined text-[14px]">file_copy</span>
+</button>
+</div>
+</div>
+<!-- Code Inspection Split View (Synchronized Line Gutters & Duplication Warnings) -->
+<div class="flex-1 grid grid-cols-2 overflow-auto custom-scroll font-code-body text-[12px] leading-5 divide-x divide-outline-variant/70 bg-white">
+<!-- LEFT CODE PANE (includes/bootstrap.inc) -->
+<div class="flex flex-col select-text">
+<!-- Line 324 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">324</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"><span class="text-purple-700 font-semibold">function</span> <span class="text-blue-700">conf_path</span>(<span class="text-slate-700">$require_settings</span> = <span class="text-emerald-700 font-semibold">TRUE</span>, <span class="text-slate-700">$reset</span> = <span class="text-emerald-700 font-semibold">FALSE</span>) {</div>
+</div>
+<!-- Line 325 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">325</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-purple-700 font-semibold">static</span> <span class="text-slate-700">$conf</span> = <span class="text-emerald-800">''</span>;</div>
+</div>
+<!-- Line 326 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">326</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-purple-700 font-semibold">if</span> (<span class="text-slate-700">$conf</span> &amp;&amp; !<span class="text-slate-700">$reset</span>) {</div>
+</div>
+<!-- Line 327 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">327</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-purple-700 font-semibold">return</span> <span class="text-slate-700">$conf</span>;</div>
+</div>
+<!-- Line 328 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">328</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre">  }</div>
+</div>
+<!-- Line 329 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">329</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-slate-700">$confdir</span> = <span class="text-emerald-800">'sites'</span>;</div>
+</div>
+<!-- Line 330 -->
+<div class="flex hover:bg-slate-50/80 group bg-amber-50/40">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">330</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-slate-700">$uri</span> = <span class="text-blue-700">explode</span>(<span class="text-emerald-800">'/'</span>, <span class="text-slate-700">$_SERVER</span>[<span class="text-emerald-800">'SCRIPT_NAME'</span>] ? <span class="text-slate-700">$_SERVER</span>[<span class="text-emerald-800">'SCRIPT_NAME'</span>] : <span class="text-slate-700">$_SERVER</span>[<span class="text-emerald-800">'SCRIPT_FILENAME'</span>]);</div>
+</div>
+<!-- Line 331 -->
+<div class="flex hover:bg-slate-50/80 group bg-amber-50/40">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">331</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-slate-700">$server</span> = <span class="text-blue-700">explode</span>(<span class="text-emerald-800">'.'</span>, <span class="text-blue-700">implode</span>(<span class="text-emerald-800">'.'</span>, <span class="text-blue-700">array_reverse</span>(<span class="text-blue-700">explode</span>(<span class="text-emerald-800">':'</span>, <span class="text-blue-700">rtrim</span>(<span class="text-slate-700">$_SERVER</span>[<span class="text-emerald-800">'HTTP_HOST'</span>], <span class="text-emerald-800">'.'</span>)))));</div>
+</div>
+<!-- Line 332 -->
+<div class="flex hover:bg-slate-50/80 group bg-amber-50/40">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">332</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-purple-700 font-semibold">for</span> (<span class="text-slate-700">$i</span> = <span class="text-blue-700">count</span>(<span class="text-slate-700">$uri</span>) - 1; <span class="text-slate-700">$i</span> &gt; 0; <span class="text-slate-700">$i</span>--) {</div>
+</div>
+<!-- Line 333 -->
+<div class="flex hover:bg-slate-50/80 group bg-amber-50/40">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">333</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-purple-700 font-semibold">for</span> (<span class="text-slate-700">$j</span> = <span class="text-blue-700">count</span>(<span class="text-slate-700">$server</span>); <span class="text-slate-700">$j</span> &gt; 0; <span class="text-slate-700">$j</span>--) {</div>
+</div>
+<!-- Line 334 -->
+<div class="flex hover:bg-slate-50/80 group bg-amber-50/40">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">334</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-slate-700">$dir</span> = <span class="text-blue-700">implode</span>(<span class="text-emerald-800">'.'</span>, <span class="text-blue-700">array_slice</span>(<span class="text-slate-700">$server</span>, -<span class="text-slate-700">$j</span>)) . <span class="text-emerald-800">'.'</span> . <span class="text-blue-700">implode</span>(<span class="text-emerald-800">'.'</span>, <span class="text-blue-700">array_slice</span>(<span class="text-slate-700">$uri</span>, 0, <span class="text-slate-700">$i</span>));</div>
+</div>
+<!-- Line 335 -->
+<div class="flex hover:bg-slate-50/80 group bg-amber-50/40">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">335</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-purple-700 font-semibold">if</span> (<span class="text-blue-700">file_exists</span>(<span class="text-emerald-800">"$confdir/$dir/settings.php"</span>) || (!<span class="text-slate-700">$require_settings</span> &amp;&amp; <span class="text-blue-700">file_exists</span>(<span class="text-emerald-800">"$confdir/$dir"</span>))) {</div>
+</div>
+<!-- Line 336 -->
+<div class="flex hover:bg-slate-50/80 group bg-amber-50/40">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">336</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-slate-700">$conf</span> = <span class="text-emerald-800">"$confdir/$dir"</span>;</div>
+</div>
+<!-- Line 337 -->
+<div class="flex hover:bg-slate-50/80 group bg-amber-50/40">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">337</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-purple-700 font-semibold">return</span> <span class="text-slate-700">$conf</span>;</div>
+</div>
+<!-- Line 338 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">338</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre">      }</div>
+</div>
+<!-- Line 339 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">339</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre">    }</div>
+</div>
+<!-- Line 340 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">340</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre">  }</div>
+</div>
+<!-- Line 341 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">341</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-slate-700">$conf</span> = <span class="text-emerald-800">"$confdir/default"</span>;</div>
+</div>
+<!-- Line 342 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">342</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-purple-700 font-semibold">return</span> <span class="text-slate-700">$conf</span>;</div>
+</div>
+<!-- Line 343 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">343</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre">}</div>
+</div>
+</div>
+<!-- RIGHT CODE PANE (includes/common.inc) -->
+<div class="flex flex-col select-text">
+<!-- Line 188 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">188</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"><span class="text-purple-700 font-semibold">function</span> <span class="text-blue-700">custom_resolve_conf_path</span>(<span class="text-slate-700">$require_settings</span> = <span class="text-emerald-700 font-semibold">TRUE</span>, <span class="text-slate-700">$force_reload</span> = <span class="text-emerald-700 font-semibold">FALSE</span>) {</div>
+</div>
+<!-- Line 189 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">189</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-purple-700 font-semibold">static</span> <span class="text-slate-700">$cached_conf</span> = <span class="text-emerald-800">''</span>;</div>
+</div>
+<!-- Line 190 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">190</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-purple-700 font-semibold">if</span> (<span class="text-slate-700">$cached_conf</span> &amp;&amp; !<span class="text-slate-700">$force_reload</span>) {</div>
+</div>
+<!-- Line 191 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">191</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-purple-700 font-semibold">return</span> <span class="text-slate-700">$cached_conf</span>;</div>
+</div>
+<!-- Line 192 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">192</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre">  }</div>
+</div>
+<!-- Line 193 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">193</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-slate-700">$confdir</span> = <span class="text-emerald-800">'sites'</span>;</div>
+</div>
+<!-- Line 194 -->
+<div class="flex hover:bg-slate-50/80 group bg-amber-50/40">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">194</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-slate-700">$uri</span> = <span class="text-blue-700">explode</span>(<span class="text-emerald-800">'/'</span>, <span class="text-slate-700">$_SERVER</span>[<span class="text-emerald-800">'SCRIPT_NAME'</span>] ? <span class="text-slate-700">$_SERVER</span>[<span class="text-emerald-800">'SCRIPT_NAME'</span>] : <span class="text-slate-700">$_SERVER</span>[<span class="text-emerald-800">'SCRIPT_FILENAME'</span>]);</div>
+</div>
+<!-- Line 195 -->
+<div class="flex hover:bg-slate-50/80 group bg-amber-50/40">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">195</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-slate-700">$server</span> = <span class="text-blue-700">explode</span>(<span class="text-emerald-800">'.'</span>, <span class="text-blue-700">implode</span>(<span class="text-emerald-800">'.'</span>, <span class="text-blue-700">array_reverse</span>(<span class="text-blue-700">explode</span>(<span class="text-emerald-800">':'</span>, <span class="text-blue-700">rtrim</span>(<span class="text-slate-700">$_SERVER</span>[<span class="text-emerald-800">'HTTP_HOST'</span>], <span class="text-emerald-800">'.'</span>)))));</div>
+</div>
+<!-- Line 196 -->
+<div class="flex hover:bg-slate-50/80 group bg-amber-50/40">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">196</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-purple-700 font-semibold">for</span> (<span class="text-slate-700">$i</span> = <span class="text-blue-700">count</span>(<span class="text-slate-700">$uri</span>) - 1; <span class="text-slate-700">$i</span> &gt; 0; <span class="text-slate-700">$i</span>--) {</div>
+</div>
+<!-- Line 197 -->
+<div class="flex hover:bg-slate-50/80 group bg-amber-50/40">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">197</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-purple-700 font-semibold">for</span> (<span class="text-slate-700">$j</span> = <span class="text-blue-700">count</span>(<span class="text-slate-700">$server</span>); <span class="text-slate-700">$j</span> &gt; 0; <span class="text-slate-700">$j</span>--) {</div>
+</div>
+<!-- Line 198 -->
+<div class="flex hover:bg-slate-50/80 group bg-amber-50/40">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">198</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-slate-700">$dir</span> = <span class="text-blue-700">implode</span>(<span class="text-emerald-800">'.'</span>, <span class="text-blue-700">array_slice</span>(<span class="text-slate-700">$server</span>, -<span class="text-slate-700">$j</span>)) . <span class="text-emerald-800">'.'</span> . <span class="text-blue-700">implode</span>(<span class="text-emerald-800">'.'</span>, <span class="text-blue-700">array_slice</span>(<span class="text-slate-700">$uri</span>, 0, <span class="text-slate-700">$i</span>));</div>
+</div>
+<!-- Line 199 -->
+<div class="flex hover:bg-slate-50/80 group bg-amber-50/40">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">199</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-purple-700 font-semibold">if</span> (<span class="text-blue-700">file_exists</span>(<span class="text-emerald-800">"$confdir/$dir/settings.php"</span>) || (!<span class="text-slate-700">$require_settings</span> &amp;&amp; <span class="text-blue-700">file_exists</span>(<span class="text-emerald-800">"$confdir/$dir"</span>))) {</div>
+</div>
+<!-- Line 200 -->
+<div class="flex hover:bg-slate-50/80 group bg-amber-50/40">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">200</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-slate-700">$cached_conf</span> = <span class="text-emerald-800">"$confdir/$dir"</span>;</div>
+</div>
+<!-- Line 201 -->
+<div class="flex hover:bg-slate-50/80 group bg-amber-50/40">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">201</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-purple-700 font-semibold">return</span> <span class="text-slate-700">$cached_conf</span>;</div>
+</div>
+<!-- Line 202 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">202</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre">      }</div>
+</div>
+<!-- Line 203 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">203</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre">    }</div>
+</div>
+<!-- Line 204 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">204</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre">  }</div>
+</div>
+<!-- Line 205 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">205</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-slate-700">$cached_conf</span> = <span class="text-emerald-800">"$confdir/default"</span>;</div>
+</div>
+<!-- Line 206 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">206</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre"> <span class="text-purple-700 font-semibold">return</span> <span class="text-slate-700">$cached_conf</span>;</div>
+</div>
+<!-- Line 207 -->
+<div class="flex hover:bg-slate-50/80 group">
+<div class="w-11 bg-slate-50 border-r border-outline-variant/40 text-right pr-2 text-slate-400 select-none text-[11px] font-mono">207</div>
+<div class="w-2 bg-amber-400"></div>
+<div class="pl-2 pr-4 font-mono text-slate-800 whitespace-pre">}</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- REUSE TREND ANALYTICS BAND (Dense Horizontal Strip) -->
+<section class="bg-surface-container-lowest border border-outline-variant/70 rounded p-space-md flex flex-col md:flex-row items-center justify-between gap-space-lg">
+<!-- Left: Duplication Density Historical Trend Chart -->
+<div class="w-full md:w-7/12 flex flex-col space-y-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="font-semibold text-headline-sm text-on-surface text-sm">Reuse Trend (Last 12 Analyses)</span>
+<span class="text-xs text-slate-500">Density increased from 1.1% to 1.7%</span>
+</div>
+<span class="text-[11px] font-mono text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded border border-amber-200">Leak Period Baseline: 2.8% target</span>
+</div>
+<!-- Inline Analytical SVG Line & Gradient Area Graph -->
+<div class="h-16 w-full bg-slate-50 border border-slate-200 rounded p-1 flex items-center">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 700 60">
+<defs>
+<lineargradient id="areaGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#2563eb" stop-opacity="0.25"></stop>
+<stop offset="100%" stop-color="#2563eb" stop-opacity="0.0"></stop>
+</lineargradient>
+</defs>
+<!-- Grid lines -->
+<line stroke="#e2e8f0" stroke-dasharray="3,3" x1="0" x2="700" y1="15" y2="15"></line>
+<line stroke="#e2e8f0" stroke-dasharray="3,3" x1="0" x2="700" y1="35" y2="35"></line>
+<line stroke="#cbd5e1" x1="0" x2="700" y1="50" y2="50"></line>
+<!-- Leak Period Boundary Shading -->
+<rect fill="#fef3c7" fill-opacity="0.3" height="60" width="180" x="520" y="0"></rect>
+<line stroke="#f59e0b" stroke-dasharray="2,2" x1="520" x2="520" y1="0" y2="60"></line>
+<text fill="#b45309" font-family="Inter" font-size="9" font-weight="600" x="525" y="12">LEAK PERIOD</text>
+<!-- Line Trend and Shaded Area -->
+<path d="M0 48 L60 46 L120 46 L180 43 L240 44 L300 40 L360 41 L420 37 L480 38 L520 34 L600 24 L700 18 L700 55 L0 55 Z" fill="url(#areaGradient)"></path>
+<path d="M0 48 L60 46 L120 46 L180 43 L240 44 L300 40 L360 41 L420 37 L480 38 L520 34 L600 24 L700 18" fill="none" stroke="#2563eb" stroke-linejoin="round" stroke-width="2"></path>
+<!-- Highlight Points -->
+<circle cx="520" cy="34" fill="#ffffff" r="3" stroke="#2563eb" stroke-width="2"></circle>
+<circle cx="700" cy="18" fill="#ba1a1a" r="3.5" stroke="#ffffff" stroke-width="1.5"></circle>
+</svg>
+</div>
+</div>
+<!-- Right: Direct Copy vs Refactored Move Breakdown -->
+<div class="w-full md:w-5/12 flex flex-col space-y-2 border-t md:border-t-0 md:border-l border-outline-variant/60 pt-3 md:pt-0 md:pl-space-lg">
+<div class="text-label-sm font-label-sm text-slate-700 tracking-tight">Duplication Origin in Leak Period</div>
+<!-- Copy / Pasted Bar -->
+<div class="space-y-1">
+<div class="flex justify-between text-body-sm font-body-sm">
+<span class="text-slate-800 font-medium flex items-center space-x-1">
+<span class="w-2.5 h-2.5 bg-amber-500 rounded-sm inline-block"></span>
+<span>Direct Copy &amp; Paste</span>
+</span>
+<span class="font-bold font-mono text-amber-900">78%</span>
+</div>
+<div class="w-full bg-slate-100 rounded h-2 overflow-hidden border border-slate-200">
+<div class="bg-amber-500 h-full rounded" style="width: 78%"></div>
+</div>
+<div class="text-[11px] text-slate-500">14 new clone blocks added without parameterization</div>
+</div>
+<!-- Relocated Bar -->
+<div class="space-y-1 pt-1">
+<div class="flex justify-between text-body-sm font-body-sm">
+<span class="text-slate-800 font-medium flex items-center space-x-1">
+<span class="w-2.5 h-2.5 bg-primary rounded-sm inline-block"></span>
+<span>Moved Without Refactor</span>
+</span>
+<span class="font-bold font-mono text-slate-800">22%</span>
+</div>
+<div class="w-full bg-slate-100 rounded h-2 overflow-hidden border border-slate-200">
+<div class="bg-primary h-full rounded" style="width: 22%"></div>
+</div>
+<div class="text-[11px] text-slate-500">4 blocks relocated across packages leaving original untouched</div>
+</div>
+</div>
+</section>
+</main>
+<!-- DEVELOPER FOOTER -->
+<footer class="border-t border-outline-variant/60 bg-surface-container-lowest px-space-lg py-2.5 text-[11px] text-slate-500 flex flex-col sm:flex-row justify-between items-center gap-2">
+<div class="flex items-center space-x-2">
+<span class="font-semibold text-slate-700">SonarQube Community Edition</span>
+<span>•</span>
+<span>LGPL v3</span>
+<span>•</span>
+<span class="font-mono">Version 9.9 LTS</span>
+</div>
+<div class="flex items-center space-x-4">
+<a class="hover:text-primary transition-colors" href="#">Documentation</a>
+<a class="hover:text-primary transition-colors" href="#">Support Forums</a>
+<a class="hover:text-primary transition-colors" href="#">Web API</a>
+</div>
+</footer>
+</body></html>

@@ -13,7 +13,7 @@ these files.
 | Resource | `projects/2566086563026806547` |
 | Design system | Static Analysis Engine (light, Inter + JetBrains Mono, `#2563eb` primary) |
 | Device target | Desktop, 1280px reference width (exports render at 2560px @2x) |
-| Exported | 2026-09-15 |
+| Exported | Screens 01-08 on 2026-09-15; 09-11 on 2026-09-16 |
 
 ## Contents
 
@@ -36,6 +36,9 @@ these files.
 | 06 | Quality Gates | Gate list with condition/project counts, built-in "Sonar way" gate, conditions table (metric, operator, threshold, sample impact), add-condition flow |
 | 07 | Rules Configuration | Rule browser: language / type / severity / activation / security-standard facets, rule list with counts |
 | 08 | Repositories | The entry point: connected git repositories with branch, last commit, gate status and issue count, plus the "Connect repository" dialog (GitHub / GitLab / local path, access token, branch, project key, when to analyse) |
+| 09 | Duplications | Cluster list with NEW badges against the baseline, side-by-side diff with synchronised gutters and a token count, scorecards split Overall / New Code, and a Reuse Trend band setting copy/paste against moved (refactored) code |
+| 10 | Maintainability | Composite slop score 0-100 with its four dimensions as meters, the six reuse signals with deltas, findings grouped by slop pattern, worst files, and a grouped bar chart against the baseline analysis |
+| 11 | Unused Code | Counts for unused files / exports / dependencies / unlisted / unresolved imports, a confidence filter and three-segment confidence meter, an import-graph reachability panel with the AST reference chain, static import evidence, and the caution that dynamic imports and path aliases can make a reachable file look unused |
 
 Notes:
 
@@ -52,6 +55,21 @@ Notes:
   titled "Code Quality — Repositories") because a generation that appeared to
   time out had in fact succeeded. They differ only in the header chip and some
   spacing; `ccb3776b…` is the one exported here.
+- Screens 09-11 were designed on 2026-09-16 for the duplication, slop and
+  unused-code work (issues #20-#24). They are the first screens drawn from
+  research rather than from SonarQube's own UI — the six reuse signals on
+  screen 10 come straight from the GitClear findings in the vault note
+  `Duplication and slop detection`. They still carry the CxPHP demo data.
+- **The time-out-that-succeeded bit again.** Three screens were requested, two
+  reported failure, and relaunching them produced duplicate exports of
+  Maintainability and Unused Code — the same behaviour the screen 08 note above
+  already described. A generation that times out is still running. Wait and
+  re-list before relaunching; match by title, because duplicates share one.
+- **Screen 11 is missing a column the feature needs.** The discarded variant
+  had a REASON column reading like prose — "only referenced by a barrel file
+  that nothing imports". Explaining *why* something looks unused is what makes
+  the finding trustworthy rather than a guess, so the implementation should
+  carry it even though this export does not.
 - The screens are desktop-only. No tablet or mobile breakpoints were designed.
 
 ## Re-exporting
