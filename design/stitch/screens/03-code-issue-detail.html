@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-error-container":"#93000a","secondary":"#545f73","on-tertiary-fixed":"#001d31","on-secondary-fixed-variant":"#3c475a","on-primary-fixed":"#00174b","surface-container-lowest":"#ffffff","tertiary-fixed":"#cce5ff","error":"#ba1a1a","surface-container-highest":"#d3e4fe","surface-bright":"#f8f9ff","primary":"#004ac6","on-tertiary-fixed-variant":"#004b73","on-surface":"#0b1c30","secondary-fixed-dim":"#bcc7de","secondary-container":"#d5e0f8","on-surface-variant":"#434655","surface":"#f8f9ff","on-secondary-container":"#586377","on-secondary-fixed":"#111c2d","secondary-fixed":"#d8e3fb","surface-dim":"#cbdbf5","surface-variant":"#d3e4fe","background":"#f8f9ff","on-tertiary-container":"#e7f2ff","on-primary":"#ffffff","tertiary-container":"#0073ae","on-background":"#0b1c30","error-container":"#ffdad6","on-primary-fixed-variant":"#003ea8","on-tertiary":"#ffffff","inverse-surface":"#213145","tertiary":"#005a89","on-secondary":"#ffffff","inverse-primary":"#b4c5ff","primary-fixed":"#dbe1ff","primary-fixed-dim":"#b4c5ff","tertiary-fixed-dim":"#93ccff","on-primary-container":"#eeefff","surface-container":"#e5eeff","inverse-on-surface":"#eaf1ff","surface-container-low":"#eff4ff","on-error":"#ffffff","primary-container":"#2563eb","outline":"#737686","surface-container-high":"#dce9ff","outline-variant":"#c3c6d7","surface-tint":"#0053db"},borderRadius:{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},spacing:{"margin":"1rem","space-xl":"1.5rem","space-md":"0.75rem","gutter":"0.75rem","space-sm":"0.375rem","space-xs":"0.25rem","space-lg":"1rem"},fontFamily:{"headline-md":["Inter"],"body-sm":["Inter"],"body-lg":["Inter"],"body-md":["Inter"],"label-sm":["Inter"],"code-body":["JetBrains Mono"],"code-callout":["JetBrains Mono"],"headline-lg":["Inter"],"label-md":["Inter"],"headline-sm":["Inter"],"stat-display":["Inter"]},fontSize:{"headline-md":["18px",{"lineHeight":"24px","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"16px","fontWeight":"400"}],"body-lg":["14px",{"lineHeight":"20px","fontWeight":"400"}],"body-md":["13px",{"lineHeight":"18px","fontWeight":"400"}],"label-sm":["11px",{"lineHeight":"14px","fontWeight":"600"}],"code-body":["12px",{"lineHeight":"18px","fontWeight":"400"}],"code-callout":["11px",{"lineHeight":"14px","fontWeight":"600"}],"headline-lg":["24px",{"lineHeight":"32px","fontWeight":"600"}],"label-md":["12px",{"lineHeight":"16px","fontWeight":"500"}],"headline-sm":["15px",{"lineHeight":"20px","fontWeight":"600"}],"stat-display":["28px",{"lineHeight":"32px","fontWeight":"300"}]}}}}</script></head><body class="bg-background font-body-md text-body-md text-on-surface"><header class="fixed top-0 left-0 w-full z-50"><div class="h-12 bg-inverse-surface border-b border-outline/30 px-margin flex items-center justify-between"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-tertiary-fixed text-[20px]">waves</span><span class="font-headline-sm text-headline-sm text-on-primary tracking-tight font-semibold">SonarQube</span></div><nav class="hidden xl:flex items-center gap-space-md h-12" data-active-classes="text-on-primary border-b-2 border-primary-container font-semibold"><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="projects" href="#">Projects</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-issues" href="#">Issues</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-measures" href="#">Measures</a><a aria-current="page" class="h-full flex items-center transition-colors px-space-xs text-on-primary border-b-2 border-primary-container font-semibold" data-path="project-code" href="#">Code</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-activity" href="#">Activity</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="quality-profiles" href="#">Quality Profiles</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="quality-gates" href="#">Quality Gates</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="system-administration" href="#">Administration</a></nav></div><div class="flex items-center gap-space-md"><div class="relative w-[260px]"><span class="material-symbols-outlined absolute left-space-sm top-1/2 -translate-y-1/2 text-inverse-on-surface/60 text-[16px]">search</span><input class="w-full h-[28px] pl-7 pr-space-sm bg-surface-container-highest/20 border border-outline/30 rounded text-inverse-on-surface placeholder-inverse-on-surface/50 font-body-sm text-body-sm focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container" placeholder="Search for projects, files..." type="text"/></div><button class="w-7 h-7 flex items-center justify-center text-inverse-on-surface/80 hover:text-on-primary transition-colors" title="Documentation & Help" type="button"><span class="material-symbols-outlined text-[18px]">help</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div><div class="h-[42px] bg-surface-container-lowest border-b border-outline-variant px-margin flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)]"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-xs"><button class="text-secondary hover:text-primary transition-colors flex items-center" type="button"><span class="material-symbols-outlined text-[16px]">star</span></button><span class="material-symbols-outlined text-secondary text-[16px]">folder</span><span class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight">CxPHP</span></div><div class="h-4 w-[1px] bg-outline-variant mx-space-xs"></div><nav class="flex items-center gap-space-md h-[42px]" data-active-classes="text-primary border-b-2 border-primary font-semibold"><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-overview" href="#">Overview</a><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-issues" href="#">Issues</a><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-measures" href="#">Measures</a><a aria-current="page" class="h-full flex items-center transition-colors px-space-xs text-primary border-b-2 border-primary font-semibold" data-path="project-code" href="#">Code</a><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-activity" href="#">Activity</a><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-settings" href="#">Administration</a><button class="h-full flex items-center gap-space-xs text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs" type="button"><span>More</span><span class="material-symbols-outlined text-[14px]">arrow_drop_down</span></button></nav></div><div class="flex items-center gap-space-md font-body-sm text-body-sm text-on-surface-variant"><span class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[14px]">schedule</span>October 25, 2017, 11:23 AM</span><span class="text-outline-variant">•</span><span class="px-space-xs py-[1px] bg-surface-container text-on-secondary-container rounded font-label-sm text-label-sm border border-outline-variant">Version not provided</span></div></div></header><main class="w-full pt-[90px] bg-background min-h-screen px-margin pb-margin"><div class="flex flex-col w-full font-body-md text-on-surface">
+<!-- Action Sub-header Utility Bar -->
+<div class="w-full h-10 bg-surface-container-lowest flex items-center justify-between px-space-md shadow-sm mb-space-sm">
+<div class="flex items-center gap-space-md">
+<button class="flex items-center justify-center w-7 h-7 text-secondary hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">arrow_back</span>
+</button>
+<div class="flex items-center gap-space-xs font-label-md text-label-md text-on-surface font-semibold">
+<span>11</span>
+<span class="text-secondary font-normal">/</span>
+<span class="text-secondary font-normal">725 issues</span>
+</div>
+<button class="flex items-center justify-center w-6 h-6 text-secondary hover:text-primary transition-colors ml-space-xs" type="button">
+<span class="material-symbols-outlined text-[16px]">sync</span>
+</button>
+</div>
+<div class="flex items-center gap-space-lg">
+<div class="flex items-center gap-space-xs font-code-body text-code-body text-primary font-medium cursor-pointer hover:underline">
+<span class="material-symbols-outlined text-[15px] text-secondary">description</span>
+<span>includes/bootstrap.inc</span>
+</div>
+<div class="flex items-center gap-space-xs bg-surface-container-high px-space-sm py-0.5 rounded text-on-surface-variant font-code-callout text-code-callout">
+<kbd class="px-1 py-0.5 bg-surface-container-lowest shadow-sm rounded text-on-surface font-semibold">alt</kbd>
+<span>+</span>
+<kbd class="px-1 py-0.5 bg-surface-container-lowest shadow-sm rounded text-on-surface font-semibold">↑</kbd>
+<kbd class="px-1 py-0.5 bg-surface-container-lowest shadow-sm rounded text-on-surface font-semibold">↓</kbd>
+<span class="ml-space-xs text-secondary">to navigate issue locations</span>
+</div>
+</div>
+</div>
+<!-- Workbench Master/Detail Workspace -->
+<div class="w-full flex items-start gap-space-sm">
+<!-- Left Panel: Issues Sidebar Drawer (~320px) -->
+<aside class="w-[320px] shrink-0 flex flex-col gap-space-xs bg-surface-container-lowest p-space-xs shadow-sm">
+<!-- Issue 1: Path_Traversal (Previous / Collapsed) -->
+<div class="p-space-sm bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer">
+<div class="flex items-center justify-between">
+<div class="font-headline-sm text-headline-sm text-on-surface truncate pr-2">
+            Checkmarx Vulnerability : Path_Traversal
+          </div>
+<span class="px-1.5 py-0.5 bg-surface-container-high text-secondary text-label-sm font-label-sm rounded font-medium">+13</span>
+</div>
+<div class="flex items-center gap-space-md mt-space-xs text-secondary font-label-sm text-label-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-error">lock</span> Vulnerability
+          </span>
+<span class="flex items-center gap-1 text-error">
+<span class="material-symbols-outlined text-[14px]">arrow_circle_up</span> Major
+          </span>
+</div>
+</div>
+<!-- Issue 2: Path_Traversal (Active / Expanded Red Callout) -->
+<div class="p-space-sm bg-error-container text-on-error-container shadow-sm">
+<div class="flex items-start justify-between">
+<div>
+<div class="font-headline-sm text-headline-sm text-error font-semibold leading-tight">
+              Checkmarx Vulnerability :<br/>Path_Traversal
+            </div>
+<div class="flex items-center gap-space-md mt-space-xs font-label-sm text-label-sm">
+<span class="flex items-center gap-1 text-on-error-container font-semibold">
+<span class="material-symbols-outlined text-[14px]">lock</span> Vulnerability
+              </span>
+<span class="flex items-center gap-1 text-error font-semibold">
+<span class="material-symbols-outlined text-[14px]">arrow_circle_up</span> Major
+              </span>
+</div>
+</div>
+<span class="px-1.5 py-0.5 bg-error text-on-error text-label-sm font-label-sm rounded font-bold shadow-sm">+13</span>
+</div>
+<!-- Vulnerability Trace Pill Stack -->
+<div class="mt-space-md flex flex-col gap-1 font-code-callout text-code-callout">
+<div class="flex items-center gap-space-xs py-0.5 px-1 bg-surface-container-lowest/80 rounded hover:bg-surface-container-lowest transition-colors cursor-pointer">
+<span class="w-4 h-4 rounded-sm bg-error text-on-error text-center leading-4 text-[10px] font-bold">1</span>
+<span class="text-on-surface font-semibold truncate">$_SERVER</span>
+</div>
+<div class="flex items-center gap-space-xs py-0.5 px-1 bg-surface-container-lowest/80 rounded hover:bg-surface-container-lowest transition-colors cursor-pointer">
+<span class="w-4 h-4 rounded-sm bg-secondary text-on-secondary text-center leading-4 text-[10px] font-bold">2</span>
+<span class="text-on-surface-variant truncate">rtrim</span>
+</div>
+<div class="flex items-center gap-space-xs py-0.5 px-1 bg-surface-container-lowest/80 rounded hover:bg-surface-container-lowest transition-colors cursor-pointer">
+<span class="w-4 h-4 rounded-sm bg-secondary text-on-secondary text-center leading-4 text-[10px] font-bold">3</span>
+<span class="text-on-surface-variant truncate">explode</span>
+</div>
+<div class="flex items-center gap-space-xs py-0.5 px-1 bg-surface-container-lowest/80 rounded hover:bg-surface-container-lowest transition-colors cursor-pointer">
+<span class="w-4 h-4 rounded-sm bg-secondary text-on-secondary text-center leading-4 text-[10px] font-bold">4</span>
+<span class="text-on-surface-variant truncate">array_reverse</span>
+</div>
+<div class="flex items-center gap-space-xs py-0.5 px-1 bg-surface-container-lowest/80 rounded hover:bg-surface-container-lowest transition-colors cursor-pointer">
+<span class="w-4 h-4 rounded-sm bg-secondary text-on-secondary text-center leading-4 text-[10px] font-bold">5</span>
+<span class="text-on-surface-variant truncate">implode</span>
+</div>
+<div class="flex items-center gap-space-xs py-0.5 px-1 bg-surface-container-lowest/80 rounded hover:bg-surface-container-lowest transition-colors cursor-pointer">
+<span class="w-4 h-4 rounded-sm bg-secondary text-on-secondary text-center leading-4 text-[10px] font-bold">6</span>
+<span class="text-on-surface-variant truncate">explode</span>
+</div>
+<div class="flex items-center gap-space-xs py-0.5 px-1 bg-surface-container-lowest/80 rounded hover:bg-surface-container-lowest transition-colors cursor-pointer">
+<span class="w-4 h-4 rounded-sm bg-error text-on-error text-center leading-4 text-[10px] font-bold">7</span>
+<span class="text-on-surface font-semibold truncate">server</span>
+</div>
+<div class="flex items-center gap-space-xs py-0.5 px-1 bg-surface-container-lowest/80 rounded hover:bg-surface-container-lowest transition-colors cursor-pointer">
+<span class="w-4 h-4 rounded-sm bg-secondary text-on-secondary text-center leading-4 text-[10px] font-bold">8</span>
+<span class="text-on-surface-variant truncate">server</span>
+</div>
+<div class="flex items-center gap-space-xs py-0.5 px-1 bg-surface-container-lowest/80 rounded hover:bg-surface-container-lowest transition-colors cursor-pointer">
+<span class="w-4 h-4 rounded-sm bg-secondary text-on-secondary text-center leading-4 text-[10px] font-bold">9</span>
+<span class="text-on-surface-variant truncate">array_slice</span>
+</div>
+<div class="flex items-center gap-space-xs py-0.5 px-1 bg-surface-container-lowest/80 rounded hover:bg-surface-container-lowest transition-colors cursor-pointer">
+<span class="w-4 h-4 rounded-sm bg-secondary text-on-secondary text-center leading-4 text-[10px] font-bold">10</span>
+<span class="text-on-surface-variant truncate">implode</span>
+</div>
+<div class="flex items-center gap-space-xs py-0.5 px-1 bg-surface-container-lowest/80 rounded hover:bg-surface-container-lowest transition-colors cursor-pointer">
+<span class="w-4 h-4 rounded-sm bg-secondary text-on-secondary text-center leading-4 text-[10px] font-bold">11</span>
+<span class="text-on-surface-variant truncate">dir</span>
+</div>
+<div class="flex items-center gap-space-xs py-0.5 px-1 bg-surface-container-lowest/80 rounded hover:bg-surface-container-lowest transition-colors cursor-pointer">
+<span class="w-4 h-4 rounded-sm bg-secondary text-on-secondary text-center leading-4 text-[10px] font-bold">12</span>
+<span class="text-on-surface-variant truncate">dir</span>
+</div>
+<div class="flex items-center gap-space-xs py-0.5 px-1 bg-surface-container-lowest/80 rounded hover:bg-surface-container-lowest transition-colors cursor-pointer">
+<span class="w-4 h-4 rounded-sm bg-error text-on-error text-center leading-4 text-[10px] font-bold">13</span>
+<span class="text-on-surface font-semibold truncate">$_DoubleQuotedString</span>
+</div>
+</div>
+</div>
+<!-- Issue 3: Path_Traversal (Pending) -->
+<div class="p-space-sm bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer">
+<div class="flex items-center justify-between">
+<div class="font-headline-sm text-headline-sm text-on-surface truncate pr-2">
+            Checkmarx Vulnerability : Path_Traversal
+          </div>
+<span class="px-1.5 py-0.5 bg-surface-container-high text-secondary text-label-sm font-label-sm rounded font-medium">+17</span>
+</div>
+<div class="flex items-center gap-space-md mt-space-xs text-secondary font-label-sm text-label-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-error">lock</span> Vulnerability
+          </span>
+<span class="flex items-center gap-1 text-error">
+<span class="material-symbols-outlined text-[14px]">arrow_circle_up</span> Major
+          </span>
+</div>
+</div>
+<!-- Issue 4: Possible_Flow_Control (Minor) -->
+<div class="p-space-sm bg-surface-container-low hover:bg-surface-container transition-colors cursor-pointer">
+<div class="flex items-center justify-between">
+<div class="font-headline-sm text-headline-sm text-on-surface truncate pr-2">
+            Checkmarx Vulnerability : Possible_Flow_Control
+          </div>
+<span class="px-1.5 py-0.5 bg-surface-container-high text-secondary text-label-sm font-label-sm rounded font-medium">+17</span>
+</div>
+<div class="flex items-center gap-space-md mt-space-xs text-secondary font-label-sm text-label-sm">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-secondary">lock</span> Vulnerability
+          </span>
+<span class="flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> Minor
+          </span>
+</div>
+</div>
+</aside>
+<!-- Right Panel: Code Inspection IDE Canvas -->
+<section class="flex-1 min-w-0 bg-surface-container-lowest shadow-sm overflow-x-auto">
+<!-- Code Gutter and Syntax Flow -->
+<div class="w-full flex flex-col font-code-body text-code-body select-text">
+<!-- Line 316 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">316</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-secondary italic">* found previously.</div>
+</div>
+<!-- Line 317 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">317</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-secondary italic">* @return</div>
+</div>
+<!-- Line 318 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">318</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-secondary italic">* The path of the matching directory.</div>
+</div>
+<!-- Line 319 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">319</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-secondary italic">*/</div>
+</div>
+<!-- Line 320 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">320</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-on-surface">
+<span class="text-primary font-bold">function</span> <span class="text-tertiary-container font-semibold">conf_path</span>($require_settings = <span class="text-primary">TRUE</span>, $reset = <span class="text-primary">FALSE</span>) {
+          </div>
+</div>
+<!-- Line 321: Highlighted red vulnerability gutter marker -->
+<div class="flex items-center bg-error-container/20 hover:bg-error-container/30 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">321</div>
+<div class="w-3 shrink-0 bg-error self-stretch"></div>
+<div class="pl-4 text-on-surface">
+              <span class="text-primary font-bold">static</span> <span class="text-tertiary font-semibold">$conf</span> = <span class="text-secondary">''</span>;
+          </div>
+</div>
+<!-- Line 322 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">322</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4"></div>
+</div>
+<!-- Line 323 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">323</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-on-surface">
+              <span class="text-primary font-bold">if</span> ($conf && !$reset) {
+          </div>
+</div>
+<!-- Line 324 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">324</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-on-surface">
+                <span class="text-primary font-bold">return</span> <span class="text-tertiary font-semibold">$conf</span>;
+          </div>
+</div>
+<!-- Line 325 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">325</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-on-surface">  }</div>
+</div>
+<!-- Line 326 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">326</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4"></div>
+</div>
+<!-- Line 327 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">327</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-on-surface">
+              <span class="text-tertiary font-semibold">$confdir</span> = <span class="text-secondary">'sites'</span>;
+          </div>
+</div>
+<!-- Line 328 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">328</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-on-surface">
+              <span class="text-tertiary font-semibold">$uri</span> = <span class="text-tertiary-container font-semibold">explode</span>(<span class="text-secondary">'/'</span>, <span class="text-on-surface-variant font-semibold">$_SERVER</span>[<span class="text-secondary">'SCRIPT_NAME'</span>] ? <span class="text-on-surface-variant font-semibold">$_SERVER</span>[<span class="text-secondary">'SCRIPT_NAME'</span>] : <span class="text-on-surface-variant font-semibold">$_SERVER</span>[<span class="text-secondary">'SCRIPT_FILENAME'</span>]);
+          </div>
+</div>
+<!-- Line 329: Inlined Steps 1 to 7 -->
+<div class="flex items-center bg-error-container/30 hover:bg-error-container/40 leading-7">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">329</div>
+<div class="w-3 shrink-0 bg-error self-stretch"></div>
+<div class="pl-4 flex items-center flex-wrap gap-1 text-on-surface py-0.5">
+              <span class="px-1 bg-error text-on-error rounded-sm text-[10px] font-bold">7</span>
+<span class="text-tertiary font-semibold">$server</span> = 
+            <span class="px-1 bg-error text-on-error rounded-sm text-[10px] font-bold">6</span>
+<span class="text-tertiary-container font-semibold">explode</span>(<span class="text-secondary">'.'</span>, 
+            <span class="px-1 bg-error text-on-error rounded-sm text-[10px] font-bold">5</span>
+<span class="text-tertiary-container font-semibold">implode</span>(<span class="text-secondary">'.'</span>, 
+            <span class="px-1 bg-secondary text-on-secondary rounded-sm text-[10px] font-bold">4</span>
+<span class="text-tertiary-container font-semibold">array_reverse</span>(
+            <span class="px-1 bg-secondary text-on-secondary rounded-sm text-[10px] font-bold">3</span>
+<span class="text-tertiary-container font-semibold">explode</span>(<span class="text-secondary">':'</span>, 
+            <span class="px-1 bg-secondary text-on-secondary rounded-sm text-[10px] font-bold">2</span>
+<span class="text-tertiary-container font-semibold">rtrim</span>(
+            <span class="px-1 bg-error text-on-error rounded-sm text-[10px] font-bold">1</span>
+<span class="text-on-surface-variant font-bold">$_SERVER</span>[<span class="text-secondary">'HTTP_HOST'</span>]
+          </div>
+</div>
+<!-- Line 330 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">330</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-on-surface">
+              <span class="text-primary font-bold">for</span> ($i = <span class="text-tertiary-container font-semibold">count</span>($uri) - 1; $i > 0; $i--) {
+          </div>
+</div>
+<!-- Line 331 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">331</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-on-surface">
+                <span class="text-primary font-bold">for</span> ($j = <span class="text-tertiary-container font-semibold">count</span>($server); $j > 0; $j--) {
+          </div>
+</div>
+<!-- Line 332: Step 8 to 11 -->
+<div class="flex items-center bg-error-container/20 hover:bg-error-container/30 leading-7">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">332</div>
+<div class="w-3 shrink-0 bg-error self-stretch"></div>
+<div class="pl-4 flex items-center flex-wrap gap-1 text-on-surface py-0.5">
+                  <span class="px-1 bg-error text-on-error rounded-sm text-[10px] font-bold">11</span>
+<span class="text-tertiary font-semibold">$dir</span> = 
+            <span class="px-1 bg-secondary text-on-secondary rounded-sm text-[10px] font-bold">10</span>
+<span class="text-tertiary-container font-semibold">implode</span>(<span class="text-secondary">'.'</span>, 
+            <span class="px-1 bg-secondary text-on-secondary rounded-sm text-[10px] font-bold">9</span>
+<span class="text-tertiary-container font-semibold">array_slice</span>(
+            <span class="px-1 bg-secondary text-on-secondary rounded-sm text-[10px] font-bold">8</span>
+<span class="text-tertiary font-semibold">$server</span>, -$j)) . <span class="text-tertiary-container font-semibold">implode</span>(<span class="text-secondary">'.'</span>, <span class="text-tertiary-container font-semibold">array_slice</span>($uri, 0, $i));
+          </div>
+</div>
+<!-- Line 333: Steps 12 and 13 Vulnerability Target -->
+<div class="flex items-center bg-error-container/30 hover:bg-error-container/40 leading-7">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">333</div>
+<div class="w-3 shrink-0 bg-error self-stretch"></div>
+<div class="pl-4 flex items-center flex-wrap gap-1 text-on-surface py-0.5">
+                  <span class="px-1 bg-error text-on-error rounded-sm text-[10px] font-bold">12</span>
+<span class="text-primary font-bold">if</span> (<span class="text-tertiary-container font-semibold">file_exists</span>(<span class="text-secondary">"$confdir/$dir/settings.php"</span>) || (!<span class="text-tertiary font-semibold">$require_settings</span> && 
+            <span class="px-1 bg-error text-on-error rounded-sm text-[10px] font-bold">13</span>
+            & <span class="text-tertiary-container font-semibold">file_exists</span>(<span class="text-secondary">"$confdir/$dir"</span>))
+          </div>
+</div>
+<!-- Inline Sticky Issue Banner (Line 333 context) -->
+<div class="w-full bg-error-container/60 p-space-sm pl-16 shadow-inner flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-error font-semibold">Checkmarx Vulnerability : Path_Traversal</span>
+<button class="text-secondary hover:text-on-surface" type="button">
+<span class="material-symbols-outlined text-[16px]">more_horiz</span>
+</button>
+</div>
+<div class="flex items-center gap-space-md font-body-sm text-body-sm text-secondary">
+<span>last month</span>
+<span class="font-code-callout text-code-callout text-primary font-bold">L333</span>
+<span class="material-symbols-outlined text-[16px] text-secondary cursor-pointer hover:text-primary">link</span>
+</div>
+</div>
+<div class="flex items-center justify-between font-label-md text-label-md">
+<div class="flex items-center gap-space-md text-on-error-container flex-wrap">
+<span class="flex items-center gap-1 font-semibold">
+<span class="material-symbols-outlined text-[16px]">lock</span> Vulnerability
+              </span>
+<span class="flex items-center gap-1 text-error font-bold">
+<span class="material-symbols-outlined text-[16px]">arrow_circle_up</span> Major
+              </span>
+<span class="flex items-center gap-1 text-primary cursor-pointer">
+<span class="material-symbols-outlined text-[14px]">radio_button_unchecked</span> Open
+                <span class="material-symbols-outlined text-[14px]">arrow_drop_down</span>
+</span>
+<span class="text-secondary cursor-pointer hover:underline">Not assigned</span>
+<span class="text-secondary">3min effort</span>
+<span class="text-primary hover:underline cursor-pointer">Comment</span>
+</div>
+<div class="flex items-center gap-1 text-secondary cursor-pointer hover:text-on-surface">
+<span class="material-symbols-outlined text-[15px]">label</span>
+<span class="font-code-callout text-code-callout text-on-surface-variant font-medium">checkmarx-medium</span>
+<span class="material-symbols-outlined text-[14px]">arrow_drop_down</span>
+</div>
+</div>
+</div>
+<!-- Line 334 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">334</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-on-surface">
+                    <span class="text-tertiary font-semibold">$conf</span> = <span class="text-secondary">"$confdir/$dir"</span>;
+          </div>
+</div>
+<!-- Line 335 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">335</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-on-surface">
+                    <span class="text-primary font-bold">return</span> <span class="text-tertiary font-semibold">$conf</span>;
+          </div>
+</div>
+<!-- Line 336 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">336</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-on-surface">    }</div>
+</div>
+<!-- Line 337 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">337</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-on-surface">  }</div>
+</div>
+<!-- Line 338 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">338</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-on-surface">
+              <span class="text-tertiary font-semibold">$conf</span> = <span class="text-secondary">"$confdir/default"</span>;
+          </div>
+</div>
+<!-- Line 339 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">339</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-on-surface">
+              <span class="text-primary font-bold">return</span> <span class="text-tertiary font-semibold">$conf</span>;
+          </div>
+</div>
+<!-- Line 340 -->
+<div class="flex items-center hover:bg-surface-container-high/40 leading-6">
+<div class="w-12 shrink-0 pr-3 text-right text-secondary/60 bg-surface-container-low select-none">340</div>
+<div class="w-3 shrink-0"></div>
+<div class="pl-4 text-on-surface">}</div>
+</div>
+</div>
+</section>
+</div>
+</div></main><footer class="w-full bg-surface-container-low border-t border-outline-variant py-space-md"><div class="w-full px-margin flex items-center justify-between font-body-sm text-body-sm text-on-surface-variant"><div>SonarQube Community Edition • LGPL v3 • Version 9.9 LTS</div><div class="flex items-center gap-space-lg"><a class="hover:text-primary transition-colors" href="#">Documentation</a><a class="hover:text-primary transition-colors" href="#">Support Forums</a><a class="hover:text-primary transition-colors" href="#">Web API</a></div></div></footer></body></html>

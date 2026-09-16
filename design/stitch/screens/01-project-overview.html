@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-error-container":"#93000a","secondary":"#545f73","on-tertiary-fixed":"#001d31","on-secondary-fixed-variant":"#3c475a","on-primary-fixed":"#00174b","surface-container-lowest":"#ffffff","tertiary-fixed":"#cce5ff","error":"#ba1a1a","surface-container-highest":"#d3e4fe","surface-bright":"#f8f9ff","primary":"#004ac6","on-tertiary-fixed-variant":"#004b73","on-surface":"#0b1c30","secondary-fixed-dim":"#bcc7de","secondary-container":"#d5e0f8","on-surface-variant":"#434655","surface":"#f8f9ff","on-secondary-container":"#586377","on-secondary-fixed":"#111c2d","secondary-fixed":"#d8e3fb","surface-dim":"#cbdbf5","surface-variant":"#d3e4fe","background":"#f8f9ff","on-tertiary-container":"#e7f2ff","on-primary":"#ffffff","tertiary-container":"#0073ae","on-background":"#0b1c30","error-container":"#ffdad6","on-primary-fixed-variant":"#003ea8","on-tertiary":"#ffffff","inverse-surface":"#213145","tertiary":"#005a89","on-secondary":"#ffffff","inverse-primary":"#b4c5ff","primary-fixed":"#dbe1ff","primary-fixed-dim":"#b4c5ff","tertiary-fixed-dim":"#93ccff","on-primary-container":"#eeefff","surface-container":"#e5eeff","inverse-on-surface":"#eaf1ff","surface-container-low":"#eff4ff","on-error":"#ffffff","primary-container":"#2563eb","outline":"#737686","surface-container-high":"#dce9ff","outline-variant":"#c3c6d7","surface-tint":"#0053db"},borderRadius:{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},spacing:{"margin":"1rem","space-xl":"1.5rem","space-md":"0.75rem","gutter":"0.75rem","space-sm":"0.375rem","space-xs":"0.25rem","space-lg":"1rem"},fontFamily:{"headline-md":["Inter"],"body-sm":["Inter"],"body-lg":["Inter"],"body-md":["Inter"],"label-sm":["Inter"],"code-body":["JetBrains Mono"],"code-callout":["JetBrains Mono"],"headline-lg":["Inter"],"label-md":["Inter"],"headline-sm":["Inter"],"stat-display":["Inter"]},fontSize:{"headline-md":["18px",{"lineHeight":"24px","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"16px","fontWeight":"400"}],"body-lg":["14px",{"lineHeight":"20px","fontWeight":"400"}],"body-md":["13px",{"lineHeight":"18px","fontWeight":"400"}],"label-sm":["11px",{"lineHeight":"14px","fontWeight":"600"}],"code-body":["12px",{"lineHeight":"18px","fontWeight":"400"}],"code-callout":["11px",{"lineHeight":"14px","fontWeight":"600"}],"headline-lg":["24px",{"lineHeight":"32px","fontWeight":"600"}],"label-md":["12px",{"lineHeight":"16px","fontWeight":"500"}],"headline-sm":["15px",{"lineHeight":"20px","fontWeight":"600"}],"stat-display":["28px",{"lineHeight":"32px","fontWeight":"300"}]}}}}</script></head><body class="bg-background font-body-md text-body-md text-on-surface"><header class="fixed top-0 left-0 w-full z-50"><div class="h-12 bg-inverse-surface border-b border-outline/30 px-margin flex items-center justify-between"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-tertiary-fixed text-[20px]">waves</span><span class="font-headline-sm text-headline-sm text-on-primary tracking-tight font-semibold">SonarQube</span></div><nav class="hidden xl:flex items-center gap-space-md h-12" data-active-classes="text-on-primary border-b-2 border-primary-container font-semibold"><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="projects" href="#">Projects</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-issues" href="#">Issues</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-measures" href="#">Measures</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-code" href="#">Code</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-activity" href="#">Activity</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="quality-profiles" href="#">Quality Profiles</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="quality-gates" href="#">Quality Gates</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="system-administration" href="#">Administration</a></nav></div><div class="flex items-center gap-space-md"><div class="relative w-[260px]"><span class="material-symbols-outlined absolute left-space-sm top-1/2 -translate-y-1/2 text-inverse-on-surface/60 text-[16px]">search</span><input class="w-full h-[28px] pl-7 pr-space-sm bg-surface-container-highest/20 border border-outline/30 rounded text-inverse-on-surface placeholder-inverse-on-surface/50 font-body-sm text-body-sm focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container" placeholder="Search for projects, files..." type="text"/></div><button class="w-7 h-7 flex items-center justify-center text-inverse-on-surface/80 hover:text-on-primary transition-colors" title="Documentation & Help" type="button"><span class="material-symbols-outlined text-[18px]">help</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div><div class="h-[42px] bg-surface-container-lowest border-b border-outline-variant px-margin flex items-center justify-between shadow-[0_1px_2px_rgba(0,0,0,0.03)]"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-xs"><button class="text-secondary hover:text-primary transition-colors flex items-center" type="button"><span class="material-symbols-outlined text-[16px]">star</span></button><span class="material-symbols-outlined text-secondary text-[16px]">folder</span><span class="font-headline-sm text-headline-sm text-on-surface font-semibold tracking-tight">CxPHP</span></div><div class="h-4 w-[1px] bg-outline-variant mx-space-xs"></div><nav class="flex items-center gap-space-md h-[42px]" data-active-classes="text-primary border-b-2 border-primary font-semibold"><a aria-current="page" class="h-full flex items-center transition-colors px-space-xs text-primary border-b-2 border-primary font-semibold" data-path="project-overview" href="#">Overview</a><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-issues" href="#">Issues</a><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-measures" href="#">Measures</a><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-code" href="#">Code</a><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-activity" href="#">Activity</a><a class="h-full flex items-center text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="project-settings" href="#">Administration</a><button class="h-full flex items-center gap-space-xs text-on-surface-variant hover:text-on-surface font-label-md text-label-md transition-colors px-space-xs" type="button"><span>More</span><span class="material-symbols-outlined text-[14px]">arrow_drop_down</span></button></nav></div><div class="flex items-center gap-space-md font-body-sm text-body-sm text-on-surface-variant"><span class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[14px]">schedule</span>October 25, 2017, 11:23 AM</span><span class="text-outline-variant">•</span><span class="px-space-xs py-[1px] bg-surface-container text-on-secondary-container rounded font-label-sm text-label-sm border border-outline-variant">Version not provided</span></div></div></header><main class="w-full pt-[90px] bg-background min-h-screen px-margin pb-margin"><div class="flex flex-col w-full">
+<div class="w-full flex flex-col gap-space-md py-space-sm">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md bg-surface-container-lowest p-space-md rounded shadow-sm">
+<div class="flex flex-col sm:flex-row sm:items-center gap-space-lg">
+<div class="flex items-center gap-space-sm">
+<span class="font-headline-sm text-headline-sm text-on-surface">Quality Gate</span>
+<span class="px-space-md py-[2px] bg-error text-on-error rounded-full font-label-sm text-label-sm font-semibold tracking-wide uppercase">Failed</span>
+</div>
+<div class="flex items-center gap-space-sm bg-error-container/40 px-space-md py-space-xs rounded">
+<div class="w-5 h-5 rounded-full bg-error text-on-error flex items-center justify-center font-label-sm text-label-sm font-bold">D</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Security Rating on New Code</span>
+<span class="font-label-sm text-label-sm text-error font-semibold">is worse than A</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-xl">
+<div class="flex items-center gap-space-sm">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-label-md text-label-md font-bold">M</div>
+<div class="flex flex-col">
+<span class="font-headline-sm text-headline-sm text-primary font-semibold">26k</span>
+<span class="font-body-sm text-body-sm text-secondary">Lines of Code</span>
+</div>
+</div>
+<div class="h-8 w-[1px] bg-surface-container-high hidden sm:block"></div>
+<div class="flex flex-col gap-[2px]">
+<div class="flex items-center gap-space-sm font-body-sm text-body-sm">
+<span class="text-secondary w-16">PHP</span>
+<span class="h-2 w-12 bg-primary rounded-sm"></span>
+<span class="text-on-surface font-semibold font-code-body text-code-body">26k</span>
+</div>
+<div class="flex items-center gap-space-sm font-body-sm text-body-sm">
+<span class="text-secondary w-16">JavaScript</span>
+<span class="h-2 w-2 bg-tertiary-container rounded-sm"></span>
+<span class="text-on-surface font-semibold font-code-body text-code-body">541</span>
+</div>
+</div>
+<div class="h-8 w-[1px] bg-surface-container-high hidden sm:block"></div>
+<button class="flex items-center gap-space-xs text-primary font-body-sm text-body-sm hover:underline" type="button">
+<span class="material-symbols-outlined text-[14px]">local_offer</span>
+<span>No tags</span>
+<span class="material-symbols-outlined text-[12px]">arrow_drop_down</span>
+</button>
+</div>
+</div>
+<div class="w-full grid grid-cols-1 xl:grid-cols-12 gap-space-md">
+<div class="xl:col-span-9 flex flex-col gap-space-md">
+<div class="bg-surface-container-lowest rounded shadow-sm overflow-hidden flex flex-col">
+<div class="grid grid-cols-1 lg:grid-cols-12 min-h-[140px]">
+<div class="lg:col-span-7 p-space-md flex flex-col justify-between">
+<div class="flex items-center gap-space-md">
+<span class="font-headline-sm text-headline-sm text-on-surface">Bugs</span>
+<button class="text-primary hover:text-primary-container" title="Bugs link" type="button">
+<span class="material-symbols-outlined text-[16px]">link</span>
+</button>
+<div class="w-2"></div>
+<span class="font-headline-sm text-headline-sm text-on-surface">Vulnerabilities</span>
+<button class="text-primary hover:text-primary-container" title="Vulnerabilities link" type="button">
+<span class="material-symbols-outlined text-[16px]">link</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-space-md py-space-sm">
+<div class="flex flex-col">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-stat-display text-stat-display text-primary">0</span>
+<span class="w-[18px] h-[18px] rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-label-sm text-label-sm font-bold">A</span>
+</div>
+<div class="flex items-center gap-space-xs text-secondary mt-space-xs">
+<span class="material-symbols-outlined text-[15px]">bug_report</span>
+<span class="font-body-sm text-body-sm">Bugs</span>
+</div>
+</div>
+<div class="flex flex-col">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-stat-display text-stat-display text-primary">725</span>
+<span class="w-[18px] h-[18px] rounded-full bg-error text-on-error flex items-center justify-center font-label-sm text-label-sm font-bold">D</span>
+</div>
+<div class="flex items-center gap-space-xs text-secondary mt-space-xs">
+<span class="material-symbols-outlined text-[15px]">lock</span>
+<span class="font-body-sm text-body-sm">Vulnerabilities</span>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-5 bg-surface-container-high/40 p-space-md flex flex-col justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">Leak Period: since previous version</span>
+<span class="font-body-sm text-body-sm text-secondary/80">started last month</span>
+</div>
+<div class="grid grid-cols-2 gap-space-md py-space-sm">
+<div class="flex flex-col">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-stat-display text-stat-display text-primary">0</span>
+<span class="w-[18px] h-[18px] rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-label-sm text-label-sm font-bold">A</span>
+</div>
+<div class="flex items-center gap-space-xs text-secondary mt-space-xs">
+<span class="material-symbols-outlined text-[15px]">bug_report</span>
+<span class="font-body-sm text-body-sm">New Bugs</span>
+</div>
+</div>
+<div class="flex flex-col">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-stat-display text-stat-display text-primary">725</span>
+<span class="w-[18px] h-[18px] rounded-full bg-error text-on-error flex items-center justify-center font-label-sm text-label-sm font-bold">D</span>
+</div>
+<div class="flex items-center gap-space-xs text-secondary mt-space-xs">
+<span class="material-symbols-outlined text-[15px]">lock</span>
+<span class="font-body-sm text-body-sm">New Vulnerabilities</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded shadow-sm overflow-hidden flex flex-col">
+<div class="grid grid-cols-1 lg:grid-cols-12 min-h-[140px]">
+<div class="lg:col-span-7 p-space-md flex flex-col justify-between">
+<div class="flex items-center gap-space-md">
+<span class="font-headline-sm text-headline-sm text-on-surface">Code Smells</span>
+<button class="text-primary hover:text-primary-container" title="Code smells link" type="button">
+<span class="material-symbols-outlined text-[16px]">link</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-space-md py-space-sm">
+<div class="flex flex-col">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-stat-display text-stat-display text-primary">0</span>
+<span class="w-[18px] h-[18px] rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-label-sm text-label-sm font-bold">A</span>
+</div>
+<div class="flex flex-col text-secondary mt-space-xs">
+<span class="font-body-sm text-body-sm font-medium">Debt</span>
+<span class="font-body-sm text-body-sm text-secondary/70">started last month</span>
+</div>
+</div>
+<div class="flex flex-col">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-stat-display text-stat-display text-primary">0</span>
+</div>
+<div class="flex items-center gap-space-xs text-secondary mt-space-xs">
+<span class="material-symbols-outlined text-[15px]">arrows_outward</span>
+<span class="font-body-sm text-body-sm">Code Smells</span>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-5 bg-surface-container-high/40 p-space-md flex flex-col justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">New Code Debt</span>
+</div>
+<div class="grid grid-cols-2 gap-space-md py-space-sm">
+<div class="flex flex-col">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-stat-display text-stat-display text-primary">0</span>
+<span class="w-[18px] h-[18px] rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-label-sm text-label-sm font-bold">A</span>
+</div>
+<div class="flex items-center gap-space-xs text-secondary mt-space-xs">
+<span class="font-body-sm text-body-sm">New Debt</span>
+</div>
+</div>
+<div class="flex flex-col">
+<div class="flex items-baseline gap-space-xs">
+<span class="font-stat-display text-stat-display text-primary">0</span>
+</div>
+<div class="flex items-center gap-space-xs text-secondary mt-space-xs">
+<span class="material-symbols-outlined text-[15px]">arrows_outward</span>
+<span class="font-body-sm text-body-sm">New Code Smells</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded shadow-sm overflow-hidden flex flex-col">
+<div class="grid grid-cols-1 lg:grid-cols-12 min-h-[140px]">
+<div class="lg:col-span-7 p-space-md flex flex-col justify-between">
+<div class="flex items-center gap-space-md">
+<span class="font-headline-sm text-headline-sm text-on-surface">Coverage</span>
+<button class="text-primary hover:text-primary-container" title="Coverage link" type="button">
+<span class="material-symbols-outlined text-[16px]">link</span>
+</button>
+</div>
+<div class="flex items-center gap-space-lg py-space-sm">
+<div class="relative w-10 h-10 flex items-center justify-center">
+<svg class="w-10 h-10 -rotate-90" viewbox="0 0 36 36">
+<circle class="stroke-error/20" cx="18" cy="18" fill="none" r="14" stroke-width="3"></circle>
+<circle class="stroke-error" cx="18" cy="18" fill="none" r="14" stroke-dasharray="88" stroke-dashoffset="88" stroke-width="3"></circle>
+</svg>
+</div>
+<div class="flex flex-col">
+<span class="font-stat-display text-stat-display text-primary">0.0%</span>
+<span class="font-body-sm text-body-sm text-secondary">Coverage</span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-5 bg-surface-container-high/40 p-space-md flex flex-col justify-between">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">New Code Coverage</span>
+</div>
+<div class="flex flex-col justify-center py-space-md">
+<span class="font-stat-display text-stat-display text-secondary/60">—</span>
+<span class="font-body-sm text-body-sm text-secondary">Coverage on New Code</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded shadow-sm overflow-hidden flex flex-col">
+<div class="grid grid-cols-1 lg:grid-cols-12 min-h-[140px]">
+<div class="lg:col-span-7 p-space-md flex flex-col justify-between">
+<div class="flex items-center gap-space-md">
+<span class="font-headline-sm text-headline-sm text-on-surface">Duplications</span>
+<button class="text-primary hover:text-primary-container" title="Duplications link" type="button">
+<span class="material-symbols-outlined text-[16px]">link</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-space-md py-space-sm items-center">
+<div class="flex items-center gap-space-md">
+<div class="relative w-10 h-10 flex items-center justify-center">
+<svg class="w-10 h-10 -rotate-90" viewbox="0 0 36 36">
+<circle class="stroke-primary/20" cx="18" cy="18" fill="none" r="14" stroke-width="3"></circle>
+<circle class="stroke-primary" cx="18" cy="18" fill="none" r="14" stroke-dasharray="88" stroke-dashoffset="84" stroke-width="3"></circle>
+</svg>
+</div>
+<div class="flex flex-col">
+<span class="font-stat-display text-stat-display text-primary">1.7%</span>
+<span class="font-body-sm text-body-sm text-secondary">Duplications</span>
+</div>
+</div>
+<div class="flex flex-col">
+<span class="font-stat-display text-stat-display text-primary">126</span>
+<span class="font-body-sm text-body-sm text-secondary">Duplicated Blocks</span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-5 bg-surface-container-high/40 p-space-md flex flex-col justify-between relative overflow-hidden">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-secondary uppercase tracking-wider">New Duplications</span>
+</div>
+<div class="flex flex-col justify-center py-space-md z-10">
+<span class="font-stat-display text-stat-display text-secondary/60">—</span>
+<span class="font-body-sm text-body-sm text-secondary">Duplications on New Code</span>
+</div>
+<div class="absolute bottom-0 left-0 right-0 h-10 pointer-events-none opacity-20">
+<svg class="w-full h-full text-secondary fill-current" preserveaspectratio="none" viewbox="0 0 200 40">
+<path d="M0,40 Q50,0 100,20 T200,10 L200,40 Z"></path>
+</svg>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="xl:col-span-3 flex flex-col gap-space-md">
+<div class="bg-surface-container-lowest p-space-md rounded shadow-sm flex flex-col gap-space-md">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface">Activity</span>
+<button class="text-secondary hover:text-primary text-[14px]" type="button">
+<span class="material-symbols-outlined text-[16px]">show_chart</span>
+</button>
+</div>
+<div class="w-full h-20 bg-surface-container-low rounded p-space-xs flex items-center justify-center relative overflow-hidden">
+<svg class="w-full h-full text-primary" preserveaspectratio="none" viewbox="0 0 240 70">
+<polyline fill="none" points="0,20 40,30 80,45 120,60 135,15 145,15 235,15 240,65" stroke="currentColor" stroke-width="2"></polyline>
+</svg>
+</div>
+<div class="flex flex-col gap-space-md">
+<div class="flex flex-col gap-space-xs">
+<span class="font-label-sm text-label-sm text-secondary">October 25, 2017</span>
+<div class="flex items-center gap-space-xs">
+<span class="px-space-xs py-[2px] bg-primary-container text-on-primary rounded font-label-sm text-label-sm">not provided</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Quality Gate: Red <span class="text-secondary font-normal">(was Green)</span></span>
+</div>
+<div class="flex flex-col gap-space-xs">
+<span class="font-label-sm text-label-sm text-secondary">October 25, 2017</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Quality Gate: Green <span class="text-secondary font-normal">(was Red)</span></span>
+</div>
+<div class="flex flex-col gap-space-xs">
+<span class="font-label-sm text-label-sm text-secondary">October 25, 2017</span>
+<span class="font-body-sm text-body-sm text-on-surface">Project Analyzed</span>
+<a class="font-body-sm text-body-sm text-primary hover:underline" href="#">Show More</a>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest p-space-md rounded shadow-sm flex flex-col gap-space-md">
+<div class="flex flex-col gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface">Quality Gate</span>
+<div class="flex items-center gap-space-xs font-body-sm text-body-sm">
+<span class="text-secondary">(Default)</span>
+<a class="text-primary hover:underline font-medium" href="#">SonarQube way</a>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface">Quality Profiles</span>
+<div class="flex flex-col gap-1 font-body-sm text-body-sm">
+<div class="flex items-center gap-space-xs">
+<span class="text-secondary w-20">(JavaScript)</span>
+<a class="text-primary hover:underline font-medium truncate" href="#">CheckmarxJavaScript</a>
+</div>
+<div class="flex items-center gap-space-xs">
+<span class="text-secondary w-20">(PHP)</span>
+<a class="text-primary hover:underline font-medium truncate" href="#">CheckmarxPHP</a>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-space-xs">
+<span class="font-headline-sm text-headline-sm text-on-surface">Key</span>
+<div class="bg-surface-container-low px-space-sm py-space-xs rounded font-code-body text-code-body text-on-surface">
+              CxPHP
+            </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div></main><footer class="w-full bg-surface-container-low border-t border-outline-variant py-space-md"><div class="w-full px-margin flex items-center justify-between font-body-sm text-body-sm text-on-surface-variant"><div>SonarQube Community Edition • LGPL v3 • Version 9.9 LTS</div><div class="flex items-center gap-space-lg"><a class="hover:text-primary transition-colors" href="#">Documentation</a><a class="hover:text-primary transition-colors" href="#">Support Forums</a><a class="hover:text-primary transition-colors" href="#">Web API</a></div></div></footer></body></html>

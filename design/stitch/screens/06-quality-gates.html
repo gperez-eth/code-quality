@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-error-container":"#93000a","secondary":"#545f73","on-tertiary-fixed":"#001d31","on-secondary-fixed-variant":"#3c475a","on-primary-fixed":"#00174b","surface-container-lowest":"#ffffff","tertiary-fixed":"#cce5ff","error":"#ba1a1a","surface-container-highest":"#d3e4fe","surface-bright":"#f8f9ff","primary":"#004ac6","on-tertiary-fixed-variant":"#004b73","on-surface":"#0b1c30","secondary-fixed-dim":"#bcc7de","secondary-container":"#d5e0f8","on-surface-variant":"#434655","surface":"#f8f9ff","on-secondary-container":"#586377","on-secondary-fixed":"#111c2d","secondary-fixed":"#d8e3fb","surface-dim":"#cbdbf5","surface-variant":"#d3e4fe","background":"#f8f9ff","on-tertiary-container":"#e7f2ff","on-primary":"#ffffff","tertiary-container":"#0073ae","on-background":"#0b1c30","error-container":"#ffdad6","on-primary-fixed-variant":"#003ea8","on-tertiary":"#ffffff","inverse-surface":"#213145","tertiary":"#005a89","on-secondary":"#ffffff","inverse-primary":"#b4c5ff","primary-fixed":"#dbe1ff","primary-fixed-dim":"#b4c5ff","tertiary-fixed-dim":"#93ccff","on-primary-container":"#eeefff","surface-container":"#e5eeff","inverse-on-surface":"#eaf1ff","surface-container-low":"#eff4ff","on-error":"#ffffff","primary-container":"#2563eb","outline":"#737686","surface-container-high":"#dce9ff","outline-variant":"#c3c6d7","surface-tint":"#0053db"},borderRadius:{"DEFAULT":"0.125rem","lg":"0.25rem","xl":"0.5rem","full":"0.75rem"},spacing:{"margin":"1rem","space-xl":"1.5rem","space-md":"0.75rem","gutter":"0.75rem","space-sm":"0.375rem","space-xs":"0.25rem","space-lg":"1rem"},fontFamily:{"headline-md":["Inter"],"body-sm":["Inter"],"body-lg":["Inter"],"body-md":["Inter"],"label-sm":["Inter"],"code-body":["JetBrains Mono"],"code-callout":["JetBrains Mono"],"headline-lg":["Inter"],"label-md":["Inter"],"headline-sm":["Inter"],"stat-display":["Inter"]},fontSize:{"headline-md":["18px",{"lineHeight":"24px","fontWeight":"600"}],"body-sm":["12px",{"lineHeight":"16px","fontWeight":"400"}],"body-lg":["14px",{"lineHeight":"20px","fontWeight":"400"}],"body-md":["13px",{"lineHeight":"18px","fontWeight":"400"}],"label-sm":["11px",{"lineHeight":"14px","fontWeight":"600"}],"code-body":["12px",{"lineHeight":"18px","fontWeight":"400"}],"code-callout":["11px",{"lineHeight":"14px","fontWeight":"600"}],"headline-lg":["24px",{"lineHeight":"32px","fontWeight":"600"}],"label-md":["12px",{"lineHeight":"16px","fontWeight":"500"}],"headline-sm":["15px",{"lineHeight":"20px","fontWeight":"600"}],"stat-display":["28px",{"lineHeight":"32px","fontWeight":"300"}]}}}}</script></head><body class="bg-background font-body-md text-body-md text-on-surface"><header class="fixed top-0 left-0 w-full z-50"><div class="h-12 bg-inverse-surface border-b border-outline/30 px-margin flex items-center justify-between"><div class="flex items-center gap-space-lg"><div class="flex items-center gap-space-sm"><span class="material-symbols-outlined text-tertiary-fixed text-[20px]">waves</span><span class="font-headline-sm text-headline-sm text-on-primary tracking-tight font-semibold">SonarQube</span></div><nav class="hidden xl:flex items-center gap-space-md h-12" data-active-classes="text-on-primary border-b-2 border-primary-container font-semibold"><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="projects" href="#">Projects</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="issues" href="#">Issues</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="rules" href="#">Rules</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="quality-profiles" href="#">Quality Profiles</a><a aria-current="page" class="h-full flex items-center transition-colors px-space-xs text-on-primary border-b-2 border-primary-container font-semibold" data-path="quality-gates" href="#">Quality Gates</a><a class="h-full flex items-center text-inverse-on-surface/80 hover:text-on-primary font-label-md text-label-md transition-colors px-space-xs border-b-2 border-transparent" data-path="administration" href="#">Administration</a></nav></div><div class="flex items-center gap-space-md"><div class="relative w-[260px]"><span class="material-symbols-outlined absolute left-space-sm top-1/2 -translate-y-1/2 text-inverse-on-surface/60 text-[16px]">search</span><input class="w-full h-[28px] pl-7 pr-space-sm bg-surface-container-highest/20 border border-outline/30 rounded text-inverse-on-surface placeholder-inverse-on-surface/50 font-body-sm text-body-sm focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container" placeholder="Search for projects, files..." type="text"/></div><button class="w-7 h-7 flex items-center justify-center text-inverse-on-surface/80 hover:text-on-primary transition-colors" title="Documentation & Help" type="button"><span class="material-symbols-outlined text-[18px]">help</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-12 bg-background min-h-screen px-margin pb-margin"><div class="flex flex-col w-full">
+<!-- Sub-Header & Global Page Action Bar -->
+<div class="flex flex-col md:flex-row md:items-center justify-between pb-space-md mb-space-md bg-surface border-b border-outline-variant">
+<div class="flex flex-col gap-space-xs">
+<div class="flex items-center gap-space-sm">
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Quality Gates</h1>
+<span class="inline-flex items-center px-space-sm py-0.5 rounded bg-surface-container-high text-on-surface-variant font-code-callout text-code-callout">5 Gates Configured</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">A Quality Gate is a set of conditions that must be met in order for a project to be considered ready for production.</p>
+</div>
+<div class="flex items-center gap-space-sm mt-space-sm md:mt-0">
+<button class="inline-flex items-center gap-space-xs h-[30px] px-space-md bg-primary-container hover:bg-primary text-on-primary rounded font-label-md text-label-md transition-colors shadow-sm" type="button">
+<span class="material-symbols-outlined text-[16px]">add</span>
+<span>Create</span>
+</button>
+</div>
+</div>
+<!-- Main 2-Column Split Workbench -->
+<div class="flex flex-col lg:flex-row items-start gap-space-md w-full">
+<!-- LEFT COLUMN: Quality Gates Master List (Sidebar Palette) -->
+<aside class="w-full lg:w-[300px] shrink-0 flex flex-col bg-surface-container-lowest rounded border border-outline-variant">
+<!-- Search Box Filter -->
+<div class="p-space-sm border-b border-outline-variant bg-surface-container-low">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-space-xs top-1/2 -translate-y-1/2 text-on-surface-variant text-[16px]">search</span>
+<input class="w-full h-[28px] pl-6 pr-space-xs bg-surface-container-lowest border border-outline-variant rounded font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary-container focus:ring-1 focus:ring-primary-container" id="gate-filter-input" placeholder="Search quality gates..." type="text"/>
+</div>
+</div>
+<!-- Scrollable Gate Item Stack -->
+<nav aria-label="Quality Gates List" class="flex flex-col divide-y divide-outline-variant max-h-[calc(100vh-210px)] overflow-y-auto">
+<!-- Item 1: SonarQube way (Active / Selected) -->
+<div class="flex flex-col p-space-sm bg-surface-container-low border-l-4 border-l-primary-container cursor-pointer transition-colors relative group">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs min-w-0">
+<span class="font-headline-sm text-headline-sm text-primary truncate font-semibold">SonarQube way</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-secondary-container text-on-secondary-container font-label-sm text-[10px] uppercase font-bold tracking-wider">Default</span>
+</div>
+<span class="material-symbols-outlined text-error text-[16px]" title="Contains failing projects">error</span>
+</div>
+<div class="flex items-center justify-between mt-1 text-on-surface-variant font-body-sm text-body-sm">
+<span>9 conditions</span>
+<span class="font-code-callout text-[11px] text-error font-medium">2 projects failing</span>
+</div>
+</div>
+<!-- Item 2: Checkmarx Strict Security -->
+<div class="flex flex-col p-space-sm hover:bg-surface-container-low/60 cursor-pointer transition-colors border-l-4 border-l-transparent group">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-xs min-w-0">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate group-hover:text-primary">Checkmarx Strict</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-[10px] uppercase font-semibold">Built-in</span>
+</div>
+<span class="material-symbols-outlined text-outline-variant text-[16px] group-hover:text-on-surface-variant">more_vert</span>
+</div>
+<div class="flex items-center justify-between mt-1 text-on-surface-variant font-body-sm text-body-sm">
+<span>8 conditions</span>
+<span class="font-code-callout text-[11px]">12 projects</span>
+</div>
+</div>
+<!-- Item 3: PCI-DSS Compliance Standard -->
+<div class="flex flex-col p-space-sm hover:bg-surface-container-low/60 cursor-pointer transition-colors border-l-4 border-l-transparent group">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate group-hover:text-primary">PCI-DSS Compliance</span>
+<span class="material-symbols-outlined text-outline-variant text-[16px] group-hover:text-on-surface-variant">more_vert</span>
+</div>
+<div class="flex items-center justify-between mt-1 text-on-surface-variant font-body-sm text-body-sm">
+<span>5 conditions</span>
+<span class="font-code-callout text-[11px]">4 projects</span>
+</div>
+</div>
+<!-- Item 4: Mobile Core Gate -->
+<div class="flex flex-col p-space-sm hover:bg-surface-container-low/60 cursor-pointer transition-colors border-l-4 border-l-transparent group">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate group-hover:text-primary">Mobile Core Gate</span>
+<span class="material-symbols-outlined text-outline-variant text-[16px] group-hover:text-on-surface-variant">more_vert</span>
+</div>
+<div class="flex items-center justify-between mt-1 text-on-surface-variant font-body-sm text-body-sm">
+<span>6 conditions</span>
+<span class="font-code-callout text-[11px]">2 projects</span>
+</div>
+</div>
+<!-- Item 5: Legacy Maintenance -->
+<div class="flex flex-col p-space-sm hover:bg-surface-container-low/60 cursor-pointer transition-colors border-l-4 border-l-transparent group">
+<div class="flex items-center justify-between">
+<span class="font-headline-sm text-headline-sm text-on-surface truncate group-hover:text-primary">Legacy Maintenance</span>
+<span class="material-symbols-outlined text-outline-variant text-[16px] group-hover:text-on-surface-variant">more_vert</span>
+</div>
+<div class="flex items-center justify-between mt-1 text-on-surface-variant font-body-sm text-body-sm">
+<span>2 conditions</span>
+<span class="font-code-callout text-[11px]">7 projects</span>
+</div>
+</div>
+</nav>
+<!-- Sidebar Footer Meta -->
+<div class="p-space-sm bg-surface-container border-t border-outline-variant font-body-sm text-body-sm text-on-surface-variant flex items-center justify-between">
+<span>Default gate applies to all new projects.</span>
+</div>
+</aside>
+<!-- RIGHT COLUMN: Detailed Quality Gate Canvas -->
+<section class="flex-1 flex flex-col min-w-0 bg-surface-container-lowest rounded border border-outline-variant overflow-hidden">
+<!-- Quality Gate Details Header -->
+<div class="p-space-lg bg-surface-container-low border-b border-outline-variant flex flex-col gap-space-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div class="flex items-center gap-space-sm">
+<h2 class="font-headline-lg text-headline-lg text-on-surface font-semibold">SonarQube way</h2>
+<span class="inline-flex items-center px-space-xs py-0.5 rounded bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm uppercase font-bold tracking-wider">Default</span>
+<span class="inline-flex items-center px-space-xs py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm uppercase">Built-in</span>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="inline-flex items-center gap-1 h-[28px] px-space-sm bg-surface-container-lowest border border-outline-variant rounded font-label-md text-label-md text-on-surface hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[15px]">content_copy</span>
+<span>Copy</span>
+</button>
+<button class="inline-flex items-center gap-1 h-[28px] px-space-sm bg-surface-container-lowest border border-outline-variant rounded font-label-md text-label-md text-on-surface hover:bg-surface-container transition-colors opacity-60 cursor-not-allowed" disabled="" title="Already the default quality gate" type="button">
+<span class="material-symbols-outlined text-[15px]">star</span>
+<span>Set as Default</span>
+</button>
+<button class="inline-flex items-center gap-1 h-[28px] px-space-sm bg-surface-container-lowest border border-outline-variant rounded font-label-md text-label-md text-on-surface hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-[15px]">lock_open</span>
+<span>Unlock / Edit</span>
+</button>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Built-in gate recommending "Clean as You Code". Ensures newly introduced code is bug-free and compliant prior to release merges.</p>
+<!-- Impact / Status Alert Callout -->
+<div class="flex items-center gap-space-sm px-space-md py-space-sm bg-error-container text-on-error-container border border-error/20 rounded">
+<span class="material-symbols-outlined text-[18px] text-error">warning</span>
+<span class="font-body-sm text-body-sm">
+            Used on <strong>15 projects</strong>. <strong>2 projects</strong> are currently failing this gate (including <code class="font-code-callout text-[11px] bg-surface-container-lowest/80 px-1 py-0.5 rounded">CxPHP</code>).
+          </span>
+</div>
+</div>
+<!-- Quality Gate Metric Workbench -->
+<div class="p-space-lg flex flex-col gap-space-xl">
+<!-- SECTION 1: Conditions on New Code -->
+<div class="flex flex-col gap-space-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between pb-space-xs border-b border-outline-variant gap-space-xs">
+<div>
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[18px]">verified</span>
+<h3 class="font-headline-md text-headline-md text-on-surface">Conditions on New Code</h3>
+<span class="inline-flex items-center px-1.5 py-0.2 rounded bg-tertiary-fixed text-on-tertiary-fixed font-code-callout text-[10px] font-semibold uppercase">Clean as You Code</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Ensure newly added or modified code meets strict quality and security benchmarks before merge.</p>
+</div>
+<button class="inline-flex items-center gap-1 h-[26px] px-space-sm bg-surface-container-lowest border border-outline-variant hover:border-primary-container text-primary rounded font-label-md text-label-md transition-colors self-start sm:self-auto" type="button">
+<span class="material-symbols-outlined text-[15px]">add</span>
+<span>Add Condition</span>
+</button>
+</div>
+<!-- Dense Table: New Code -->
+<div class="overflow-x-auto border border-outline-variant rounded">
+<table class="w-full text-left font-body-sm text-body-sm border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-md text-label-md border-b border-outline-variant">
+<th class="py-space-sm px-space-md font-semibold">Quality Metric</th>
+<th class="py-space-sm px-space-md font-semibold">Operator</th>
+<th class="py-space-sm px-space-md font-semibold">Error Threshold</th>
+<th class="py-space-sm px-space-md font-semibold text-right">Sample Impact (<span class="font-code-body text-[11px] text-primary">CxPHP</span>)</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant bg-surface-container-lowest">
+<!-- Row 1: Security Rating -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-space-sm px-space-md font-medium text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-error">security</span>
+<span>Security Rating</span>
+</td>
+<td class="py-space-sm px-space-md text-on-surface-variant">is worse than</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-secondary-container text-on-secondary-container font-code-callout text-[11px] font-bold">A</span>
+</td>
+<td class="py-space-sm px-space-md text-right">
+<div class="inline-flex items-center gap-1.5">
+<span class="font-code-body text-code-body text-error font-semibold">D</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-error/10 text-error font-label-sm text-[10px] uppercase font-bold tracking-wide">FAILING</span>
+</div>
+</td>
+</tr>
+<!-- Row 2: Reliability Rating -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-space-sm px-space-md font-medium text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-tertiary">bug_report</span>
+<span>Reliability Rating</span>
+</td>
+<td class="py-space-sm px-space-md text-on-surface-variant">is worse than</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-secondary-container text-on-secondary-container font-code-callout text-[11px] font-bold">A</span>
+</td>
+<td class="py-space-sm px-space-md text-right">
+<div class="inline-flex items-center gap-1.5">
+<span class="font-code-body text-code-body text-on-surface font-semibold">A</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-[10px] uppercase font-bold tracking-wide">PASSED</span>
+</div>
+</td>
+</tr>
+<!-- Row 3: Maintainability Rating -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-space-sm px-space-md font-medium text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">build</span>
+<span>Maintainability Rating</span>
+</td>
+<td class="py-space-sm px-space-md text-on-surface-variant">is worse than</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-secondary-container text-on-secondary-container font-code-callout text-[11px] font-bold">A</span>
+</td>
+<td class="py-space-sm px-space-md text-right">
+<div class="inline-flex items-center gap-1.5">
+<span class="font-code-body text-code-body text-on-surface font-semibold">A</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-[10px] uppercase font-bold tracking-wide">PASSED</span>
+</div>
+</td>
+</tr>
+<!-- Row 4: Coverage on New Code -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-space-sm px-space-md font-medium text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-error">tune</span>
+<span>Coverage on New Code</span>
+</td>
+<td class="py-space-sm px-space-md text-on-surface-variant">is less than</td>
+<td class="py-space-sm px-space-md font-code-body text-code-body font-semibold">80.0%</td>
+<td class="py-space-sm px-space-md text-right">
+<div class="inline-flex items-center gap-1.5">
+<span class="font-code-body text-code-body text-error font-semibold">0.0%</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-error/10 text-error font-label-sm text-[10px] uppercase font-bold tracking-wide">FAILING</span>
+</div>
+</td>
+</tr>
+<!-- Row 5: Duplicated Lines -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-space-sm px-space-md font-medium text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-outline">content_copy</span>
+<span>Duplicated Lines (%)</span>
+</td>
+<td class="py-space-sm px-space-md text-on-surface-variant">is greater than</td>
+<td class="py-space-sm px-space-md font-code-body text-code-body font-semibold">3.0%</td>
+<td class="py-space-sm px-space-md text-right">
+<div class="inline-flex items-center gap-1.5">
+<span class="font-code-body text-code-body text-on-surface font-semibold">1.7%</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-[10px] uppercase font-bold tracking-wide">PASSED</span>
+</div>
+</td>
+</tr>
+<!-- Row 6: Security Hotspots Reviewed -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-space-sm px-space-md font-medium text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-tertiary">local_fire_department</span>
+<span>Security Hotspots Reviewed</span>
+</td>
+<td class="py-space-sm px-space-md text-on-surface-variant">is less than</td>
+<td class="py-space-sm px-space-md font-code-body text-code-body font-semibold">100.0%</td>
+<td class="py-space-sm px-space-md text-right">
+<div class="inline-flex items-center gap-1.5">
+<span class="font-code-body text-code-body text-on-surface font-semibold">100%</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-[10px] uppercase font-bold tracking-wide">PASSED</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- SECTION 2: Conditions on Overall Code -->
+<div class="flex flex-col gap-space-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between pb-space-xs border-b border-outline-variant gap-space-xs">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Conditions on Overall Code</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Standard quality thresholds enforced unconditionally across the entire historical codebase.</p>
+</div>
+<button class="inline-flex items-center gap-1 h-[26px] px-space-sm bg-surface-container-lowest border border-outline-variant hover:border-primary-container text-primary rounded font-label-md text-label-md transition-colors self-start sm:self-auto" type="button">
+<span class="material-symbols-outlined text-[15px]">add</span>
+<span>Add Condition</span>
+</button>
+</div>
+<!-- Dense Table: Overall Code -->
+<div class="overflow-x-auto border border-outline-variant rounded">
+<table class="w-full text-left font-body-sm text-body-sm border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-md text-label-md border-b border-outline-variant">
+<th class="py-space-sm px-space-md font-semibold">Quality Metric</th>
+<th class="py-space-sm px-space-md font-semibold">Operator</th>
+<th class="py-space-sm px-space-md font-semibold">Error Threshold</th>
+<th class="py-space-sm px-space-md font-semibold text-right">Current Impact (<span class="font-code-body text-[11px] text-primary">CxPHP</span>)</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant bg-surface-container-lowest">
+<!-- Overall Row 1 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-space-sm px-space-md font-medium text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-error">security</span>
+<span>Security Rating</span>
+</td>
+<td class="py-space-sm px-space-md text-on-surface-variant">is worse than</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-secondary-container text-on-secondary-container font-code-callout text-[11px] font-bold">B</span>
+</td>
+<td class="py-space-sm px-space-md text-right">
+<div class="inline-flex items-center gap-1.5">
+<span class="font-code-body text-code-body text-error font-semibold">D</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-error/10 text-error font-label-sm text-[10px] uppercase font-bold tracking-wide">FAILING</span>
+</div>
+</td>
+</tr>
+<!-- Overall Row 2 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-space-sm px-space-md font-medium text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-secondary">build</span>
+<span>Maintainability Rating</span>
+</td>
+<td class="py-space-sm px-space-md text-on-surface-variant">is worse than</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-secondary-container text-on-secondary-container font-code-callout text-[11px] font-bold">B</span>
+</td>
+<td class="py-space-sm px-space-md text-right">
+<div class="inline-flex items-center gap-1.5">
+<span class="font-code-body text-code-body text-on-surface font-semibold">A</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm text-[10px] uppercase font-bold tracking-wide">PASSED</span>
+</div>
+</td>
+</tr>
+<!-- Overall Row 3 -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-space-sm px-space-md font-medium text-on-surface flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-[16px] text-error">tune</span>
+<span>Code Coverage</span>
+</td>
+<td class="py-space-sm px-space-md text-on-surface-variant">is less than</td>
+<td class="py-space-sm px-space-md font-code-body text-code-body font-semibold">60.0%</td>
+<td class="py-space-sm px-space-md text-right">
+<div class="inline-flex items-center gap-1.5">
+<span class="font-code-body text-code-body text-error font-semibold">0.0%</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-error/10 text-error font-label-sm text-[10px] uppercase font-bold tracking-wide">FAILING</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- SECTION 3: Projects Using This Quality Gate -->
+<div class="flex flex-col gap-space-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between pb-space-xs border-b border-outline-variant gap-space-xs">
+<div class="flex items-center gap-space-sm">
+<h3 class="font-headline-md text-headline-md text-on-surface">Assigned Projects</h3>
+<span class="inline-flex items-center px-space-xs py-0.5 rounded bg-surface-container-high text-on-surface-variant font-code-callout text-[11px] font-semibold">4 of 15 Displayed</span>
+</div>
+<div class="relative w-full sm:w-64">
+<span class="material-symbols-outlined absolute left-space-xs top-1/2 -translate-y-1/2 text-on-surface-variant text-[15px]">search</span>
+<input class="w-full h-[26px] pl-6 pr-space-xs bg-surface-container-lowest border border-outline-variant rounded font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-primary-container" placeholder="Search assigned projects..." type="text"/>
+</div>
+</div>
+<!-- Project List Table -->
+<div class="overflow-x-auto border border-outline-variant rounded">
+<table class="w-full text-left font-body-sm text-body-sm border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-md text-label-md border-b border-outline-variant">
+<th class="py-space-sm px-space-md font-semibold">Project Name</th>
+<th class="py-space-sm px-space-md font-semibold">Gate Status</th>
+<th class="py-space-sm px-space-md font-semibold">Last Analyzed</th>
+<th class="py-space-sm px-space-md font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant bg-surface-container-lowest font-body-sm">
+<!-- Project 1: CxPHP -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-space-sm px-space-md">
+<a class="text-primary hover:underline font-medium flex items-center gap-space-xs" href="#">
+<span class="material-symbols-outlined text-[16px] text-outline">folder</span>
+<span>CxPHP</span>
+</a>
+</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-error text-on-error font-label-sm text-[10px] uppercase font-bold tracking-wide">
+<span class="material-symbols-outlined text-[12px]">cancel</span>
+                      FAILED
+                    </span>
+</td>
+<td class="py-space-sm px-space-md text-on-surface-variant font-code-body text-[11px]">Oct 25, 2017 • 14:32</td>
+<td class="py-space-sm px-space-md text-right">
+<a class="text-primary hover:underline font-label-md text-label-md" href="#">Inspect Details</a>
+</td>
+</tr>
+<!-- Project 2: Frontend-Webapp -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-space-sm px-space-md">
+<a class="text-primary hover:underline font-medium flex items-center gap-space-xs" href="#">
+<span class="material-symbols-outlined text-[16px] text-outline">folder</span>
+<span>Frontend-Webapp</span>
+</a>
+</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-tertiary text-on-tertiary font-label-sm text-[10px] uppercase font-bold tracking-wide">
+<span class="material-symbols-outlined text-[12px]">check_circle</span>
+                      PASSED
+                    </span>
+</td>
+<td class="py-space-sm px-space-md text-on-surface-variant font-code-body text-[11px]">Today • 09:15</td>
+<td class="py-space-sm px-space-md text-right">
+<a class="text-primary hover:underline font-label-md text-label-md" href="#">Inspect Details</a>
+</td>
+</tr>
+<!-- Project 3: Auth-Service -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-space-sm px-space-md">
+<a class="text-primary hover:underline font-medium flex items-center gap-space-xs" href="#">
+<span class="material-symbols-outlined text-[16px] text-outline">folder</span>
+<span>Auth-Service</span>
+</a>
+</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-tertiary text-on-tertiary font-label-sm text-[10px] uppercase font-bold tracking-wide">
+<span class="material-symbols-outlined text-[12px]">check_circle</span>
+                      PASSED
+                    </span>
+</td>
+<td class="py-space-sm px-space-md text-on-surface-variant font-code-body text-[11px]">Yesterday • 18:40</td>
+<td class="py-space-sm px-space-md text-right">
+<a class="text-primary hover:underline font-label-md text-label-md" href="#">Inspect Details</a>
+</td>
+</tr>
+<!-- Project 4: Payment-Gateway -->
+<tr class="hover:bg-surface-container-low/40 transition-colors">
+<td class="py-space-sm px-space-md">
+<a class="text-primary hover:underline font-medium flex items-center gap-space-xs" href="#">
+<span class="material-symbols-outlined text-[16px] text-outline">folder</span>
+<span>Payment-Gateway</span>
+</a>
+</td>
+<td class="py-space-sm px-space-md">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-error text-on-error font-label-sm text-[10px] uppercase font-bold tracking-wide">
+<span class="material-symbols-outlined text-[12px]">cancel</span>
+                      FAILED
+                    </span>
+</td>
+<td class="py-space-sm px-space-md text-on-surface-variant font-code-body text-[11px]">Oct 24, 2017 • 11:04</td>
+<td class="py-space-sm px-space-md text-right">
+<a class="text-primary hover:underline font-label-md text-label-md" href="#">Inspect Details</a>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+<script>
+  // Simple quick filter interaction for quality gates sidebar
+  document.getElementById('gate-filter-input')?.addEventListener('input', function(e) {
+    const term = e.target.value.toLowerCase();
+    const items = document.querySelectorAll('nav[aria-label="Quality Gates List"] > div');
+    items.forEach(item => {
+      const text = item.textContent.toLowerCase();
+      item.style.display = text.includes(term) ? 'flex' : 'none';
+    });
+  });
+</script></main><footer class="w-full bg-surface-container-low border-t border-outline-variant py-space-md"><div class="w-full px-margin flex items-center justify-between font-body-sm text-body-sm text-on-surface-variant"><div>SonarQube Community Edition • LGPL v3 • Version 9.9 LTS</div><div class="flex items-center gap-space-lg"><a class="hover:text-primary transition-colors" href="#">Documentation</a><a class="hover:text-primary transition-colors" href="#">Support Forums</a><a class="hover:text-primary transition-colors" href="#">Web API</a></div></div></footer></body></html>
