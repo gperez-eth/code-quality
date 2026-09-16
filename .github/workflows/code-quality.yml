@@ -1,0 +1,76 @@
+# This repository, analysing itself — lane 1 of ADR-0005 (Analysis is
+# CI-first, hosted scanning is a convenience). The checkout is already here,
+# it costs GitHub's compute instead of ours, and it is the only lane that
+# could ever carry test coverage, because that means running our own test
+# suite. See docs/ci.md.
+#
+# The commands below are exactly the workspace scripts from package.json —
+# `npm run scan` and `npm run publish` — not a separate CLI, because this
+# workflow lives in the same repo those scripts already build from source.
+# A customer's workflow can't do that; see
+# .github/workflows/templates/code-quality-consumer.yml for their shape.
+
+name: Code Quality
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # tree-sitter (packages/analyzer's parser) is a native module compiled
+      # during install. npm's cache doesn't skip that compile step, but it
+      # does skip re-downloading every package on each run, which is most of
+      # what `npm ci` spends on a cold runner.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+
+      # `npm run scan` builds @code-quality/analyzer and runs the resulting
+      # code-quality-scan against this checkout.
+      #
+      # `--no-fail` is deliberate and temporary. The CLI would otherwise exit
+      # 1 on a failed gate and fail this job, which is the whole point of the
+      # CI lane — but the verdict it would fail on is one this product's own
+      # dashboard disagrees with. The analyzer evaluates the gate with every
+      # line treated as new code, because it has no baseline to compare
+      # against, while the server computes the real new-code values and finds
+      # all six conditions passing. Failing builds on the stricter of two
+      # verdicts we publish simultaneously is not a signal anyone should
+      # learn to trust. See issue #30; the flag comes off when that is fixed.
+      - name: Scan
+        run: npm run scan -- . --json report.json --no-fail
+
+      # Publishing needs SUPABASE_SERVICE_ROLE_KEY, which a pull request from
+      # a fork never has (GitHub withholds repository secrets from fork PRs).
+      # Without this guard that run would fail on a missing credential
+      # instead of on its own merits, drowning out the gate result above,
+      # which is the thing this job actually exists to enforce. `!cancelled()`
+      # keeps this step running even though the scan step above may have
+      # failed the gate — a failed analysis is still worth recording.
+      - name: Publish report
+        if: ${{ !cancelled() && secrets.SUPABASE_SERVICE_ROLE_KEY != '' }}
+        run: >
+          npm run publish -- report.json
+          --repo "${{ github.server_url }}/${{ github.repository }}"
+          --branch "${{ github.head_ref || github.ref_name }}"
+          --commit "${{ github.sha }}"
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          # code-quality-import falls back to this when --org is absent —
+          # see .env.example. The org this repo's own analyses belong to is
+          # runtime data in the live Supabase project, not something the
+          # codebase knows, so it has to come from a secret.
+          CODE_QUALITY_ORG: ${{ secrets.CODE_QUALITY_ORG }}
