@@ -609,6 +609,21 @@ export type Database = {
         };
         Returns: Json;
       };
+      begin_github_install: {
+        Args: {
+          p_organization_id: string;
+        };
+        /** The `state` to hand GitHub, and to recognise on the way back. */
+        Returns: string;
+      };
+      claim_github_install: {
+        Args: {
+          p_nonce: string;
+          p_installation_id: number;
+        };
+        /** The organisation the installation now belongs to. Raises otherwise. */
+        Returns: string;
+      };
     };
     Enums: {
       analysis_job_status: 'QUEUED' | 'RUNNING' | 'SUCCEEDED' | 'FAILED';

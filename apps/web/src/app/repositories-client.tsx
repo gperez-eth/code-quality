@@ -1,11 +1,60 @@
 'use client';
 
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { ConnectRepository } from '@/components/connect-repository';
 import { GateStatusPill, Icon, Panel, ProviderIcon } from '@/components/primitives';
 import { QueryError, QueryLoading } from '@/components/query-state';
 import { type RepositoryRow, useGetRepositoriesQuery } from '@/lib/api';
 import { formatNumber, formatRelative } from '@/lib/format';
+
+// Inlined into the browser bundle at build time, which is fine and intended:
+// the slug is the public part of the app's URL. The private key is not here
+// and must never be — it lives in the worker's environment.
+const GITHUB_APP_SLUG = process.env.NEXT_PUBLIC_GITHUB_APP_SLUG;
+
+/**
+ * The way out of pasting tokens. A plain link rather than a fetch: the whole
+ * point is to hand the browser to GitHub, and `/api/github/install` mints the
+ * `state` on the way past.
+ */
+function InstallGitHubApp() {
+  if (!GITHUB_APP_SLUG) return null;
+
+  return (
+    <a
+      className="flex items-center gap-1.5 rounded-sm border border-outline-variant px-3 py-1.5 text-label-md hover:bg-surface-container-low"
+      href="/api/github/install"
+    >
+      <ProviderIcon className="text-[14px]" provider="GITHUB" />
+      Install GitHub App
+    </a>
+  );
+}
+
+/** What the setup redirect left in the URL, said in words. */
+function InstallOutcome() {
+  const params = useSearchParams();
+  const failure = params.get('github_error');
+  const outcome = params.get('github');
+
+  if (!failure && !outcome) return null;
+
+  const tone = failure
+    ? 'border-error/30 bg-error-container/40 text-on-error-container'
+    : 'border-outline-variant bg-surface-container text-on-surface';
+
+  const message =
+    failure ??
+    (outcome === 'connected'
+      ? 'GitHub App connected. Private repositories now clone without a token.'
+      : outcome === 'requested'
+        ? 'Installation requested. An owner of that GitHub organisation has to approve it.'
+        : null);
+
+  if (!message) return null;
+  return <p className={`rounded-sm border px-3 py-2 text-body-sm ${tone}`}>{message}</p>;
+}
 
 /** What a row shows where the gate verdict goes, before there is one. */
 function AnalysisState({ repository }: { repository: RepositoryRow }) {
@@ -139,8 +188,13 @@ export function RepositoriesClient({ organizationId }: { organizationId: string 
                 : `${repositories.length} connected · ${passed} passed · ${failed} failed`}
           </p>
         </div>
-        <ConnectRepository organizationId={organizationId} />
+        <div className="flex items-center gap-2">
+          <InstallGitHubApp />
+          <ConnectRepository organizationId={organizationId} />
+        </div>
       </header>
+
+      <InstallOutcome />
 
       {isLoading ? (
         <QueryLoading label="Loading repositories" />
