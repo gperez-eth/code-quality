@@ -43,6 +43,18 @@ export function normalizedText(node: SyntaxNode): string {
   return node.text.replace(/\s+/g, ' ').trim();
 }
 
+/** The type inside a `: T` annotation, e.g. the `unknown` in a `type_annotation` node. */
+export function annotatedType(node: SyntaxNode | null | undefined): SyntaxNode | undefined {
+  if (!node || node.type !== 'type_annotation') return undefined;
+  return node.namedChildren[0];
+}
+
+/** Whether a type node is one of the given predefined-type keywords, e.g. "unknown" or "any". */
+export function isPredefinedType(node: SyntaxNode | null | undefined, names: readonly string[]): boolean {
+  if (!node) return false;
+  return node.type === 'predefined_type' && names.includes(node.text);
+}
+
 /**
  * Whether the file pulls in one of these modules, by import or require. Rules
  * use it to tell `childProcess.exec()` from `someRegex.exec()`: without the

@@ -28,6 +28,10 @@ const ignoredException: Rule = {
 
 const TODO_MARKER = /\b(TODO|FIXME|XXX|HACK)\b/;
 
+// Not a marker, but the same admission — and the phrasing generated code
+// reaches for when it leaves a stub behind looking finished.
+const IMPLEMENT_THIS = /implement this/i;
+
 const todoComment: Rule = {
   key: 'ts:no-todo-comment',
   name: 'Track uses of "TODO" tags',
@@ -41,10 +45,10 @@ const todoComment: Rule = {
     visitNodes(file.tree.rootNode, (node) => {
       if (node.type !== 'comment') return;
 
-      const marker = TODO_MARKER.exec(node.text);
+      const marker = TODO_MARKER.exec(node.text)?.[1] ?? (IMPLEMENT_THIS.test(node.text) ? 'implement this' : undefined);
       if (!marker) return;
 
-      report({ node, message: `Complete the task associated with this ${marker[1]} comment.` });
+      report({ node, message: `Complete the task associated with this "${marker}" comment.` });
     });
   },
 };
